@@ -2,9 +2,9 @@
 
 [Concept slides: keeping track of a research project](https://docs.google.com/presentation/d/1WlhH2rzUs7l7Xk1qYEAEDQI9GKQG5Oq3hd-hcYNSoXc/edit).
 
-For Monday's practice, open the [Week 3 practice template](https://github.com/macss-berkeley/week03-git-practice). Choose **Use this template → Create a new repository**, choose your own account, and create a public copy using the default branch. Clone your copy in GitHub Desktop. You will edit a short page about an imaginary text-research project and track your changes.
+Monday's practice uses the [Week 3 practice template](https://github.com/macss-berkeley/week03-git-practice). It is an imaginary text-research project with one question, *Which campus news stories mention housing?*, a short project page, and no data or results. You will make your own copy, clarify the proposed text-matching rule, publish the page, and review one change with a neighbor. The steps are in the three practice sections below.
 
-Friday's [Lab 3](../../lab/lab03_hidden_berkeley_pages.ipynb) practises the same workflow with the supplied Hidden Berkeley page. HW2 uses that page too. HTML/CSS authoring is optional.
+Friday's [Lab 3](../../lab/lab03_hidden_berkeley_pages.ipynb) practises the same workflow with the supplied Hidden Berkeley page, and HW2 uses that page too. Before Friday, work through the seven-minute interactive [How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html), which shows where a change lives after each step. It also opens from your local copy of the course repository at `docs/interactives/week03-how-git-thinks.html`. HTML/CSS authoring is optional.
 
 ## What you will practice
 
@@ -13,8 +13,9 @@ By the end of this lesson, you should be able to:
 1. explain the difference between Git and GitHub;
 2. distinguish a local repository from its remote copy;
 3. make, commit, push, and pull a change in GitHub Desktop;
-4. use a branch and pull request for collaborative work;
-5. recognize a merge conflict and inspect it before choosing a resolution.
+4. publish a Markdown page with GitHub Pages and say what a published page does and does not establish;
+5. use a branch and pull request for collaborative work;
+6. recognize a merge conflict and inspect it before choosing a resolution.
 
 ## Why use version control?
 
@@ -58,16 +59,34 @@ You can start in either place:
 - **GitHub.com:** create a repository and select **Add a README file**. This creates the remote repository. Clone it in GitHub Desktop to create the local copy.
 - **GitHub Desktop:** select **Current Repository -> Add -> Create New Repository** and initialize it with a README. This creates the local repository. Select **Publish repository** to create the remote copy.
 
-### Practice the loop
+Today's practice uses a third way. **Use this template** on a GitHub repository creates a new repository under your account, with the template's files as its first commit and none of the template's later history. You then clone it like any other remote repository.
 
-1. Create a repository under your account.
-2. Add a file named `text.txt` with one or two lines of text.
-3. Open GitHub Desktop and inspect the change.
-4. Commit it with a message that says what you added.
-5. Push the commit.
-6. Open the repository on GitHub and find the file.
+### Practice 1: make your copy and record one change
+
+1. Open the [practice template](https://github.com/macss-berkeley/week03-git-practice) on GitHub. Choose **Use this template -> Create a new repository**. Choose your own account as the owner, give the repository a name such as `campus-news-housing`, make it **public** so you can publish the page later, and keep the default branch only.
+2. In GitHub Desktop, select **File -> Clone Repository**, choose the **GitHub.com** tab, select your new repository, choose a local folder you can find again, and select **Clone**.
+3. Select **Open in Visual Studio Code**. Read `README.md` and `docs/index.md`.
+4. In `docs/index.md`, find the sentence under **Proposed approach**: `Search each story for the word housing.` Replace it with a rule that says what counts as a match. Consider capitalization, related words such as *house*, *dorm*, or *rent*, and what counts as a campus news story. Save the file.
+
+   Pause: the edit now exists in exactly one place. Where?
+5. Return to GitHub Desktop and read the diff. Red lines are removed; green lines are added. Check that only the sentence you intended has changed.
+6. Write a commit message that names the purpose, such as `Clarify the text-matching rule`, and select **Commit to main**.
+
+   Pause: can a neighbor see this commit on GitHub yet?
+7. Select **Push origin**. Open the repository on GitHub.com, open `docs/index.md`, and find your sentence. Open the commit list and find your message.
 
 Question: At which step did the change become part of local history? At which step did it reach GitHub?
+
+### Practice 2: publish the page and check it
+
+GitHub Pages builds a website from the files in `docs/`. The supplied configuration and layout need no edits.
+
+1. On GitHub.com, open **Settings -> Pages**. Under **Build and deployment**, choose **Deploy from a branch**, then branch `main` and folder `/docs`, and select **Save**.
+2. While the site builds, return to VS Code and add one sentence to `README.md` describing the imaginary source, for example that the stories would come from one campus news website. Inspect the diff, commit with a clear message, and push.
+3. Return to **Settings -> Pages** and open the site URL in a private browser window. Confirm that your matching rule appears on the page.
+4. The repository view on GitHub shows the README; the website shows `docs/index.md`. Confirm which of your two edits is visible in which place.
+
+Question: GitHub.com shows your new sentence, but the website still shows the old one. Name two different explanations, and say what you would look at to tell them apart.
 
 ## Collaborative workflow
 
@@ -77,17 +96,45 @@ A **branch** is another line of development inside the same repository. A **fork
 
 <img src="../../img/collaborative.png" alt="Contributors develop changes separately and merge reviewed work into the main branch." width="55%">
 
-### Optional extra practice: fork and clone the playground
+### Practice 3: propose a change on a branch and review a neighbor's
 
-1. Fork this [Git Playground](https://github.com/macss-berkeley/git-playground) to your account.
+Work in your own copy of the template. Because the repository is public, a neighbor can read and comment on your pull request without being added as a collaborator.
+
+1. In GitHub Desktop, switch to `main`, select **Fetch origin**, and pull if Desktop reports remote changes.
+2. Select **Current Branch -> New Branch** and name it after the task, such as `explain-the-limits`.
+3. In `docs/index.md`, under **What we would check**, add one sentence about a limit of your matching rule: a kind of story it would count by mistake, or a kind it would miss.
+4. Inspect the diff and commit on your branch.
+5. Select **Publish branch**, then **Preview Pull Request**. Confirm that the base branch is `main`, the compare branch is yours, and only `docs/index.md` changed. Select **Create Pull Request**, then write a title and one sentence saying what a reviewer should check.
+6. Swap repository URLs with a neighbor. Open their pull request, read the **Files changed** tab, and leave one comment: a question, or one specific improvement.
+7. Read the comment on your own pull request. If you change the sentence, commit again on the same branch and push; the pull request updates by itself. Then select **Merge pull request** on GitHub.
+8. In GitHub Desktop, switch to `main`, select **Fetch origin**, then **Pull origin**. Open `docs/index.md` and confirm that the merged sentence is on your computer. Delete the finished branch.
+9. When the site has rebuilt, confirm the sentence on the published page.
+
+A pull request is a review conversation around a proposed merge. It does not automatically make the code correct.
+
+Question: Your neighbor's comment changed what you wrote. Where is that conversation recorded, and where would a third person go to read it?
+
+## Merge conflicts
+
+A conflict occurs when Git cannot combine changes automatically, often because two branches edited the same lines. Nothing in the practice above should produce one: each of you works in your own repository, on one branch at a time. The instructor will demonstrate a conflict in class, and the optional playground exercise below lets you produce one deliberately.
+
+Do not resolve a conflict by choosing a side blindly. The correct result may keep one version, combine both, or replace both. After resolving a code conflict, rerun the relevant check. If a notebook conflicts, stop and coordinate with the other editor: `.ipynb` files are structured JSON and are much harder to merge safely than Markdown or Python files.
+
+## Optional extra practice in the Git Playground
+
+The [Git Playground](https://github.com/macss-berkeley/git-playground) is a separate shared repository for practising the same workflow on a repository that other people also edit, and for producing a merge conflict on purpose. It is optional.
+
+### Fork and clone the playground
+
+1. Fork the playground to your account.
 2. In GitHub Desktop, select **File -> Clone Repository**.
 3. Select your fork and choose a local folder you can find again.
 4. If GitHub Desktop asks how you plan to use the fork, select **To contribute to the parent project**.
 5. Read the playground README. Do not edit `conflicts/team_plan.md` until the merge-conflict exercise.
 
-### Optional playground continuation: make a branch and pull request
+### Make a branch and pull request in the playground
 
-This first branch exercise is intentionally conflict-free.
+This branch exercise is intentionally conflict-free.
 
 1. Select **Current Branch -> New Branch** and use a descriptive name such as `add-river-contributor-note`.
 2. In `contributors/`, copy `example.md` to a new file named with your GitHub username, such as `river.md`.
@@ -98,11 +145,7 @@ This first branch exercise is intentionally conflict-free.
 7. Select **Create Pull Request**, then write a title and short description in the browser.
 8. Ask a teammate to inspect the **Files changed** tab and explain what they would approve or request before merging.
 
-A pull request is a review conversation around a proposed merge. It does not automatically make the code correct.
-
-## Optional: practise a controlled merge conflict
-
-A conflict occurs when Git cannot combine changes automatically, often because two branches edited the same lines. In this exercise, you will create a small conflict deliberately so you can recognize and resolve it without risking project work.
+### Practise a controlled merge conflict
 
 Complete the branch exercise first, then work in your own fork:
 
@@ -116,8 +159,6 @@ Complete the branch exercise first, then work in your own fork:
 8. Open the repository in VS Code. Read both versions between `<<<<<<<`, `=======`, and `>>>>>>>`. Edit the file into the single final rule you actually want and remove every conflict marker.
 9. Save the file. When GitHub Desktop reports that all conflicts are resolved, continue the merge and inspect the resulting commit.
 10. Push `conflict-option-b`, open a pull request into your fork's `main`, and ask a teammate to verify that the final rule is coherent and contains no conflict markers.
-
-Do not resolve a conflict by choosing a side blindly. The correct result may keep one version, combine both, or replace both. After resolving a code conflict, rerun the relevant check. If a notebook conflicts, stop and coordinate with the other editor: `.ipynb` files are structured JSON and are much harder to merge safely than Markdown or Python files.
 
 Question: What evidence shows that your resolution preserved the intended work from both branches?
 
@@ -133,7 +174,8 @@ These actions discard information, so verify the target first.
 
 ## What to remember
 
-- A commit records local history; a push transfers commits to a remote.
+- Saving a file changes your working copy; a commit records local history; a push transfers commits to a remote.
 - Inspect changes before committing or resolving a conflict.
 - Pull before starting shared work, especially when teammates may have pushed changes.
 - Use a branch and pull request when the change needs review before it reaches `main`.
+- GitHub Pages builds the site from the pushed repository, not from the files on your computer. A finished push can still be waiting for the site to build.
