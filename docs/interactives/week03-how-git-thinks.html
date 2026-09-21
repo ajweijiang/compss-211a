@@ -1687,45 +1687,40 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   /* Tab 4 · Resolve a conflict                                         */
   /* ------------------------------------------------------------------ */
   (function(){
-    var BR = 'fix-rule', TP = 'team_plan.md';
+    var TP = 'next-step.md';
     var GRP = 'On your computer (VS Code, then GitHub Desktop)';
-    var YOURS = 'Review rule: every pull request needs one reviewer who reruns the notebook.';
-    var THEIRS = 'Review rule: merge only after the reviewer checks the Files changed tab.';
-    var RESOLVED = 'Review rule: every pull request needs one reviewer who checks Files changed and reruns the notebook.';
-    function plainView(line){ return G.esc('# Team plan') + '\n\n' + G.esc(line) + '\n'; }
+    var YOURS = 'Next step: compare two data sources.';
+    var THEIRS = 'Next step: check the data license.';
+    var RESOLVED = 'Next step: compare two data sources and check their licenses.';
+    function plainView(line){ return G.esc(line) + '\n'; }
     function conflictView(){
-      return G.esc('# Team plan') + '\n\n' +
-        '<span class="marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; fix-rule <span class="lbl">(your version)</span></span>' +
+      return '<span class="marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD <span class="lbl">(your version, commit 5)</span></span>' +
         '<span class="ours">' + G.esc(YOURS) + '</span>' +
         '<span class="marker">=======</span>' +
         '<span class="theirs">' + G.esc(THEIRS) + '</span>' +
-        '<span class="marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; main <span class="lbl">(Maya’s version, already on main)</span></span>';
+        '<span class="marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/main <span class="lbl">(Maya’s version, commit 4)</span></span>';
     }
 
     G.SCEN.conflict = {
       id: 'conflict', title: 'Resolve a conflict', tag: 'optional · ≈ 2 min',
-      intro: 'Your branch <code>fix-rule</code> (commit 4) and <code>main</code> (Maya\u2019s commit 5) changed the same line of <code>team_plan.md</code>. You published the branch and opened a pull request. Git stopped the merge and wrote both versions into the file.',
+      intro: 'You and Maya both changed the one line of <code>next-step.md</code>. She committed (4) and pushed. You committed (5) without pulling. When you pulled, Git could not combine the two versions and stopped.',
       autoStage: true,
       missions: ['Resolve the conflict', 'Commit and push the merge'],
       recap: [
-        { k: 'conflict', t: 'A conflict means both sides changed the same lines since the branches split. Git writes both versions into the file between <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.' },
+        { k: 'conflict', t: 'A conflict means both sides changed the same lines. Git writes both versions into the file between <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>, and waits for you.' },
         { k: 'resolving', t: 'Read both versions, write the one line the team wants, remove every marker, then commit. Do not accept one side without reading the other.' },
         { k: 'notebooks', t: 'A conflicting <code>.ipynb</code> is JSON full of outputs and metadata. Stop and coordinate with the other editor instead of resolving it line by line.' }
       ],
       setup: function(){
         var S = G.S;
         S.files = [{ name: TP, dirty: true, conflict: true }];
-        var ns = G.seed(['Initial commit', 'Add team plan', 'Add data notes']);
-        var mine = G.newCommit({ msg: 'Require a reviewer who reruns the notebook' });
-        var maya = G.newCommit({ msg: 'Require a check of Files changed before merging', mine: false });
+        G.seed(['Initial commit', 'Add README', 'Add the next step']);
+        var maya = G.newCommit({ msg: 'Check the data license', mine: false });
+        var mine = G.newCommit({ msg: 'Compare two data sources' });
         S.f.mayaN = maya.n;
-        G.lane(S.local, 'main').commits.push(maya.n);
         G.lane(S.remote, 'main').commits.push(maya.n);
-        G.addLane(S.local, BR, ns.concat([mine.n]), ns[2]);
-        G.addLane(S.remote, BR, ns.concat([mine.n]), ns[2]);
-        S.local.head = BR;
-        S.pr = { num: 2, from: BR, to: 'main', count: 1, status: 'conflict', text: 'This branch has conflicts that must be resolved' };
-        S.fileView = { name: TP, where: 'on your disk, on fix-rule, merge in progress', html: conflictView() };
+        G.lane(S.local, 'main').commits.push(mine.n);
+        S.fileView = { name: TP, where: 'on your disk, pull stopped by a conflict', html: conflictView() };
       },
       actions: [
         { id: 'resolve', group: GRP, label: 'Open in editor and resolve', sub: 'VS Code: edit the file, remove the markers, save', run: function(){
@@ -1734,17 +1729,17 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.renderPrompt({
             question: 'Pick the file contents to save:',
             options: [
-              { code: '# Team plan\n\n' + RESOLVED },
-              { code: '# Team plan\n\n' + YOURS + '\n=======\n' + THEIRS },
-              { code: '# Team plan\n\n' + YOURS + '\n' + THEIRS }
+              { code: RESOLVED },
+              { code: YOURS + '\n=======\n' + THEIRS },
+              { code: YOURS + '\n' + THEIRS }
             ],
             correct: 0,
-            why: 'the second option still contains a marker line, which Git would commit as ordinary text. The third keeps two contradictory rules. The first is one rule that covers both requirements.',
+            why: 'the second option still contains a marker line, which Git would commit as ordinary text. The third keeps two contradictory next steps. The first is one sentence that covers both.',
             after: function(){
               var S = G.S;
               S.f.resolved = true;
               var f = S.files[0]; f.conflict = false; f.dirty = true; f.staged = true;
-              S.fileView = { name: TP, where: 'on your disk, on fix-rule, saved', html: plainView(RESOLVED) };
+              S.fileView = { name: TP, where: 'on your disk, saved', html: plainView(RESOLVED) };
               G.renderFiles(); G.renderStage(true); G.renderFilePanel();
               G.markDone(0);
               G.say('ok', 'Saved. GitHub Desktop reports “No conflicts remaining” and ticks the file for the merge commit.');
@@ -1755,23 +1750,19 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         { id: 'commitpush', group: GRP, label: 'Commit and push', sub: 'GitHub Desktop: “Continue merge”, then “Push origin” &middot; git commit, git push', run: function(){
           var S = G.S;
           if (!S.f.resolved){ G.say('warn', 'The file still has conflict markers. Resolve it first.'); return; }
-          if (S.f.merged){ G.say('info', 'Already committed and pushed. The pull request can be merged.'); return; }
+          if (S.f.merged){ G.say('info', 'Already committed and pushed.'); return; }
           S.f.merged = true;
-          G.lane(S.local, BR).commits.push(S.f.mayaN);
-          G.opCommit({ msg: 'Merge main into fix-rule', merge: true });
-          S.fileView.where = 'on your disk, on fix-rule, committed'; G.renderFilePanel();
-          G.say('ok', 'Merge commit (M) recorded on <code>fix-rule</code>. It has two parents: your commit 4 and main’s commit 5. Pushing&hellip;');
+          G.lane(S.local, 'main').commits.push(S.f.mayaN);
+          G.opCommit({ msg: 'Merge Maya’s commit into main', merge: true });
+          S.fileView.where = 'on your disk, committed'; G.renderFilePanel();
+          G.say('ok', 'Merge commit (M) recorded. It has two parents: your commit 5 and Maya’s commit 4. Pushing&hellip;');
           G.lock(true);
           G.later(function(){
             var S = G.S;
-            G.opPush(BR);
-            var rb = G.lane(S.remote, BR), rm = G.lane(S.remote, 'main');
-            S.pr.count = rb.commits.filter(function(n){ return !G.has(rm, n); }).length;
-            S.pr.status = 'open'; S.pr.text = 'Able to merge · no conflicts';
-            G.renderPR();
+            G.opPush('main');
             G.lock(false);
             G.markDone(1); S.mission = 3;
-            G.say('ok', 'Pushed. Pull request #2 can be merged now. A teammate should still review the final line before merging.');
+            G.say('ok', 'Pushed. GitHub now has both commits and the merge. Nothing was overwritten.');
             G.setBrief('<strong>Finished.</strong>');
             G.renderNote('<strong>&#10003; Done.</strong> Whenever this happens: read both versions, write the line you want, remove every marker, rerun the check.', true);
           }, 900);
@@ -1782,7 +1773,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         G.setBrief('Read the file above, then answer the question below.');
         G.renderPrompt({
           question: 'How should you resolve it?',
-          options: ['Keep my version; it is the most recent', 'Keep Maya’s version; it is already on main', 'Read both, write the one rule the team wants, and remove every marker'],
+          options: ['Keep my version; it is the most recent', 'Keep Maya’s version; it is already on GitHub', 'Read both, write the one sentence the team wants, and remove every marker'],
           correct: 2,
           why: 'the right result may keep one version, combine both, or replace both. Git cannot decide that; the people who wrote the two versions can.',
           after: function(){ G.S.mission = 2; G.setBrief('Press <em>Open in editor and resolve</em>.'); }
