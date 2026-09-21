@@ -412,24 +412,12 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     <p class="eyebrow">COMPSS 211A &middot; Computing I</p>
     <h1>How Git Thinks</h1>
     <div class="chips">
-      <span class="chip chip-gold">Week 3 &middot; GitHub Desktop</span>
+      <span class="chip chip-gold">GitHub Desktop</span>
     </div>
     <hr class="goldrule">
   </header>
 
   <noscript><div class="card"><p>This practice page needs JavaScript to run the simulator. Enable JavaScript and reload.</p></div></noscript>
-
-  <section class="card" aria-labelledby="intro-h">
-    <h2 id="intro-h">Before you start</h2>
-    <ul class="bullets">
-      <li>Git records snapshots of a project's files. Each snapshot is a <strong>commit</strong> with a message.</li>
-      <li>Git is the version-control software. GitHub hosts the <strong>remote repository</strong>.</li>
-      <li>Your local copy and the GitHub copy do not synchronize automatically.</li>
-      <li>A change can be in four places: the files on your disk, the staging area, your local repository, or GitHub.</li>
-      <li><strong>Tab 1</strong> takes one edit through all four, with a question after each step. Do it before Friday.</li>
-      <li>Tabs 2 to 5 are optional: a refused push, branches and pull requests, a merge conflict, GitHub Pages.</li>
-    </ul>
-  </section>
 
   <div class="tabs" role="tablist" aria-label="Exercises" id="tabs"></div>
 
@@ -493,7 +481,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             <div class="minisite" id="miniSite" role="img" aria-labelledby="pagesAlt">
               <div class="minibar" aria-hidden="true"><i></i><i></i><i></i></div>
               <div class="minibody">
-                <p class="minititle">Hidden Berkeley</p>
+                <p class="minititle">Field Guide</p>
                 <div id="pagesLines" aria-hidden="true"></div>
                 <span class="minibadge" id="pagesBadge">built from commit 3</span>
               </div>
@@ -1390,7 +1378,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           if (S.mission === 3){
             G.markDone(2); S.mission = 4;
             G.setBrief('<strong>Finished.</strong>');
-            G.renderNote('<strong>&#10003; Done.</strong> The recap below lists the three distinctions the quiz tests. Tab 2 is optional: what happens when you and a teammate both commit to main.', true);
+            G.renderNote('<strong>&#10003; Done.</strong> The recap below sums it up.', true);
           }
         } }
       ],
@@ -1429,7 +1417,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       setup: function(){
         var S = G.S;
         S.files = [{ name: FILE }];
-        G.seed(['Initial commit', 'Add the eight places', 'Add access notes']);
+        G.seed(['Initial commit', 'Add the guide page', 'Add a sources section']);
         var maya = G.newCommit({ msg: 'Fix the museum hours', mine: false });
         var mine = G.newCommit({ msg: 'Add the survey timeline' });
         G.lane(S.remote, 'main').commits.push(maya.n);
@@ -1471,7 +1459,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               after: function(){
                 G.markDone(2); G.S.mission = 4;
                 G.setBrief('<strong>Finished.</strong>');
-                G.appendNote('<strong>&#10003; Done.</strong> A refused push means GitHub has a commit you do not. Pull, check the result, push. Tab 3, branches and pull requests, is optional.', true);
+                G.appendNote('<strong>&#10003; Done.</strong> A refused push means GitHub has a commit you do not. Pull, check the result, push.', true);
               }
             });
           }
@@ -1518,7 +1506,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       id: 'branches', title: 'Branch, pull request, merge', tag: 'propose and review a change · ≈ 5 min',
       intro: 'A branch is a second line of history inside the same repository. Create one, commit on it, open a pull request, merge it, and check after each step which copies changed.',
       autoStage: true,
-      commitMessages: ['Add a note on the Botanical Garden', 'Second note'],
+      commitMessages: ['Add a note on the archive', 'Second note'],
       missions: ['Create a branch and commit on it', 'Publish the branch and open a pull request', 'Merge on GitHub, then update your local main'],
       recap: [
         { k: 'branch = label', t: 'A new branch is a label pointing at the current commit, not a copy of the folder. Switching branches changes which version of the files is on your disk.' },
@@ -1528,7 +1516,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       tview: G.branchTview,
       setup: function(){
         G.S.files = [{ name: FILE }];
-        G.seed(['Initial commit', 'Add the eight places', 'Add access notes']);
+        G.seed(['Initial commit', 'Add the guide page', 'Add a sources section']);
       },
       actions: [
         { id: 'newbranch', group: GRP, label: 'New branch', sub: 'Desktop: Current Branch &rarr; New Branch &middot; git switch -c add-note', run: function(){
@@ -1616,7 +1604,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           if (S.mission === 3 && S.f.mg && name === 'main'){
             G.markDone(2); S.mission = 4;
             G.setBrief('<strong>Finished.</strong>');
-            G.renderNote('<strong>&#10003; Done.</strong> <code>add-note</code> can be deleted; its commit is on main. In the project repository, each task follows this sequence: branch, commit, pull request, review, merge, pull main. Tab 4, a merge conflict, is optional.', true);
+            G.renderNote('<strong>&#10003; Done.</strong> <code>add-note</code> can be deleted; its commit is on main. In a team, each task follows this sequence: branch, commit, pull request, review, merge, pull main.', true);
           }
         } },
         { id: 'openpr', group: GH, ghost: true, label: 'Open pull request', sub: 'Desktop: "Preview Pull Request" &rarr; browser', run: function(){
@@ -1794,7 +1782,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               after: function(){
                 G.markDone(2); G.S.mission = 4;
                 G.setBrief('<strong>Finished.</strong>');
-                G.appendNote('<strong>&#10003; Done.</strong> Monday’s optional exercise does the same in your own copy of the playground: read both versions, write the line you want, remove every marker, rerun the check.', true);
+                G.appendNote('<strong>&#10003; Done.</strong> Whenever this happens: read both versions, write the line you want, remove every marker, rerun the check.', true);
               }
             });
           }
@@ -1871,7 +1859,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               finishBuild();
               G.markDone(2); G.S.mission = 4;
               G.setBrief('<strong>Finished.</strong>');
-              G.appendNote('<strong>&#10003; Done.</strong> For HW2: Settings &rarr; Pages, Deploy from a branch, <code>main</code>, <code>/docs</code>. When the site looks wrong, check in this order: the commit list on GitHub, the deployment status, then the site in a private window.', true);
+              G.appendNote('<strong>&#10003; Done.</strong> To publish: Settings &rarr; Pages, Deploy from a branch, <code>main</code>, <code>/docs</code>. When the site looks wrong, check in this order: the commit list on GitHub, the deployment status, then the site in a private window.', true);
             }
           });
         }, 0]
@@ -1882,7 +1870,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       id: 'pages', title: 'Publish with GitHub Pages', tag: 'publish a site from docs/ · ≈ 3 min',
       intro: 'GitHub Pages turns the <code>docs/</code> folder of your repository’s <code>main</code> branch, <em>on GitHub</em>, into a website. It reads the copy on GitHub, not the files on your computer.',
       autoStage: true,
-      commitMessages: ['Write the introduction', 'Explain the sources in the README', 'Fix a typo in the introduction', 'Add the Botanical Garden hours'],
+      commitMessages: ['Write the introduction', 'Explain the sources in the README', 'Fix a typo in the introduction', 'Add opening hours'],
       missions: ['Which copy Pages builds from', 'What the branch and folder setting leaves out', 'GitHub shows my file, but the site is old'],
       recap: [
         { k: 'Pages = remote', t: 'GitHub Pages rebuilds the site from the pushed repository on GitHub, not from the files on your computer. A commit that is not pushed does not reach the site.' },
@@ -1892,7 +1880,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       setup: function(){
         var S = G.S;
         S.files = [{ name: IDX }, { name: RM }];
-        G.seed(['Add supplied Berkeley guide', 'Add the eight places', 'Add access notes']);
+        G.seed(['Initial commit', 'Add the guide page', 'Add a sources section']);
         S.pages = { built: 3, content: 3, building: false, same: false };
       },
       actions: [
