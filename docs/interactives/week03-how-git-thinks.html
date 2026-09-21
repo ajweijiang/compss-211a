@@ -346,6 +346,9 @@
   .abtn.ghost.next{ box-shadow:0 0 0 3px var(--gold); }
   .tview{ margin:0 0 14px; }
   .brief{ margin:0 0 12px; }
+
+  /* ---------- fork-point marker at the start of a branch lane ---------- */
+  .dot.ghost{ background:#E3E8F0; color:#6B7890; box-shadow:none; border:1px dashed #B7C0D0; }
   /* ---------- flyer (animated traveling chip/dot) ---------- */
   .flyer{
     position:fixed; z-index:60; pointer-events:none; margin:0;
@@ -475,7 +478,6 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         <p class="stdesc">commit history on github.com</p>
         <div class="stbody">
           <div class="lanes" id="remoteLanes"></div>
-          <p class="striplegend" id="remoteLegend" hidden>The T-tagged outlined dot is your teammate's commit.</p>
           <div class="pr" id="prPanel" hidden></div>
           <div class="pages" id="pagesPanel" hidden>
             <p class="pages-label">GitHub Pages &middot; built from this copy</p>
@@ -529,7 +531,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     scenIntro: $('scenIntro'), restart: $('btnRestart'), brief: $('missionBrief'),
     fileList: $('fileList'), fileState: $('fileState'),
     stageBody: $('stageBody'), stageList: $('stageList'), stageEmpty: $('stageEmpty'),
-    localLanes: $('localLanes'), remoteLanes: $('remoteLanes'), remoteLegend: $('remoteLegend'),
+    localLanes: $('localLanes'), remoteLanes: $('remoteLanes'),
     prPanel: $('prPanel'), pagesPanel: $('pagesPanel'), miniSite: $('miniSite'),
     pagesBadge: $('pagesBadge'), pagesLines: $('pagesLines'), pagesAlt: $('pagesAlt'),
     filePanel: $('filePanel'), actions: $('actions'), feedback: $('feedback'),
@@ -745,18 +747,10 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   }
   function makeDot(commit, animate){
     var d = document.createElement('span');
-    d.className = 'dot' + (commit.merge ? ' mdot' : (commit.mine ? '' : ' tdot'));
+    d.className = 'dot' + (commit.merge ? ' mdot' : '');
     d.textContent = label(commit);
     d.title = (commit.merge ? 'Merge commit: ' : 'Commit ' + commit.n + ': ') + commit.msg +
               (commit.mine ? '' : ' (teammate)');
-    if (!commit.mine){
-      var t = document.createElement('span');
-      t.className = 'tt'; t.textContent = 'T'; t.setAttribute('aria-hidden', 'true');
-      d.appendChild(t);
-      var sr = document.createElement('span');
-      sr.className = 'visually-hidden'; sr.textContent = ' (teammate’s commit)';
-      d.appendChild(sr);
-    }
     if (animate && !REDUCED) d.classList.add('pop');
     return d;
   }
@@ -775,11 +769,6 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         var hm = document.createElement('span'); hm.className = 'headmark'; hm.textContent = 'you are here';
         head.appendChild(hm);
       }
-      if (l.name !== 'main' && l.from){
-        var fr = document.createElement('span'); fr.className = 'lfrom';
-        fr.textContent = 'from commit ' + label(C(l.from));
-        head.appendChild(fr);
-      }
       box.appendChild(head);
       var strip = document.createElement('div');
       strip.className = 'strip';
@@ -787,14 +776,19 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       strip.setAttribute('aria-label', (isLocal ? 'Local' : 'GitHub') + ' commits on ' + l.name);
       var show = l.name === 'main' ? l.commits.slice() :
                  l.commits.filter(function(n){ return !has(main, n); });
+      if (l.name !== 'main' && l.from){
+        var g = makeDot(C(l.from), false);
+        g.classList.add('ghost');
+        g.title = 'Branched from commit ' + label(C(l.from));
+        strip.appendChild(g);
+      }
       show.sort(sortN).forEach(function(n){
         strip.appendChild(makeDot(C(n), popSet.indexOf(n) !== -1));
       });
       if (!show.length && l.name !== 'main'){
         var note = document.createElement('p'); note.className = 'lanenote';
         var allInMain = l.commits.every(function(n){ return has(main, n); });
-        note.textContent = (allInMain && main.commits.length > l.commits.length) ?
-          'merged into main' : 'no commits of its own yet, points at commit ' + label(C(l.from));
+        note.textContent = (allInMain && main.commits.length > l.commits.length) ? 'merged into main' : 'same as main so far';
         strip.appendChild(note);
       }
       box.appendChild(strip);
@@ -804,8 +798,6 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   function renderLocal(popSet){ renderLanes(el.localLanes, S.local, true, popSet); }
   function renderRemote(popSet){
     renderLanes(el.remoteLanes, S.remote, false, popSet);
-    var anyT = Object.keys(S.commits).some(function(k){ return !S.commits[k].mine; });
-    el.remoteLegend.hidden = !anyT;
   }
   function stripOf(container, name){
     return container.querySelector('.strip[data-lane="' + name + '"]');
@@ -1170,7 +1162,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     }
     var popSet = inc.concat(m ? [m.n] : []);
     fly(stripOf(el.remoteLanes, name), stripOf(el.localLanes, name), label(C(inc[0])),
-        'flydot' + (C(inc[0]).mine ? '' : ' tfly'), function(){ renderLocal(popSet); });
+        'flydot', function(){ renderLocal(popSet); });
     updateTview();
     return { inc: inc, merge: m };
   }
