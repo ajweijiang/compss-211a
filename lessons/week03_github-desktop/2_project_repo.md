@@ -12,23 +12,36 @@ You will:
 - review and merge a teammate's pull request.
 
 The repository begins with the files in the
-[final project template](../../final-project-repo/README.md). You do not need to
+[final project template](https://github.com/macss-berkeley/final-project-template),
+which are also in this course repository under
+[`final-project-repo/`](../../final-project-repo/README.md). You do not need to
 understand every file before starting.
+
+## In class today
+
+Week 3 covers sections 1, 3 (steps 1 to 6), 6, and 7 in about thirty minutes.
+The rest is due before Friday's lab: the environment steps at the end of
+section 3, and sections 4, 5, and 8. In section 6, give each teammate a
+different file so nobody edits the same lines.
 
 ## 1. Create one repository for the team
 
-Follow the repository-creation link or instructions provided by the instructor.
 One teammate coordinates this step:
 
-1. Create exactly one repository from the course template.
-2. Use the naming convention announced in class: lowercase words separated by
-   dashes, such as `team-2-brand-performance`.
-3. Give every teammate collaborator access.
+1. Open the [final project template](https://github.com/macss-berkeley/final-project-template)
+   and choose **Use this template -> Create a new repository**.
+2. Choose your own account as the owner. Name the repository with lowercase
+   words separated by dashes, such as `team-2-brand-performance`. Make it
+   **public**: the project website is published from it, and public
+   repositories can use GitHub Pages without a paid plan.
+3. Open **Settings -> Collaborators**, select **Add people**, and add every
+   teammate by GitHub username.
 4. Share the one canonical repository URL with the team.
 
-Everyone else should open that URL and accept the invitation. Do not create
-another copy if the repository does not appear. First check the invitation,
-repository URL, and signed-in GitHub account.
+Everyone else accepts the invitation. GitHub sends it by email, and it also
+appears under the bell icon at the top of GitHub.com. Do not create another
+copy if the repository does not appear. First check the invitation, the
+repository URL, and the signed-in GitHub account.
 
 ## 2. Understand the starter files
 
@@ -73,8 +86,9 @@ Every teammate should:
 8. select the repository's `.venv` as the Python interpreter and notebook
    kernel in VS Code.
 
-Do not continue until everyone can clone the same repository and select its
-environment.
+In class, stop after step 6. Do steps 7 and 8 before Friday, and do not
+continue with project work until everyone can clone the same repository and
+select its environment.
 
 ## 4. Notebook or script?
 

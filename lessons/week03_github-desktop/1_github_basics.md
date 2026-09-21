@@ -2,7 +2,7 @@
 
 [Concept slides: keeping track of a research project](https://docs.google.com/presentation/d/1WlhH2rzUs7l7Xk1qYEAEDQI9GKQG5Oq3hd-hcYNSoXc/edit).
 
-Monday's practice starts with the short tutorial built into GitHub Desktop, then uses the [Week 3 practice template](https://github.com/macss-berkeley/week03-git-practice). The template is an imaginary text-research project with one question, *Which campus news stories mention housing?*, a short project page, 40 made-up news items, and no results. You will make your own copy, clarify the proposed text-matching rule, publish the page, and review one change with a neighbor. The steps are in the practice sections below.
+Monday's practice starts with the short tutorial built into GitHub Desktop, then uses the [Week 3 practice template](https://github.com/macss-berkeley/week03-git-practice). The template is an imaginary text-research project with one question, *Which campus news stories mention housing?*, a short project page, 40 made-up news items, and no results. You will make your own copy, clarify the proposed text-matching rule, and publish the page. The last part of class sets up your team's project repository and uses the branch and pull-request workflow there; those steps are in [Set up and use the final project repository](2_project_repo.md).
 
 Friday's [Lab 3](../../lab/lab03_hidden_berkeley_pages.ipynb) practises the same workflow with the supplied Hidden Berkeley page, and HW2 uses that page too. Before Friday, work through the seven-minute interactive [How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html), which shows where a change lives after each step. It also opens from your local copy of the course repository at `docs/interactives/week03-how-git-thinks.html`. HTML/CSS authoring is optional.
 
@@ -112,7 +112,7 @@ A **branch** is another line of development inside the same repository. A **fork
 
 ### Practice 3: propose a change on a branch and review a neighbor's
 
-Work in your own copy of the template. Because the repository is public, a neighbor can read and comment on your pull request without being added as a collaborator.
+In class, this step happens in your team repository: see [section 6 of the team repository lesson](2_project_repo.md#6-make-the-first-project-contributions). The steps below are the same workflow in your own template copy, for practice on your own. Because that repository is public, a neighbor can read and comment on your pull request without being added as a collaborator.
 
 1. In GitHub Desktop, switch to `main`, select **Fetch origin**, and pull if Desktop reports remote changes.
 2. Select **Current Branch -> New Branch** and name it after the task, such as `explain-the-limits`.
