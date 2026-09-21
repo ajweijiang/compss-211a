@@ -774,22 +774,16 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       strip.className = 'strip';
       strip.setAttribute('data-lane', l.name);
       strip.setAttribute('aria-label', (isLocal ? 'Local' : 'GitHub') + ' commits on ' + l.name);
-      var show = l.name === 'main' ? l.commits.slice() :
-                 l.commits.filter(function(n){ return !has(main, n); });
-      if (l.name !== 'main' && l.from){
-        var g = makeDot(C(l.from), false);
-        g.classList.add('ghost');
-        g.title = 'Branched from commit ' + label(C(l.from));
-        strip.appendChild(g);
-      }
-      show.sort(sortN).forEach(function(n){
+      l.commits.slice().sort(sortN).forEach(function(n){
         strip.appendChild(makeDot(C(n), popSet.indexOf(n) !== -1));
       });
-      if (!show.length && l.name !== 'main'){
-        var note = document.createElement('p'); note.className = 'lanenote';
+      if (l.name !== 'main'){
         var allInMain = l.commits.every(function(n){ return has(main, n); });
-        note.textContent = (allInMain && main.commits.length > l.commits.length) ? 'merged into main' : 'same as main so far';
-        strip.appendChild(note);
+        if (allInMain && main.commits.length > l.commits.length){
+          var note = document.createElement('p'); note.className = 'lanenote';
+          note.textContent = 'merged into main';
+          strip.appendChild(note);
+        }
       }
       box.appendChild(strip);
       container.appendChild(box);
@@ -1710,7 +1704,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
 
     G.SCEN.conflict = {
       id: 'conflict', title: 'Resolve a conflict', tag: 'optional · ≈ 2 min',
-      intro: 'Your branch <code>fix-rule</code> and <code>main</code> changed the same line of <code>team_plan.md</code>. Git stopped the merge and wrote both versions into the file.',
+      intro: 'Your branch <code>fix-rule</code> (commit 4) and <code>main</code> (Maya\u2019s commit 5) changed the same line of <code>team_plan.md</code>. You published the branch and opened a pull request. Git stopped the merge and wrote both versions into the file.',
       autoStage: true,
       missions: ['Resolve the conflict', 'Commit and push the merge'],
       recap: [
