@@ -1359,7 +1359,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
 
     G.SCEN.basics = {
       id: 'basics', title: 'Save, commit, push, pull', tag: 'start here · ≈ 6 min',
-      intro: 'Let\u2019s start with a simulated edit, commit, and push of a file.',
+      intro: 'Let\u2019s start with a simulated edit, commit, and push of a file. Each numbered dot is a commit; real Git identifies a commit by a hash such as <code>9be02f1</code>, not a number.',
       autoStage: false,
       commitMessages: ['Add favorite tool to the guide', 'Clarify the data sources section', 'Update the site headline'],
       missions: ['Get an edit onto GitHub', 'Committed, but GitHub shows nothing new', 'Get a teammate’s commit onto your computer'],
@@ -1441,7 +1441,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
 
     G.SCEN['pull-first'] = {
       id: 'pull-first', title: 'A refused push', tag: 'pull, then push · ≈ 3 min',
-      intro: 'You and Maya both cloned the same repository. She committed and pushed. You did not pull, and made a commit of your own. See what happens to your push and how to fix it. The commit numbers are labels for this page; Git itself does not number commits.',
+      intro: 'You and Maya both cloned the same repository. She committed and pushed. You did not pull, and made a commit of your own. See what happens to your push and how to fix it.',
       autoStage: true,
       commitMessages: ['Tidy the README'],
       missions: ['Predict what happens when you push after Maya pushed', 'Pull, then push', 'Avoid the problem next time'],
