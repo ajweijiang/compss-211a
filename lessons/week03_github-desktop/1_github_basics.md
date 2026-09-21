@@ -401,5 +401,5 @@ Do this exercise entirely in your browser.
 
 Continue with the [team project lesson](2_project_repo.md). You will create
 one shared repository, invite collaborators, and review and merge each
-other's PRs. Then two teammates will deliberately make conflicting changes
-and agree on a resolution.
+other's PRs. Then record your team's tentative question and next steps in
+the README. The guide includes help if a conflict comes up.

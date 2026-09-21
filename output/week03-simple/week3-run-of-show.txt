@@ -20,9 +20,8 @@ committing, and commit a different replacement on GitHub. Pull should stop;
 stash and pull, then restore to trigger the conflict. Start class with a clean
 practice repo and no existing stash. The interactive is the fallback.
 
-For the later team conflict, both teammates must branch from the SAME version
-of team-next-step.md. Open both PRs before merging the first. Use the lesson's
-exact one-line edits so the second PR reliably conflicts.
+Check the team template opens. Team work will use Markdown planning notes and
+the README. Scripts and terminal setup wait until Week 4.
 
 0:00–0:05 — INTERACTIVE PREVIEW (guide part 1)
 
@@ -111,13 +110,14 @@ plan-USERNAME.md with a question/source/next step, commits, and opens a PR.
 A teammate reviews and merges. Everyone returns to main and pulls, then opens
 a teammate's note locally. A tentative project idea is enough.
 
-Then create the deliberate two-PR conflict. Add and merge team-next-step.md
-with the starting sentence. Both teammates pull it and branch before either
-changes main. A uses check-license; B uses compare-sources. Both change the
-same line differently, commit, publish, and open PRs. B reviews and merges A's
-PR; B's PR now conflicts. B resolves it on GitHub and selects Commit merge,
-which updates B's branch. A reviews the result and selects Merge pull request
-to bring it into main. Everyone pulls the agreed sentence locally.
+Use the guide's separate author/reviewer steps and checks so teams can work
+at their own pace. Everyone should author a PR and review someone else's.
+There is no planned team conflict; use the troubleshooting section if one
+arises. Keep the earlier stash/conflict demonstration in the first guide.
+
+Use the planning notes to agree on a question, source, and next responsibility.
+One teammate updates the README on agree-next-steps; another reviews and
+merges the PR. Everyone pulls and checks the agreed plan locally.
 
 Mention one active editor per notebook and inspecting which files are included
 in commits. Point to .gitignore's limits: it does not erase tracked history.
@@ -127,13 +127,13 @@ in commits. Point to .gitignore's limits: it does not erase tracked history.
 Ask students to show a branch commit, a reviewed PR, and a teammate's merged
 note locally. Agree on one next real project task and a new branch for it.
 
-Sections 5–7 of the team lesson are follow-up: environment, notebooks/scripts,
-and project agreements before Friday. SSH and Pages remain optional reference.
+Before Friday, finish any remaining planning-note reviews and the shared
+README agreement. Scripts, command-line work, and the team's Python setup
+wait until Week 4. SSH and Pages remain optional reference.
 
 IF TIME IS TIGHT
 
 Demonstrate the stash/conflict sequence once if students need more setup time;
 they can repeat it after class. Finish course-improvement PRs after class too.
 Protect time for the team repo: complete one reviewed contribution per team.
-Demonstrate the two-PR conflict with two students if necessary; other teams can
-repeat it after class. Finish remaining planning-note PRs afterwards.
+Finish remaining planning-note PRs and the README agreement afterwards.
