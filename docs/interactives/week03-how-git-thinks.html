@@ -454,7 +454,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           <div class="filelist" id="stageList"></div>
           <p class="emptynote" id="stageEmpty">empty, nothing selected</p>
         </div>
-        <p class="stvocab">Desktop: ticked checkboxes under Changes</p>
+        <p class="stvocab">GitHub Desktop: ticked checkboxes under Changes</p>
       </section>
 
       <div class="arrow" aria-hidden="true"><span class="arr">&rarr;</span><span class="arrlabel">commit</span></div>
@@ -465,7 +465,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         <div class="stbody">
           <div class="lanes" id="localLanes"></div>
         </div>
-        <p class="stvocab">Desktop: the History tab &middot; lives in .git</p>
+        <p class="stvocab">GitHub Desktop: the History tab &middot; lives in .git</p>
       </section>
 
       <div class="arrow" aria-hidden="true"><span class="arr">&rarr;</span><span class="arrlabel">push &rarr;<br>&larr; pull</span></div>
@@ -491,7 +491,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             <span class="visually-hidden" id="pagesAlt">Thumbnail of the published Pages site.</span>
           </div>
         </div>
-        <p class="stvocab">Desktop calls it "origin" &middot; github.com</p>
+        <p class="stvocab">GitHub Desktop calls it "origin" &middot; github.com</p>
       </section>
     </div>
 
@@ -1340,7 +1340,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             why: 'a commit records local history; a push transfers commits to the remote. GitHub cannot see unpushed commits.',
             after: function(){
               G.S.f.m2ready = true;
-              G.setBrief('Press <em>Push</em> (Desktop: "Push origin") so commit 3 reaches GitHub.');
+              G.setBrief('Press <em>Push</em> (GitHub Desktop: "Push origin") so commit 3 reaches GitHub.');
             }
           });
         }, 0]
@@ -1351,7 +1351,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       var c = G.opRemoteCommit('main', { msg: "Add Maya's field notes" });
       G.say('info', 'Maya pushed commit ' + c.n + ' (“' + c.msg + '”). It reached GitHub, but nothing on <em>your</em> computer changed.');
       G.later(function(){
-        G.setBrief('<strong>Get commit ' + c.n + ' onto your computer.</strong> Press <em>Pull</em> (Desktop: "Fetch origin", then "Pull origin").');
+        G.setBrief('<strong>Get commit ' + c.n + ' onto your computer.</strong> Press <em>Pull</em> (GitHub Desktop: "Fetch origin", then "Pull origin").');
         G.renderNote('Station 4 has a commit that station 3 does not. Nothing arrives on your computer until you pull.');
         G.lock(false);
       }, 900);
@@ -1381,7 +1381,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.say('ok', 'You saved a change to <code>field_guide.md</code>. GitHub Desktop now lists it under Changes. Nothing is recorded in history yet.');
           if (S.mission === 1 && !S.f.edit){ S.f.edit = true; G.renderPrompt(PRED[1]); }
         } },
-        { id: 'stage', label: 'Select for commit', sub: 'Desktop: the checkbox beside the file under Changes, ticked by default &middot; git add, also called staging', run: function(){
+        { id: 'stage', label: 'Select for commit', sub: 'GitHub Desktop: the checkbox beside the file under Changes, ticked by default &middot; git add, also called staging', run: function(){
           var S = G.S, f = S.files[0];
           if (f.staged){ G.say('info', 'The change is already selected for the next commit. Next: Commit.'); return; }
           if (!f.dirty){ G.say('warn', 'Nothing to select: the Changes list is empty. Edit the file first.'); return; }
@@ -1389,28 +1389,28 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.say('ok', 'The file is selected for the next commit (<code>git add</code>). Still not in history.');
           if (S.mission === 1 && S.f.edit && !S.f.stage){ S.f.stage = true; G.renderPrompt(PRED[2]); }
         } },
-        { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
+        { id: 'commit', label: 'Commit', sub: 'GitHub Desktop: "Commit to main" &middot; git commit', run: function(){
           var S = G.S;
           if (!G.anyStaged()){ G.say('warn', 'Nothing is selected, so there is nothing to commit. A commit records the <em>selected</em> changes, and right now none are selected.'); return; }
           var c = G.opCommit();
-          G.say('ok', 'Commit ' + c.n + ' (“' + c.msg + '”) is recorded in your local repository (Desktop: "Commit to main").');
+          G.say('ok', 'Commit ' + c.n + ' (“' + c.msg + '”) is recorded in your local repository (GitHub Desktop: "Commit to main").');
           if (S.mission === 1 && S.f.stage && !S.f.commit){ S.f.commit = true; G.renderPrompt(PRED[3]); }
         } },
-        { id: 'push', label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
+        { id: 'push', label: 'Push', sub: 'GitHub Desktop: "Push origin" &middot; git push', run: function(){
           var S = G.S, up = G.unpushed('main');
-          if (!up.length){ G.say('warn', 'Every local commit is already on GitHub, so there is nothing to push. (Desktop would only offer "Fetch origin".)'); return; }
+          if (!up.length){ G.say('warn', 'Every local commit is already on GitHub, so there is nothing to push. (GitHub Desktop would only offer "Fetch origin".)'); return; }
           G.opPush('main');
-          G.say('ok', 'Pushed ' + G.describeNs(up) + ' to origin (Desktop: "Push origin"). GitHub now has your local history.');
+          G.say('ok', 'Pushed ' + G.describeNs(up) + ' to origin (GitHub Desktop: "Push origin"). GitHub now has your local history.');
           if (S.mission === 1 && S.f.commit && !S.f.push){ S.f.push = true; G.renderPrompt(PRED[4]); }
           else if (S.mission === 2 && S.f.m2ready){ G.markDone(1); startMission(3); }
         } },
-        { id: 'pull', label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
+        { id: 'pull', label: 'Pull', sub: 'GitHub Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
           var S = G.S, inc = G.incoming('main');
           if (!inc.length){ G.say('warn', 'Nothing to pull right now: GitHub has no commits you are missing. Pull matters after a teammate pushes, which happens later in this tab.'); return; }
           G.opPull('main');
           S.fileStateOverride = 'updated by pull. Maya’s change is now in your files';
           G.renderFiles();
-          G.say('ok', 'Pulled ' + G.describeNs(inc) + ' into your local repository, and your working directory files updated to match (Desktop: "Pull origin").');
+          G.say('ok', 'Pulled ' + G.describeNs(inc) + ' into your local repository, and your working directory files updated to match (GitHub Desktop: "Pull origin").');
           if (S.mission === 3){
             G.markDone(2); S.mission = 4;
             G.setBrief('<strong>Finished.</strong>');
@@ -1460,25 +1460,25 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         G.lane(S.local, 'main').commits.push(mine.n);
       },
       actions: [
-        { id: 'edit', label: 'Edit file', sub: 'save in your editor &middot; Desktop ticks its checkbox for you', run: function(){
+        { id: 'edit', label: 'Edit file', sub: 'save in your editor &middot; GitHub Desktop ticks its checkbox for you', run: function(){
           var f = G.S.files[0];
           if (f.dirty || f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Commit it.'); return; }
           G.opEdit(FILE);
-          G.say('ok', 'Saved. Desktop lists <code>field_guide.md</code> under Changes with its checkbox already ticked (the select step from tab 1, done for you).');
+          G.say('ok', 'Saved. GitHub Desktop lists <code>field_guide.md</code> under Changes with its checkbox already ticked (the select step from tab 1, done for you).');
         } },
-        { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
+        { id: 'commit', label: 'Commit', sub: 'GitHub Desktop: "Commit to main" &middot; git commit', run: function(){
           if (!G.anyStaged()){ G.say('warn', 'Nothing is selected, so there is nothing to commit. Edit the file first.'); return; }
           var c = G.opCommit();
           G.say('ok', 'Commit ' + c.n + ' recorded locally. Not on GitHub yet.');
         } },
-        { id: 'push', label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
+        { id: 'push', label: 'Push', sub: 'GitHub Desktop: "Push origin" &middot; git push', run: function(){
           var S = G.S, up = G.unpushed('main'), inc = G.incoming('main');
           if (!up.length){ G.say('warn', 'Every local commit is already on GitHub, so there is nothing to push.'); return; }
           if (inc.length){
-            G.say('warn', '<strong>Push refused.</strong> Desktop: “Newer commits on remote. Desktop is unable to push commits to this branch because there are commits on the remote that are not present on your local branch. Fetch the new commits before pushing.” GitHub has ' + G.describeNs(inc) + ' and you do not. Press <em>Pull</em>.');
+            G.say('warn', '<strong>Push refused.</strong> GitHub Desktop: “Newer commits on remote. GitHub Desktop is unable to push commits to this branch because there are commits on the remote that are not present on your local branch. Fetch the new commits before pushing.” GitHub has ' + G.describeNs(inc) + ' and you do not. Press <em>Pull</em>.');
             if (S.mission === 2 && !S.f.refused){
               S.f.refused = true;
-              G.setBrief('<strong>Now <em>Pull</em>.</strong> Desktop’s button reads “Pull origin” with ↓1 ↑1: one commit to fetch, one to push.');
+              G.setBrief('<strong>Now <em>Pull</em>.</strong> GitHub Desktop’s button reads “Pull origin” with ↓1 ↑1: one commit to fetch, one to push.');
             }
             return;
           }
@@ -1500,7 +1500,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             });
           }
         } },
-        { id: 'pull', label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
+        { id: 'pull', label: 'Pull', sub: 'GitHub Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
           var S = G.S, inc = G.incoming('main');
           if (!inc.length){ G.say('warn', 'Nothing to pull: GitHub has no commits you are missing.'); return; }
           var r = G.opPull('main', { merge: true, mergeMsg: 'Merge Maya’s commit into main' });
@@ -1555,11 +1555,11 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         G.seed(['Initial commit', 'Add the guide page', 'Add a sources section']);
       },
       actions: [
-        { id: 'newbranch', group: GRP, label: 'New branch', sub: 'Desktop: Current Branch &rarr; New Branch &middot; git switch -c add-note', run: function(){
+        { id: 'newbranch', group: GRP, label: 'New branch', sub: 'GitHub Desktop: Current Branch &rarr; New Branch &middot; git switch -c add-note', run: function(){
           var S = G.S;
-          if (G.lane(S.local, BR)){ G.say('info', 'You already have <code>add-note</code>. Desktop lists it under Current Branch.'); return; }
+          if (G.lane(S.local, BR)){ G.say('info', 'You already have <code>add-note</code>. GitHub Desktop lists it under Current Branch.'); return; }
           G.opNewBranch(BR);
-          G.say('ok', 'Branch <code>add-note</code> created from commit 3 and checked out (Desktop: Current Branch &rarr; New Branch). Station 3 now shows two branches pointing at the same commit.');
+          G.say('ok', 'Branch <code>add-note</code> created from commit 3 and checked out (GitHub Desktop: Current Branch &rarr; New Branch). Station 3 now shows two branches pointing at the same commit.');
           if (S.mission === 1 && !S.f.nb){
             S.f.nb = true;
             G.renderPrompt({
@@ -1573,10 +1573,10 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         } },
         { id: 'switch', group: GRP,
           label: function(){ return 'Switch to ' + (G.S.local.head === 'main' ? BR : 'main'); },
-          sub: 'Desktop: Current Branch menu &middot; git switch', run: function(){
+          sub: 'GitHub Desktop: Current Branch menu &middot; git switch', run: function(){
           var S = G.S;
           if (S.local.lanes.length < 2){ G.say('warn', 'Only <code>main</code> exists. Create a branch first.'); return; }
-          if (G.anyStaged() || G.anyDirty()){ G.say('warn', 'You have an uncommitted change. Commit it first. (Desktop would ask whether to bring the change along or leave it behind.)'); return; }
+          if (G.anyStaged() || G.anyDirty()){ G.say('warn', 'You have an uncommitted change. Commit it first. (GitHub Desktop would ask whether to bring the change along or leave it behind.)'); return; }
           var to = S.local.head === 'main' ? BR : 'main';
           G.opSwitch(to);
           var br = G.lane(S.local, BR), lm = G.lane(S.local, 'main');
@@ -1584,17 +1584,17 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           if (to === 'main') S.fileStateOverride = noteOnBranchOnly ? 'files on disk now match main: your note is not in the file; it is on add-note' : 'files on disk match main';
           else S.fileStateOverride = 'files on disk now match add-note' + (noteOnBranchOnly ? ': your note is back' : '');
           G.renderFiles();
-          G.say('ok', 'Switched to <code>' + to + '</code> (Desktop: Current Branch). Switching changes the files on your disk to match that branch’s latest commit.');
-          if (S.mission === 3 && S.f.mg && to === 'main') G.setBrief('<strong>Now <em>Pull</em>.</strong> Desktop shows “Pull origin” for main.');
+          G.say('ok', 'Switched to <code>' + to + '</code> (GitHub Desktop: Current Branch). Switching changes the files on your disk to match that branch’s latest commit.');
+          if (S.mission === 3 && S.f.mg && to === 'main') G.setBrief('<strong>Now <em>Pull</em>.</strong> GitHub Desktop shows “Pull origin” for main.');
         } },
-        { id: 'edit', group: GRP, label: 'Edit file', sub: 'save in your editor &middot; Desktop ticks its checkbox for you', run: function(){
+        { id: 'edit', group: GRP, label: 'Edit file', sub: 'save in your editor &middot; GitHub Desktop ticks its checkbox for you', run: function(){
           var S = G.S, f = S.files[0];
           if (f.dirty || f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Commit it.'); return; }
           G.opEdit(FILE);
-          G.say('ok', 'Saved. Desktop lists <code>field_guide.md</code> under Changes, already ticked. You are on <code>' + S.local.head + '</code>, so the next commit lands there.');
+          G.say('ok', 'Saved. GitHub Desktop lists <code>field_guide.md</code> under Changes, already ticked. You are on <code>' + S.local.head + '</code>, so the next commit lands there.');
         } },
         { id: 'commit', group: GRP, label: 'Commit',
-          sub: function(){ return 'Desktop: "Commit to ' + G.S.local.head + '" &middot; git commit'; }, run: function(){
+          sub: function(){ return 'GitHub Desktop: "Commit to ' + G.S.local.head + '" &middot; git commit'; }, run: function(){
           var S = G.S;
           if (!G.anyStaged()){ G.say('warn', 'Nothing is selected, so there is nothing to commit. Edit the file first.'); return; }
           var head = S.local.head;
@@ -1609,24 +1609,24 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               why: 'a commit is recorded on the branch you are on. main has not changed, locally or on GitHub.',
               after: function(){
                 G.markDone(0); G.S.mission = 2;
-                G.setBrief('Press <em>Publish branch</em> (Desktop’s name for the first push of a new branch), then <em>Open pull request</em>.');
+                G.setBrief('Press <em>Publish branch</em> (GitHub Desktop’s name for the first push of a new branch), then <em>Open pull request</em>.');
               }
             });
           }
         } },
         { id: 'push', group: GRP,
           label: function(){ var S = G.S; return (S.local.head !== 'main' && !G.lane(S.remote, S.local.head)) ? 'Publish branch' : 'Push'; },
-          sub: 'Desktop: "Publish branch" the first time, then "Push origin" &middot; git push', run: function(){
+          sub: 'GitHub Desktop: "Publish branch" the first time, then "Push origin" &middot; git push', run: function(){
           var S = G.S, name = S.local.head, up = G.unpushed(name);
           if (!up.length && G.lane(S.remote, name)){ G.say('warn', 'Everything on <code>' + name + '</code> is already on GitHub. Nothing to push.'); return; }
           var inc = G.incoming(name);
           if (inc.length){ G.say('warn', '<strong>Push refused.</strong> GitHub’s <code>' + name + '</code> has ' + G.describeNs(inc) + ', which you do not have. Pull first (tab 2 covers this).'); return; }
           var r = G.opPush(name);
-          G.say('ok', (r.isNew ? 'Published <code>' + name + '</code> to GitHub (Desktop: “Publish branch”). ' : 'Pushed ' + G.describeNs(r.up) + ' to <code>' + name + '</code> on GitHub. ') +
+          G.say('ok', (r.isNew ? 'Published <code>' + name + '</code> to GitHub (GitHub Desktop: “Publish branch”). ' : 'Pushed ' + G.describeNs(r.up) + ' to <code>' + name + '</code> on GitHub. ') +
                       (name !== 'main' ? 'GitHub’s <code>main</code> is unchanged; nothing has been merged.' : ''));
-          if (S.mission === 2 && name === BR && !S.pr) G.setBrief('<strong>Now <em>Open pull request</em>.</strong> Desktop: “Preview Pull Request”, then “Create Pull Request” in the browser.');
+          if (S.mission === 2 && name === BR && !S.pr) G.setBrief('<strong>Now <em>Open pull request</em>.</strong> GitHub Desktop: “Preview Pull Request”, then “Create Pull Request” in the browser.');
         } },
-        { id: 'pull', group: GRP, label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
+        { id: 'pull', group: GRP, label: 'Pull', sub: 'GitHub Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
           var S = G.S, name = S.local.head, inc = G.incoming(name);
           if (!inc.length){
             if (name !== 'main' && G.incoming('main').length) G.say('warn', 'You are on <code>add-note</code>, and GitHub’s add-note has nothing new. The branch that changed on GitHub is <code>main</code>. Switch to main first.');
@@ -1643,7 +1643,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             G.renderNote('<strong>&#10003; Done.</strong> <code>add-note</code> can be deleted; its commit is on main. In a team, each task follows this sequence: branch, commit, pull request, review, merge, pull main.', true);
           }
         } },
-        { id: 'openpr', group: GH, ghost: true, label: 'Open pull request', sub: 'Desktop: "Preview Pull Request" &rarr; browser', run: function(){
+        { id: 'openpr', group: GH, ghost: true, label: 'Open pull request', sub: 'GitHub Desktop: "Preview Pull Request" &rarr; browser', run: function(){
           var S = G.S, rb = G.lane(S.remote, BR), rm = G.lane(S.remote, 'main');
           if (!rb){ G.say('warn', 'GitHub does not have <code>add-note</code> yet. Publish the branch first.'); return; }
           if (S.pr){ G.say('info', 'Pull request #1 already exists: ' + S.pr.text.toLowerCase() + '.'); return; }
@@ -1683,7 +1683,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               question: 'Predict: what does your local main show now?',
               options: ['Commits 1–4 and the merge commit, sent down by GitHub', 'Still commits 1–3. Merging happened on GitHub; local main is behind until I pull', 'Commit 4 only, because that is what I wrote'],
               correct: 1,
-              why: 'nothing moves from GitHub to your computer without a pull. Desktop shows “Pull origin” once you are on main and fetch.',
+              why: 'nothing moves from GitHub to your computer without a pull. GitHub Desktop shows “Pull origin” once you are on main and fetch.',
               after: function(){ G.setBrief('<em>Switch to main</em>, then <em>Pull</em>.'); }
             });
           }
@@ -1743,7 +1743,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         S.fileView = { name: TP, where: 'on your disk, on fix-rule', html: plainView(YOURS) };
       },
       actions: [
-        { id: 'update', group: GRP, label: 'Update branch from main', sub: 'Desktop: Current Branch &rarr; Choose a branch to merge into fix-rule &rarr; main &middot; git merge main', run: function(){
+        { id: 'update', group: GRP, label: 'Update branch from main', sub: 'GitHub Desktop: Current Branch &rarr; Choose a branch to merge into fix-rule &rarr; main &middot; git merge main', run: function(){
           var S = G.S;
           if (S.f.conflicted){ G.say('info', S.f.resolved ? 'main is already merged in and the file is resolved. Commit the merge.' : 'main is already being merged in. Resolve the file first.'); return; }
           S.f.conflicted = true;
@@ -1753,7 +1753,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             S.fileView = { name: TP, where: 'on your disk, on fix-rule, merge in progress', html: conflictView() };
             G.renderFilePanel();
           });
-          G.say('warn', '<strong>Conflict in team_plan.md.</strong> Desktop: “Resolve conflicts before merging”. Git wrote both versions into the file with markers; read the file below. Nothing is committed yet.');
+          G.say('warn', '<strong>Conflict in team_plan.md.</strong> GitHub Desktop: “Resolve conflicts before merging”. Git wrote both versions into the file with markers; read the file below. Nothing is committed yet.');
           G.renderPrompt({
             question: 'How should you resolve it?',
             options: ['Keep my version; it is the most recent', 'Keep Maya’s version; it is already on main', 'Read both, write the one rule the team wants, and remove every marker'],
@@ -1781,12 +1781,12 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               var f = S.files[0]; f.conflict = false; f.dirty = true; f.staged = true;
               S.fileView = { name: TP, where: 'on your disk, on fix-rule, saved', html: plainView(RESOLVED) };
               G.renderFiles(); G.renderStage(true); G.renderFilePanel(); G.updateTview();
-              G.say('ok', 'Saved. Desktop reports “No conflicts remaining” and ticks the file for the merge commit.');
+              G.say('ok', 'Saved. GitHub Desktop reports “No conflicts remaining” and ticks the file for the merge commit.');
               G.setBrief('Press <em>Commit the merge</em>, then <em>Push</em>.');
             }
           });
         } },
-        { id: 'commit', group: GRP, label: 'Commit the merge', sub: 'Desktop: “Continue merge” &middot; git commit', run: function(){
+        { id: 'commit', group: GRP, label: 'Commit the merge', sub: 'GitHub Desktop: “Continue merge” &middot; git commit', run: function(){
           var S = G.S;
           if (!S.f.resolved){ G.say('warn', S.f.conflicted ? 'The file still has conflict markers. Resolve it first.' : 'Nothing to commit yet. Update the branch from main first.'); return; }
           if (S.f.merged){ G.say('info', 'The merge is already committed. Push it.'); return; }
@@ -1797,7 +1797,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.say('ok', 'Merge commit (M) recorded on <code>fix-rule</code>. It has two parents: your commit 4 and main’s commit 5. The branch now contains both.');
           G.setBrief('<strong>Now <em>Push</em>.</strong>');
         } },
-        { id: 'push', group: GRP, label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
+        { id: 'push', group: GRP, label: 'Push', sub: 'GitHub Desktop: "Push origin" &middot; git push', run: function(){
           var S = G.S, up = G.unpushed(BR);
           if (S.f.conflicted && !S.f.merged){ G.say('warn', 'Finish the merge first: resolve the file, then commit.'); return; }
           if (!up.length){ G.say('warn', 'Nothing to push: GitHub’s fix-rule already has everything.'); return; }
@@ -1812,7 +1812,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             G.setBrief('<strong>Notebooks.</strong>');
             G.renderPrompt({
               question: 'Suppose a notebook (.ipynb) conflicts instead of a Markdown file. What do you do?',
-              options: ['Pick “Use the modified file from main” in Desktop and move on', 'Keep my own version', 'Stop and coordinate with the other editor: decide which cells belong, rerun the notebook, then commit'],
+              options: ['Pick “Use the modified file from main” in GitHub Desktop and move on', 'Keep my own version', 'Stop and coordinate with the other editor: decide which cells belong, rerun the notebook, then commit'],
               correct: 2,
               why: 'a notebook file is JSON that includes outputs and metadata. The conflict markers land inside that, and the diff is hard to read. Agreeing on the cells with the other editor is faster and safer.',
               after: function(){
@@ -1851,7 +1851,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       var f = G.fileByName(name);
       if (f.dirty || f.staged){ G.say('info', '<code>' + name + '</code> already has an uncommitted change. Commit it.'); return; }
       G.opEdit(name);
-      G.say('ok', 'Saved <code>' + name + '</code>. Desktop lists it under Changes, already ticked. The site has not changed; Pages does not read your computer.');
+      G.say('ok', 'Saved <code>' + name + '</code>. GitHub Desktop lists it under Changes, already ticked. The site has not changed; Pages does not read your computer.');
     }
     function touchesDocs(ns){
       return ns.some(function(n){ var c = G.C(n); return c.files && c.files.some(function(f){ return f.indexOf('docs/') === 0; }); });
@@ -1922,14 +1922,14 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       actions: [
         { id: 'editIndex', label: 'Edit docs/index.md', sub: 'the guide page &middot; inside the published folder', run: function(){ editFile(IDX); } },
         { id: 'editReadme', label: 'Edit README.md', sub: 'repository notes &middot; outside docs/', run: function(){ editFile(RM); } },
-        { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
+        { id: 'commit', label: 'Commit', sub: 'GitHub Desktop: "Commit to main" &middot; git commit', run: function(){
           var S = G.S;
           if (!G.anyStaged()){ G.say('warn', 'Nothing is selected, so there is nothing to commit. Edit a file first.'); return; }
           var names = G.stagedNames();
           var c = G.opCommit();
           G.say('ok', 'Commit ' + c.n + ' recorded locally (' + names.join(', ') + '). Look at station 4: the site still says built from commit ' + S.pages.built + '.');
         } },
-        { id: 'push', label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
+        { id: 'push', label: 'Push', sub: 'GitHub Desktop: "Push origin" &middot; git push', run: function(){
           var S = G.S, up = G.unpushed('main');
           if (!up.length){ G.say('warn', 'Every local commit is already on GitHub, so there is nothing to push.'); return; }
           if (S.f.pending){ G.say('warn', 'A build is still running. Wait for it to finish.'); return; }
