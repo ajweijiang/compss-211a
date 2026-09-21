@@ -10,3 +10,4 @@ wandb/
 /course-planning
 /generated/
 .agents/skills/bcourses-admin/
+/output/
