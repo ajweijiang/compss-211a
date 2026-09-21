@@ -428,7 +428,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       <button type="button" class="sbtn restart" id="btnRestart">Restart this tab</button>
     </div>
     <p class="scenintro" id="scenIntro"></p>
-    <p class="hint">Blue buttons are actions you take in GitHub Desktop on your computer; each also shows the matching git command. Outlined buttons are actions you take on github.com.</p>
+    <p class="hint" id="hint"></p>
 
     <div class="brief" id="missionBrief"></div>
 
@@ -526,7 +526,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   function $(id){ return document.getElementById(id); }
   var el = {
     tabs: $('tabs'), panel: $('simpanel'), scenTitle: $('sim-h'), scenTag: $('scenTag'),
-    scenIntro: $('scenIntro'), restart: $('btnRestart'), brief: $('missionBrief'),
+    scenIntro: $('scenIntro'), restart: $('btnRestart'), brief: $('missionBrief'), hint: $('hint'),
     fileList: $('fileList'), fileState: $('fileState'),
     stageBody: $('stageBody'), stageList: $('stageList'), stageEmpty: $('stageEmpty'),
     localLanes: $('localLanes'), remoteLanes: $('remoteLanes'), remoteLegend: $('remoteLegend'),
@@ -546,6 +546,8 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   var cur = null;         // current scenario
   var S = null;           // current state
   var progress = {};      // id -> true once all missions were completed
+  var HINT_BASE = 'Blue buttons are actions you take in GitHub Desktop on your computer; each also shows the matching git command.';
+  var HINT_GHOST = 'Outlined buttons are actions you take on github.com.';
   var qid = 0;            // unique radio-group names
 
   function freshState(){
@@ -1180,6 +1182,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     el.scenTitle.textContent = cur.title;
     el.scenTag.textContent = cur.tag;
     el.scenIntro.innerHTML = cur.intro;
+    if (el.hint) el.hint.textContent = HINT_BASE + (cur.actions.some(function(a){ return a.ghost; }) ? ' ' + HINT_GHOST : '');
     el.panel.setAttribute('aria-labelledby', 'tab-' + id);
     el.zone.innerHTML = '';
     el.feedback.innerHTML = '';
@@ -1323,7 +1326,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
 
     G.SCEN.basics = {
       id: 'basics', title: 'Save, commit, push, pull', tag: 'start here · ≈ 6 min',
-      intro: 'Edit one file, check it, commit it, and push it. After each step, say which copy has the change before the simulator tells you.',
+      intro: 'Let\u2019s start with a simulated edit, commit, and push of a file.',
       autoStage: false,
       commitMessages: ['Add favorite tool to the guide', 'Clarify the data sources section', 'Update the site headline'],
       missions: ['Get an edit onto GitHub', 'Committed, but GitHub shows nothing new', 'Get a teammate’s commit onto your computer'],
