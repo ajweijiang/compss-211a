@@ -1405,9 +1405,9 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     function askPrediction(){
       G.renderPrompt({
         question: 'Predict: you press Push now. What happens?',
-        options: ['Commit 4 goes up and replaces Maya’s commit 5', 'GitHub refuses the push, because it holds a commit you do not have', 'GitHub merges the two histories for you'],
+        options: ['Commit 5 goes up and replaces Maya’s commit 4', 'GitHub refuses the push, because it holds a commit you do not have', 'GitHub merges the two histories for you'],
         correct: 1,
-        why: 'GitHub does not let a push discard commits it already has. You have to pull commit 5 first.',
+        why: 'your commit is newer, but your history does not include Maya’s commit 4. GitHub does not let a push discard a commit it already has. Pull first.',
         after: function(){
           G.markDone(0); G.S.mission = 2;
           G.setBrief('<strong>Mission 2.</strong> Press <em>Push</em> and read the message. Then <em>Pull</em>, then <em>Push</em> again.');
@@ -1416,8 +1416,8 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     }
 
     G.SCEN['pull-first'] = {
-      id: 'pull-first', title: 'A refused push', tag: 'for shared repos · ≈ 3 min',
-      intro: 'You and Maya both cloned the same repository and both committed to <code>main</code>. She has already pushed; you have not. See what happens to your push and how to fix it.',
+      id: 'pull-first', title: 'A refused push', tag: 'pull, then push · ≈ 3 min',
+      intro: 'You and Maya both cloned the same repository. She committed and pushed. You did not pull, and made a commit of your own. See what happens to your push and how to fix it. The commit numbers are labels for this page; Git itself does not number commits.',
       autoStage: true,
       commitMessages: ['Tidy the README'],
       missions: ['Predict what happens when you push after Maya pushed', 'Pull, then push', 'Avoid the problem next time'],
@@ -1430,10 +1430,10 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         var S = G.S;
         S.files = [{ name: FILE }];
         G.seed(['Initial commit', 'Add the eight places', 'Add access notes']);
-        var mine = G.newCommit({ msg: 'Add the survey timeline' });
         var maya = G.newCommit({ msg: 'Fix the museum hours', mine: false });
-        G.lane(S.local, 'main').commits.push(mine.n);
+        var mine = G.newCommit({ msg: 'Add the survey timeline' });
         G.lane(S.remote, 'main').commits.push(maya.n);
+        G.lane(S.local, 'main').commits.push(mine.n);
       },
       actions: [
         { id: 'edit', label: 'Edit file', sub: 'save in your editor &middot; Desktop checks it for you', run: function(){
@@ -1491,7 +1491,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               question: 'Where is Maya’s change now?',
               options: ['Only on GitHub, until I push', 'In my local history and in my files on disk', 'In my files, but not in my history'],
               correct: 1,
-              why: 'pull updates both: the commit is in your local repository and your working files match it. Your history now contains everything GitHub has, plus commit 4 and the merge.',
+              why: 'pull updates both: the commit is in your local repository and your working files match it. Your history now contains everything GitHub has, plus your commit 5 and the merge.',
               after: function(){ G.setBrief('<strong>Mission 2 &middot; Now Push.</strong> Your local repository has every commit GitHub has, so the push will be accepted.'); }
             });
           }
@@ -1499,8 +1499,8 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       ],
       start: function(){
         G.S.mission = 1;
-        G.setBrief('<strong>Mission 1.</strong> You committed commit 4 on your computer and have not pushed. Maya committed commit 5 on her computer and pushed it. Compare stations 3 and 4 and read the teammate line, then answer the question.');
-        G.say('info', 'Commit 4 is only on your computer. Commit 5 is only on GitHub. You have not pulled since Maya pushed.');
+        G.setBrief('<strong>Mission 1.</strong> Maya committed commit 4 and pushed it to GitHub. You did not pull, so you never received it, and you made commit 5 on your computer. Both commits build on commit 3. Compare stations 3 and 4, then answer the question.');
+        G.say('info', 'Commit 4 is only on GitHub. Commit 5 is only on your computer. Your history does not include Maya’s commit.');
         askPrediction();
       }
     };
@@ -1515,7 +1515,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     var GH = 'On github.com';
 
     G.SCEN.branches = {
-      id: 'branches', title: 'Branch, pull request, merge', tag: 'for Lab 3 part 3 · ≈ 5 min',
+      id: 'branches', title: 'Branch, pull request, merge', tag: 'propose and review a change · ≈ 5 min',
       intro: 'A branch is a second line of history inside the same repository. Create one, commit on it, open a pull request, merge it, and check after each step which copies changed.',
       autoStage: true,
       commitMessages: ['Add a note on the Botanical Garden', 'Second note'],
@@ -1879,7 +1879,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     }
 
     G.SCEN.pages = {
-      id: 'pages', title: 'Publish with GitHub Pages', tag: 'for HW2 · ≈ 3 min',
+      id: 'pages', title: 'Publish with GitHub Pages', tag: 'publish a site from docs/ · ≈ 3 min',
       intro: 'GitHub Pages turns the <code>docs/</code> folder of your repository’s <code>main</code> branch, <em>on GitHub</em>, into a website. It reads the copy on GitHub, not the files on your computer.',
       autoStage: true,
       commitMessages: ['Write the introduction', 'Explain the sources in the README', 'Fix a typo in the introduction', 'Add the Botanical Garden hours'],
