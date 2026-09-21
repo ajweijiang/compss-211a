@@ -434,7 +434,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       <button type="button" class="sbtn restart" id="btnRestart">Restart this tab</button>
     </div>
     <p class="scenintro" id="scenIntro"></p>
-    <p class="hint">Filled buttons are actions in GitHub Desktop on your computer; each shows the matching git command. Outlined buttons are actions on github.com. The checklist below tracks the missions.</p>
+    <p class="hint">Blue buttons are actions you take in GitHub Desktop on your computer; each also shows the matching git command. Outlined buttons are actions you take on github.com. The checklist below tracks the missions.</p>
 
     <div class="brief" id="missionBrief"></div>
 
@@ -1542,7 +1542,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               question: 'Predict: did any file on your disk change?',
               options: ['Yes, Git copied the project into a new folder for the branch', 'No. The branch is a label pointing at commit 3; the files are the same', 'Yes, the file went back to commit 1'],
               correct: 1,
-              why: 'a branch is a pointer, not a folder. Until you commit something on it, add-note and main point at the same commit and your files are identical.',
+              why: 'a branch is a pointer (a name that marks one commit in the history), not a folder. Until you commit something on it, add-note and main point at the same commit and your files are identical.',
               after: function(){ G.setBrief('<strong>Mission 1 &middot; Step 2.</strong> <em>Edit file</em>, then <em>Commit</em>. Check which branch the commit lands on.'); }
             });
           }
@@ -1694,7 +1694,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
 
     G.SCEN.conflict = {
       id: 'conflict', title: 'Resolve a conflict', tag: 'optional · ≈ 3 min',
-      intro: 'You branched <code>fix-rule</code> from commit 3 and rewrote the Review rule line (commit 4). Meanwhile Maya’s pull request rewrote the same line and was merged into <code>main</code> (commit 5). You pulled main. Your pull request now reports a conflict.',
+      intro: 'Your branch <code>fix-rule</code> changed one line of <code>team_plan.md</code>. Maya changed the same line on <code>main</code>. Your pull request now reports a conflict; resolve it.',
       autoStage: true,
       missions: ['Explain why the pull request cannot merge', 'Resolve the conflict', 'Handle a notebook conflict'],
       recap: [
