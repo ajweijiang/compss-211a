@@ -445,16 +445,16 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         <p class="stvocab">what you see in VS Code or Finder</p>
       </section>
 
-      <div class="arrow" aria-hidden="true"><span class="arr">&rarr;</span><span class="arrlabel">check<br>git add</span></div>
+      <div class="arrow" aria-hidden="true"><span class="arr">&rarr;</span><span class="arrlabel">select<br>git add</span></div>
 
       <section class="station" aria-labelledby="st2h">
         <header><span class="stnum" aria-hidden="true">2</span><h3 id="st2h">Staging area</h3></header>
-        <p class="stdesc">changes checked for the next commit</p>
+        <p class="stdesc">changes selected for the next commit</p>
         <div class="stbody" id="stageBody">
           <div class="filelist" id="stageList"></div>
-          <p class="emptynote" id="stageEmpty">empty, nothing checked</p>
+          <p class="emptynote" id="stageEmpty">empty, nothing selected</p>
         </div>
-        <p class="stvocab">Desktop: the checked file list</p>
+        <p class="stvocab">Desktop: ticked checkboxes under Changes</p>
       </section>
 
       <div class="arrow" aria-hidden="true"><span class="arr">&rarr;</span><span class="arrlabel">commit</span></div>
@@ -494,11 +494,6 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         <p class="stvocab">Desktop calls it "origin" &middot; github.com</p>
       </section>
     </div>
-
-    <p class="tview" id="teammateView" role="status" aria-live="polite">
-      <span class="tlabel">What does your teammate see right now?</span>
-      <span id="tviewText"></span>
-    </p>
 
     <div class="filepanel" id="filePanel" hidden></div>
 
@@ -716,8 +711,8 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     if (S.files.some(function(f){ return f.conflict; })) return 'conflict markers in the file, fix before committing';
     var staged = S.files.filter(function(f){ return f.staged; });
     var dirty  = S.files.filter(function(f){ return f.dirty && !f.staged; });
-    if (staged.length && !dirty.length) return 'modified and checked, see station 2';
-    if (dirty.length) return 'modified, not checked or committed';
+    if (staged.length && !dirty.length) return 'modified and selected for commit, see station 2';
+    if (dirty.length) return 'modified, not selected or committed';
     var onBranch = S.local.lanes.length > 1 ? ' on ' + S.local.head : '';
     return 'matches your last commit' + onBranch;
   }
@@ -859,7 +854,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     var t = 'GitHub shows ' + describeNs(rm.commits) + '.';
     if (remoteOnly.length) t += ' Your local repository is missing ' + describeNs(remoteOnly) + '. Pull to get it.';
     if (localOnly.length) t += ' Not on GitHub yet: ' + describeNs(localOnly) + '. Your teammate cannot see ' + (localOnly.length > 1 ? 'them' : 'it') + '.';
-    else if (anyStaged()) t += ' Your checked change is not on GitHub. Commit and push to share it.';
+    else if (anyStaged()) t += ' Your selected change is not on GitHub. Commit and push to share it.';
     else if (anyDirty()) t += ' Your saved edit is not on GitHub.';
     else if (!remoteOnly.length) t += ' Your local repository matches GitHub.';
     if (S.pages) t += S.pages.building ? ' The site is rebuilding.' : ' The site was built from commit ' + S.pages.built + '.';
@@ -890,6 +885,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     return t;
   }
   function updateTview(){
+    if (!el.tview) return;
     el.tview.textContent = cur.tview ? cur.tview() : defaultTview();
   }
   function renderActions(){
@@ -1269,8 +1265,8 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   /* ------------------------------------------------------------------ */
   (function(){
     var STEP = {
-      2: '<strong>Step 2 of 4.</strong> Press <em>Check the file</em>: tick <code>field_guide.md</code> in the changes list.',
-      3: '<strong>Step 3 of 4.</strong> Press <em>Commit</em>: record the checked change, with a message, in your local history.',
+      2: '<strong>Step 2 of 4.</strong> Press <em>Select for commit</em>: the checkbox beside <code>field_guide.md</code> under Changes.',
+      3: '<strong>Step 3 of 4.</strong> Press <em>Commit</em>: record the selected change, with a message, in your local history.',
       4: '<strong>Step 4 of 4.</strong> Press <em>Push</em>: send your local commits to GitHub, where your teammate can see them.'
     };
     var PRED = {
@@ -1282,15 +1278,15 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         after: function(){ G.setBrief(STEP[2]); }
       },
       2: {
-        question: 'Predict: you checked (staged) the file. Where does the change live now?',
+        question: 'Predict: you selected the file for the commit (staged it). Where does the change live now?',
         options: ['It is already a commit in my local history', 'It is selected for the next commit, but no commit exists yet', 'It has been sent to GitHub'],
         correct: 1,
-        why: 'checking only marks which changes the next commit will record; nothing is in history yet.',
+        why: 'selecting only marks which changes the next commit will record; nothing is in history yet.',
         after: function(){ G.setBrief(STEP[3]); }
       },
       3: {
         question: 'Predict: commit 2 now exists. Where does it live?',
-        options: ['In my local repository only, on my computer', 'On GitHub too, because committing uploads it', 'Nowhere yet, I still need to check it'],
+        options: ['In my local repository only, on my computer', 'On GitHub too, because committing uploads it', 'Nowhere yet, I still need to select it'],
         correct: 0,
         why: 'a commit records local history; nothing reaches GitHub until you push.',
         after: function(){ G.setBrief(STEP[4]); }
@@ -1331,7 +1327,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       G.lock(true);
       G.seq([
         [function(){ G.opEdit(FILE); G.say('info', 'Scene: you save another change to <code>field_guide.md</code>&hellip;'); }, 900],
-        [function(){ G.opStage(); G.say('info', 'Scene: &hellip;you check it in the changes list&hellip;'); }, 900],
+        [function(){ G.opStage(); G.say('info', 'Scene: &hellip;you tick its checkbox under Changes&hellip;'); }, 900],
         [function(){
           var c = G.opCommit();
           G.say('info', 'Scene: &hellip;and press "Commit to main". Commit ' + c.n + ' (“' + c.msg + '”) is recorded locally. You do <em>not</em> push.');
@@ -1356,7 +1352,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       G.say('info', 'Maya pushed commit ' + c.n + ' (“' + c.msg + '”). It reached GitHub, but nothing on <em>your</em> computer changed.');
       G.later(function(){
         G.setBrief('<strong>Get commit ' + c.n + ' onto your computer.</strong> Press <em>Pull</em> (Desktop: "Fetch origin", then "Pull origin").');
-        G.renderNote('The teammate line below shows that GitHub has a commit you do not. Nothing arrives on your computer until you pull.');
+        G.renderNote('Station 4 has a commit that station 3 does not. Nothing arrives on your computer until you pull.');
         G.lock(false);
       }, 900);
     }
@@ -1368,7 +1364,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       commitMessages: ['Add favorite tool to the guide', 'Clarify the data sources section', 'Update the site headline'],
       missions: ['Get an edit onto GitHub', 'Committed, but GitHub shows nothing new', 'Get a teammate’s commit onto your computer'],
       recap: [
-        { k: 'save &ne; commit', t: 'Saving a file only changes your files on disk; a <strong>commit</strong> records checked changes, with a message, in your local history.' },
+        { k: 'save &ne; commit', t: 'Saving a file only changes your files on disk; a <strong>commit</strong> records the selected changes, with a message, in your local history.' },
         { k: 'commit &ne; push', t: 'A commit records local history; a <strong>push</strong> transfers commits to the remote. GitHub sees nothing until you push.' },
         { k: 'pull', t: '<strong>Pull</strong> brings the remote’s new commits to your local repository. A teammate’s pushed work does not appear on your computer by itself.' }
       ],
@@ -1379,23 +1375,23 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       actions: [
         { id: 'edit', label: 'Edit file', sub: 'save in your editor &middot; changes your files on disk', run: function(){
           var S = G.S, f = S.files[0];
-          if (f.dirty && !f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Next: check it in the changes list.'); return; }
-          if (f.staged){ G.say('info', 'Your change is already checked. Next: Commit it.'); return; }
+          if (f.dirty && !f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Next: select it for the commit.'); return; }
+          if (f.staged){ G.say('info', 'Your change is already selected. Next: Commit it.'); return; }
           G.opEdit(FILE);
           G.say('ok', 'You saved a change to <code>field_guide.md</code>. GitHub Desktop now lists it under Changes. Nothing is recorded in history yet.');
           if (S.mission === 1 && !S.f.edit){ S.f.edit = true; G.renderPrompt(PRED[1]); }
         } },
-        { id: 'stage', label: 'Check the file', sub: 'Desktop: tick the box beside the file under Changes &middot; git add, also called staging', run: function(){
+        { id: 'stage', label: 'Select for commit', sub: 'Desktop: the checkbox beside the file under Changes, ticked by default &middot; git add, also called staging', run: function(){
           var S = G.S, f = S.files[0];
-          if (f.staged){ G.say('info', 'The change is already checked for the next commit. Next: Commit.'); return; }
-          if (!f.dirty){ G.say('warn', 'Nothing to check: the changes list is empty. Edit the file first.'); return; }
+          if (f.staged){ G.say('info', 'The change is already selected for the next commit. Next: Commit.'); return; }
+          if (!f.dirty){ G.say('warn', 'Nothing to select: the Changes list is empty. Edit the file first.'); return; }
           G.opStage();
-          G.say('ok', 'The change is checked, meaning selected for the next commit (<code>git add</code>). Still not in history.');
+          G.say('ok', 'The file is selected for the next commit (<code>git add</code>). Still not in history.');
           if (S.mission === 1 && S.f.edit && !S.f.stage){ S.f.stage = true; G.renderPrompt(PRED[2]); }
         } },
         { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
           var S = G.S;
-          if (!G.anyStaged()){ G.say('warn', 'Nothing is checked, so there is nothing to commit. A commit records the <em>checked</em> changes, and right now none are checked.'); return; }
+          if (!G.anyStaged()){ G.say('warn', 'Nothing is selected, so there is nothing to commit. A commit records the <em>selected</em> changes, and right now none are selected.'); return; }
           var c = G.opCommit();
           G.say('ok', 'Commit ' + c.n + ' (“' + c.msg + '”) is recorded in your local repository (Desktop: "Commit to main").');
           if (S.mission === 1 && S.f.stage && !S.f.commit){ S.f.commit = true; G.renderPrompt(PRED[3]); }
@@ -1464,14 +1460,14 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         G.lane(S.local, 'main').commits.push(mine.n);
       },
       actions: [
-        { id: 'edit', label: 'Edit file', sub: 'save in your editor &middot; Desktop checks it for you', run: function(){
+        { id: 'edit', label: 'Edit file', sub: 'save in your editor &middot; Desktop ticks its checkbox for you', run: function(){
           var f = G.S.files[0];
           if (f.dirty || f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Commit it.'); return; }
           G.opEdit(FILE);
-          G.say('ok', 'Saved. Desktop lists <code>field_guide.md</code> under Changes and checks it for you (the staging step from tab 1, done automatically).');
+          G.say('ok', 'Saved. Desktop lists <code>field_guide.md</code> under Changes with its checkbox already ticked (the select step from tab 1, done for you).');
         } },
         { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
-          if (!G.anyStaged()){ G.say('warn', 'Nothing is checked, so there is nothing to commit. Edit the file first.'); return; }
+          if (!G.anyStaged()){ G.say('warn', 'Nothing is selected, so there is nothing to commit. Edit the file first.'); return; }
           var c = G.opCommit();
           G.say('ok', 'Commit ' + c.n + ' recorded locally. Not on GitHub yet.');
         } },
@@ -1591,16 +1587,16 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.say('ok', 'Switched to <code>' + to + '</code> (Desktop: Current Branch). Switching changes the files on your disk to match that branch’s latest commit.');
           if (S.mission === 3 && S.f.mg && to === 'main') G.setBrief('<strong>Now <em>Pull</em>.</strong> Desktop shows “Pull origin” for main.');
         } },
-        { id: 'edit', group: GRP, label: 'Edit file', sub: 'save in your editor &middot; Desktop checks it for you', run: function(){
+        { id: 'edit', group: GRP, label: 'Edit file', sub: 'save in your editor &middot; Desktop ticks its checkbox for you', run: function(){
           var S = G.S, f = S.files[0];
           if (f.dirty || f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Commit it.'); return; }
           G.opEdit(FILE);
-          G.say('ok', 'Saved. Desktop lists <code>field_guide.md</code> under Changes, checked. You are on <code>' + S.local.head + '</code>, so the next commit lands there.');
+          G.say('ok', 'Saved. Desktop lists <code>field_guide.md</code> under Changes, already ticked. You are on <code>' + S.local.head + '</code>, so the next commit lands there.');
         } },
         { id: 'commit', group: GRP, label: 'Commit',
           sub: function(){ return 'Desktop: "Commit to ' + G.S.local.head + '" &middot; git commit'; }, run: function(){
           var S = G.S;
-          if (!G.anyStaged()){ G.say('warn', 'Nothing is checked, so there is nothing to commit. Edit the file first.'); return; }
+          if (!G.anyStaged()){ G.say('warn', 'Nothing is selected, so there is nothing to commit. Edit the file first.'); return; }
           var head = S.local.head;
           var c = G.opCommit();
           G.say('ok', 'Commit ' + c.n + ' recorded on <code>' + head + '</code>.' + (head !== 'main' ? ' main has not changed, locally or on GitHub.' : ''));
@@ -1785,7 +1781,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               var f = S.files[0]; f.conflict = false; f.dirty = true; f.staged = true;
               S.fileView = { name: TP, where: 'on your disk, on fix-rule, saved', html: plainView(RESOLVED) };
               G.renderFiles(); G.renderStage(true); G.renderFilePanel(); G.updateTview();
-              G.say('ok', 'Saved. Desktop reports “No conflicts remaining” and checks the file for the merge commit.');
+              G.say('ok', 'Saved. Desktop reports “No conflicts remaining” and ticks the file for the merge commit.');
               G.setBrief('Press <em>Commit the merge</em>, then <em>Push</em>.');
             }
           });
@@ -1855,7 +1851,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       var f = G.fileByName(name);
       if (f.dirty || f.staged){ G.say('info', '<code>' + name + '</code> already has an uncommitted change. Commit it.'); return; }
       G.opEdit(name);
-      G.say('ok', 'Saved <code>' + name + '</code>. Desktop lists it under Changes, checked. The site has not changed; Pages does not read your computer.');
+      G.say('ok', 'Saved <code>' + name + '</code>. Desktop lists it under Changes, already ticked. The site has not changed; Pages does not read your computer.');
     }
     function touchesDocs(ns){
       return ns.some(function(n){ var c = G.C(n); return c.files && c.files.some(function(f){ return f.indexOf('docs/') === 0; }); });
@@ -1928,7 +1924,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         { id: 'editReadme', label: 'Edit README.md', sub: 'repository notes &middot; outside docs/', run: function(){ editFile(RM); } },
         { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
           var S = G.S;
-          if (!G.anyStaged()){ G.say('warn', 'Nothing is checked, so there is nothing to commit. Edit a file first.'); return; }
+          if (!G.anyStaged()){ G.say('warn', 'Nothing is selected, so there is nothing to commit. Edit a file first.'); return; }
           var names = G.stagedNames();
           var c = G.opCommit();
           G.say('ok', 'Commit ' + c.n + ' recorded locally (' + names.join(', ') + '). Look at station 4: the site still says built from commit ' + S.pages.built + '.');
