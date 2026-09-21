@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A short interactive warmup on where your work lives in Git: the working directory, the staging area, your local repository, and the GitHub remote, plus what GitHub Pages actually publishes.">
+<meta name="description" content="A browser simulator for Git with GitHub Desktop: working directory, staging area, local repository, and GitHub, with optional tabs on a refused push, branches and pull requests, merge conflicts, and GitHub Pages.">
 <title>How Git Thinks · COMPSS 211A</title>
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -259,6 +259,84 @@
     clip:rect(0 0 0 0); white-space:nowrap; border:0;
   }
 
+
+  /* ---------- tabs (one exercise per tab) ---------- */
+  .tabs{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 14px; padding:0; }
+  .tab{
+    font-family:var(--sans); cursor:pointer; text-align:left; border:1px solid var(--line);
+    border-radius:4px; background:#fff; color:var(--ink); padding:8px 12px 7px;
+    flex:1 1 150px; min-width:140px; position:relative;
+  }
+  .tab:hover{ border-color:var(--blue-mid); }
+  .tab[aria-selected="true"]{ background:var(--berkeley); color:#fff; border-color:var(--berkeley); }
+  .tab .tnum{ font-family:var(--mono); font-size:.66rem; opacity:.75; display:block; }
+  .tab .tlab{ display:block; font-weight:600; font-size:.88rem; line-height:1.2; }
+  .tab .ttag{ display:block; font-size:.64rem; opacity:.8; margin-top:3px; font-family:var(--mono); }
+  .tab .tdone{ position:absolute; top:6px; right:8px; font-size:.78rem; font-weight:700; color:var(--ok); }
+  .tab[aria-selected="true"] .tdone{ color:var(--gold); }
+  .scenhead{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0 0 6px; }
+  .scenhead h2{ margin:0; }
+  .scenhead .restart{ margin-left:auto; font-size:.76rem; padding:5px 10px; }
+  .scenintro{ font-size:.92rem; color:#3B4A63; margin:0 0 12px; max-width:72ch; }
+
+  /* ---------- lanes (branches) inside stations 3 and 4 ---------- */
+  .lanes{ display:flex; flex-direction:column; gap:7px; }
+  .lanehead{
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:0 0 2px;
+    font-size:.66rem; font-family:var(--mono); color:#6B7890;
+  }
+  .lanehead .lname{ color:var(--berkeley); font-weight:500; }
+  .lanehead .headmark{
+    background:var(--gold); color:var(--ink); border-radius:3px; padding:0 5px;
+    font-size:.56rem; font-weight:600; font-family:var(--sans); line-height:1.5;
+  }
+  .lanehead .lfrom{ color:#8A93A5; }
+  .lanenote{ font-size:.66rem; color:#8A93A5; font-style:italic; margin:0; }
+  .dot.mdot{ background:#fff; color:var(--berkeley); border:2px solid var(--berkeley); border-radius:7px; font-weight:600; box-shadow:none; }
+  .flyer.flydot.mfly{ background:#fff; color:var(--berkeley); border:2px solid var(--berkeley); border-radius:7px; }
+  .filelist{ display:flex; flex-direction:column; gap:5px; align-items:flex-start; }
+  .fbadge.conf{ background:var(--err); color:#fff; }
+
+  /* ---------- pull request panel (station 4) ---------- */
+  .pr{ margin-top:8px; border-top:1px dashed var(--line); padding-top:8px; }
+  .prbox{ background:#fff; border:1px solid var(--line); border-radius:4px; padding:7px 9px; font-size:.7rem; line-height:1.4; }
+  .prbox .prtitle{ font-weight:600; color:var(--berkeley); display:block; }
+  .prbox .prmeta{ font-family:var(--mono); font-size:.6rem; color:#6B7890; display:block; }
+  .prstatus{ display:inline-block; margin-top:4px; border-radius:3px; padding:1px 6px; font-size:.6rem; font-weight:600; }
+  .prstatus.open{ background:rgba(30,125,78,.12); color:var(--ok); }
+  .prstatus.merged{ background:rgba(42,77,155,.14); color:var(--berkeley); }
+  .prstatus.conflict{ background:rgba(179,64,58,.12); color:var(--err); }
+
+  /* ---------- Pages panel extras ---------- */
+  .pages-settings{ font-size:.6rem; font-family:var(--mono); color:#51617B; margin:0 0 6px; line-height:1.4; }
+  .minibadge.building{ color:var(--err); border-color:rgba(179,64,58,.45); }
+
+  /* ---------- file panel (conflict markers) ---------- */
+  .filepanel{ margin:0 0 14px; }
+  .filepanel .fname{ font-family:var(--mono); font-size:.72rem; color:#51617B; margin:0 0 4px; }
+  .filepanel pre{
+    margin:0; background:#fff; border:1px solid var(--line); border-radius:4px; padding:10px 12px;
+    font-family:var(--mono); font-size:.8rem; line-height:1.6; white-space:pre-wrap; word-break:break-word;
+  }
+  .filepanel .marker{ color:var(--err); font-weight:600; display:block; }
+  .filepanel .ours{ background:rgba(42,77,155,.10); display:block; }
+  .filepanel .theirs{ background:var(--gold-soft); display:block; }
+  .filepanel .lbl{ color:#6B7890; font-size:.68rem; font-weight:400; }
+
+  /* ---------- action groups ---------- */
+  .actions{ flex-direction:column; align-items:stretch; }
+  .agroup{ display:flex; flex-wrap:wrap; gap:8px; align-items:flex-start; }
+  .aglabel{ flex:0 0 100%; font-size:.64rem; font-family:var(--mono); color:#6B7890; margin:2px 0 -2px; }
+  .abtn.ghost{ background:#fff; color:var(--berkeley); border:1px solid var(--berkeley); box-shadow:none; }
+  .abtn.ghost .bsub{ opacity:.75; }
+  .opt .optcode{
+    display:block; font-family:var(--mono); font-size:.78rem; white-space:pre-wrap; background:#fff;
+    border:1px solid var(--line); border-radius:4px; padding:6px 8px; line-height:1.5;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .minibadge.building{ animation:pulse .9s ease-in-out infinite alternate; }
+    @keyframes pulse{ from{ opacity:1; } to{ opacity:.4; } }
+  }
   /* ---------- flyer (animated traveling chip/dot) ---------- */
   .flyer{
     position:fixed; z-index:60; pointer-events:none; margin:0;
@@ -331,24 +409,32 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     <p class="eyebrow">COMPSS 211A &middot; Computing I</p>
     <h1>How Git Thinks</h1>
     <div class="chips">
-      <span class="chip chip-gold">Week 3 &middot; GitHub Desktop &amp; Pages</span>
-      <span class="chip chip-outline">&asymp; 7 minutes</span>
+      <span class="chip chip-gold">Week 3 &middot; GitHub Desktop</span>
+      <span class="chip chip-outline">Tab 1 &asymp; 6 minutes &middot; start here</span>
+      <span class="chip chip-outline">4 optional tabs &middot; 3 to 5 minutes each</span>
     </div>
-    <p class="promise">Learn where a change lives after each step, and what your teammate can and cannot see.</p>
+    <p class="promise">Practise commit, push, and pull in a simulator. After each step, say which copy of the repository has your change, then check.</p>
     <hr class="goldrule">
   </header>
 
-  <section class="card rise d1" aria-labelledby="intro-h">
-    <h2 id="intro-h">Four places, one change</h2>
+  <noscript><div class="card"><p>This practice page needs JavaScript to run the simulator. Enable JavaScript and reload.</p></div></noscript>
+
+  <section class="card" aria-labelledby="intro-h">
+    <h2 id="intro-h">Before you start</h2>
     <p class="lede">Git records snapshots of a project's files. Each snapshot, or <strong>commit</strong>, has a message and a place in the project's history. Git is the version-control software; GitHub hosts the <strong>remote repository</strong>. The two copies do not synchronize automatically.</p>
-    <p class="lede">The part that trips people up is <em>where a change lives</em> after each click. Below, one file makes the full trip: your disk &rarr; the staging area &rarr; your local history &rarr; GitHub. Watch it move.</p>
+    <p class="lede">After you save, commit, or push, it is easy to lose track of which copy has the change: the files on your disk, the staging area, your local repository, or GitHub. <strong>Tab 1</strong> takes one edit through all four, with a question after each step. Do it before Friday. Tabs 2 to 5 are optional and cover a refused push, branches and pull requests, a merge conflict, and GitHub Pages.</p>
   </section>
 
-  <section class="card rise d2" aria-labelledby="sim-h">
-    <div class="cardhead">
-      <h2 id="sim-h">The four places your work lives</h2>
+  <div class="tabs" role="tablist" aria-label="Exercises" id="tabs"></div>
+
+  <section class="card" id="simpanel" role="tabpanel" aria-labelledby="sim-h">
+    <div class="scenhead">
+      <h2 id="sim-h">&nbsp;</h2>
+      <span class="chip chip-outline" id="scenTag"></span>
+      <button type="button" class="sbtn restart" id="btnRestart">Restart this tab</button>
     </div>
-    <p class="hint">Each button shows the GitHub Desktop action and the matching git verb. Missions guide you; the checklist below keeps score.</p>
+    <p class="scenintro" id="scenIntro"></p>
+    <p class="hint">Filled buttons are actions in GitHub Desktop on your computer; each shows the matching git command. Outlined buttons are actions on github.com. The checklist below tracks the missions.</p>
 
     <div class="brief" id="missionBrief"></div>
 
@@ -357,19 +443,19 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         <header><span class="stnum" aria-hidden="true">1</span><h3 id="st1h">Working directory</h3></header>
         <p class="stdesc">your files on disk</p>
         <div class="stbody">
-          <span class="filechip" id="fileChip"><span class="ficon" aria-hidden="true">&#9636;</span>field_guide.md<span class="fbadge" id="fileBadge" hidden>M &middot; modified</span></span>
+          <div class="filelist" id="fileList"></div>
           <p class="stnote" id="fileState">matches your last commit</p>
         </div>
         <p class="stvocab">what you see in VS Code or Finder</p>
       </section>
 
-      <div class="arrow" aria-hidden="true"><span class="arr">&rarr;</span><span class="arrlabel">stage<br>git add</span></div>
+      <div class="arrow" aria-hidden="true"><span class="arr">&rarr;</span><span class="arrlabel">check<br>git add</span></div>
 
       <section class="station" aria-labelledby="st2h">
         <header><span class="stnum" aria-hidden="true">2</span><h3 id="st2h">Staging area</h3></header>
-        <p class="stdesc">changes checked / selected for the next commit</p>
+        <p class="stdesc">changes checked for the next commit</p>
         <div class="stbody" id="stageBody">
-          <span class="stagechip" id="stageChip" hidden><span class="stagecheck" aria-hidden="true">&#9745;</span>field_guide.md</span>
+          <div class="filelist" id="stageList"></div>
           <p class="emptynote" id="stageEmpty">empty, nothing checked</p>
         </div>
         <p class="stvocab">Desktop: the checked file list</p>
@@ -379,10 +465,9 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
 
       <section class="station" aria-labelledby="st3h">
         <header><span class="stnum" aria-hidden="true">3</span><h3 id="st3h">Local repository</h3></header>
-        <p class="stdesc">commit history on <strong>your</strong> machine</p>
+        <p class="stdesc">commit history on <strong>your</strong> computer</p>
         <div class="stbody">
-          <p class="striplabel">main &middot; commits</p>
-          <div class="strip" id="localStrip" aria-label="Local commit history"></div>
+          <div class="lanes" id="localLanes"></div>
         </div>
         <p class="stvocab">Desktop: the History tab &middot; lives in .git</p>
       </section>
@@ -391,53 +476,34 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
 
       <section class="station" aria-labelledby="st4h">
         <header><span class="stnum" aria-hidden="true">4</span><h3 id="st4h">GitHub remote</h3></header>
-        <p class="stdesc">commit history everyone shares</p>
+        <p class="stdesc">commit history on github.com</p>
         <div class="stbody">
-          <p class="striplabel">origin/main &middot; commits</p>
-          <div class="strip" id="remoteStrip" aria-label="Remote commit history on GitHub"></div>
+          <div class="lanes" id="remoteLanes"></div>
           <p class="striplegend" id="remoteLegend" hidden>The T-tagged outlined dot is your teammate's commit.</p>
-          <div class="pages">
-            <p class="pages-label">GitHub Pages &middot; publishes from here</p>
+          <div class="pr" id="prPanel" hidden></div>
+          <div class="pages" id="pagesPanel" hidden>
+            <p class="pages-label">GitHub Pages &middot; built from this copy</p>
+            <p class="pages-settings">Settings &rarr; Pages: Deploy from a branch &middot; <strong>main</strong> &middot; <strong>/docs</strong></p>
             <div class="minisite" id="miniSite" role="img" aria-labelledby="pagesAlt">
               <div class="minibar" aria-hidden="true"><i></i><i></i><i></i></div>
               <div class="minibody">
-                <p class="minititle">The Field Guide</p>
+                <p class="minititle">Hidden Berkeley</p>
                 <div id="pagesLines" aria-hidden="true"></div>
-                <span class="minibadge" id="pagesBadge">built from commit 1</span>
+                <span class="minibadge" id="pagesBadge">built from commit 3</span>
               </div>
             </div>
-            <span class="visually-hidden" id="pagesAlt">Thumbnail of the published Pages site, currently built from commit 1.</span>
+            <span class="visually-hidden" id="pagesAlt">Thumbnail of the published Pages site.</span>
           </div>
         </div>
         <p class="stvocab">Desktop calls it "origin" &middot; github.com</p>
       </section>
     </div>
 
-    <div class="actions" id="actions" role="group" aria-label="Simulator actions">
-      <button type="button" class="abtn" id="btnEdit">
-        <span class="blabel">Edit file</span>
-        <span class="bsub">save in your editor &middot; changes your files on disk</span>
-      </button>
-      <button type="button" class="abtn" id="btnStage">
-        <span class="blabel">Stage change</span>
-        <span class="bsub">Desktop: check the file in the changes list &middot; git add</span>
-      </button>
-      <button type="button" class="abtn" id="btnCommit">
-        <span class="blabel">Commit</span>
-        <span class="bsub">Desktop: "Commit to main" &middot; git commit</span>
-      </button>
-      <button type="button" class="abtn" id="btnPush">
-        <span class="blabel">Push</span>
-        <span class="bsub">Desktop: "Push origin" &middot; git push</span>
-      </button>
-      <button type="button" class="abtn" id="btnPull" aria-disabled="true">
-        <span class="blabel">Pull</span>
-        <span class="bsub">Desktop: "Fetch origin", then "Pull origin" &middot; git pull</span>
-      </button>
-    </div>
+    <div class="filepanel" id="filePanel" hidden></div>
+
+    <div class="actions" id="actions" role="group" aria-label="Simulator actions"></div>
 
     <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
-
     <div class="promptzone" id="promptZone"></div>
 
     <p class="tview" id="teammateView" role="status" aria-live="polite">
@@ -446,27 +512,17 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     </p>
   </section>
 
-  <section class="card rise d3" aria-labelledby="missions-h">
+  <section class="card" aria-labelledby="missions-h">
     <div class="cardhead">
       <h2 id="missions-h">Missions</h2>
-      <span class="count" id="missionCount">0 / 4 complete</span>
+      <span class="count" id="missionCount">0 / 3 complete</span>
     </div>
-    <ol class="checklist" id="checklist">
-      <li class="checkitem" id="mi0"><span class="mnum" aria-hidden="true">1</span><span class="box" aria-hidden="true">&#10003;</span><span>Make your edit visible to a teammate</span><span class="visually-hidden mstate">, not yet complete</span></li>
-      <li class="checkitem" id="mi1"><span class="mnum" aria-hidden="true">2</span><span class="box" aria-hidden="true">&#10003;</span><span>Diagnose it: committed, but GitHub shows nothing new</span><span class="visually-hidden mstate">, not yet complete</span></li>
-      <li class="checkitem" id="mi2"><span class="mnum" aria-hidden="true">3</span><span class="box" aria-hidden="true">&#10003;</span><span>Bring a teammate's pushed commit to your machine</span><span class="visually-hidden mstate">, not yet complete</span></li>
-      <li class="checkitem" id="mi3"><span class="mnum" aria-hidden="true">4</span><span class="box" aria-hidden="true">&#10003;</span><span>Know where GitHub Pages publishes from</span><span class="visually-hidden mstate">, not yet complete</span></li>
-    </ol>
+    <ol class="checklist" id="checklist"></ol>
   </section>
 
-  <section class="card recap rise d4" aria-labelledby="recap-h">
-    <h2 id="recap-h">Before Friday's quiz</h2>
-    <ul>
-      <li><span class="rk">save &ne; commit</span><p>Saving a file only changes your files on disk; a <strong>commit</strong> records selected changes, with a message, in your local history.</p></li>
-      <li><span class="rk">commit &ne; push</span><p>A commit records local history; a <strong>push</strong> transfers commits to the remote. GitHub sees nothing until you push.</p></li>
-      <li><span class="rk">pull is not optional</span><p><strong>Pull</strong> brings the remote's new commits to your local repository; a teammate's pushed work never appears on your machine by itself.</p></li>
-      <li><span class="rk">Pages = remote</span><p>GitHub Pages rebuilds the site from the pushed repository (the remote), not from the files on your laptop.</p></li>
-    </ul>
+  <section class="card recap" aria-labelledby="recap-h">
+    <h2 id="recap-h">Remember</h2>
+    <ul id="recapList"></ul>
   </section>
 
   <footer>
@@ -479,137 +535,450 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   'use strict';
 
   var REDUCED = window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ------------------------------------------------------------------ */
-  /* State                                                              */
-  /* ------------------------------------------------------------------ */
-  var S = {
-    dirty: false,          // saved edit in the working directory, not staged
-    staged: false,         // change checked for the next commit
-    local: [],             // commits in the local repository  [{n, mine}]
-    remote: [],            // commits on the GitHub remote
-    next: 2,               // next commit number
-    mission: 0,            // 1..4, 5 = all done
-    locked: false,         // actions locked while a question is open
-    pullArmed: false,      // Pull is only enabled in mission 3
-    m1: { edit:false, stage:false, commit:false, push:false },
-    m2ready: false,        // mission 2 question answered -> push allowed to finish it
-    m4ready: false,        // mission 4 question answered -> publish cycle
-    done: [false, false, false, false]
-  };
-
-  var COMMIT_MSG = {
-    1: 'Initial commit',
-    2: 'Add favorite tool to the guide',
-    3: 'Clarify the data sources section',
-    4: "Add Maya's field notes",
-    5: 'Update the site headline'
-  };
-  function msgFor(n){ return COMMIT_MSG[n] || ('Small update ' + n); }
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function $(id){ return document.getElementById(id); }
   var el = {
-    fileChip: $('fileChip'), fileBadge: $('fileBadge'), fileState: $('fileState'),
-    stageBody: $('stageBody'), stageChip: $('stageChip'), stageEmpty: $('stageEmpty'),
-    localStrip: $('localStrip'), remoteStrip: $('remoteStrip'), remoteLegend: $('remoteLegend'),
-    feedback: $('feedback'), tview: $('tviewText'), brief: $('missionBrief'),
-    zone: $('promptZone'), actions: $('actions'),
-    miniSite: $('miniSite'), pagesBadge: $('pagesBadge'), pagesLines: $('pagesLines'),
-    pagesAlt: $('pagesAlt'), count: $('missionCount'),
-    btnEdit: $('btnEdit'), btnStage: $('btnStage'), btnCommit: $('btnCommit'),
-    btnPush: $('btnPush'), btnPull: $('btnPull')
+    tabs: $('tabs'), panel: $('simpanel'), scenTitle: $('sim-h'), scenTag: $('scenTag'),
+    scenIntro: $('scenIntro'), restart: $('btnRestart'), brief: $('missionBrief'),
+    fileList: $('fileList'), fileState: $('fileState'),
+    stageBody: $('stageBody'), stageList: $('stageList'), stageEmpty: $('stageEmpty'),
+    localLanes: $('localLanes'), remoteLanes: $('remoteLanes'), remoteLegend: $('remoteLegend'),
+    prPanel: $('prPanel'), pagesPanel: $('pagesPanel'), miniSite: $('miniSite'),
+    pagesBadge: $('pagesBadge'), pagesLines: $('pagesLines'), pagesAlt: $('pagesAlt'),
+    filePanel: $('filePanel'), actions: $('actions'), feedback: $('feedback'),
+    zone: $('promptZone'), tview: $('tviewText'),
+    count: $('missionCount'), checklist: $('checklist'),
+    recapTitle: $('recap-h'), recapList: $('recapList')
   };
 
-  var qid = 0; // unique radio-group names
+  /* ------------------------------------------------------------------ */
+  /* Scenario registry and state                                        */
+  /* ------------------------------------------------------------------ */
+  var SCEN = {};          // id -> scenario definition
+  var ORDER = [];         // tab order
+  var cur = null;         // current scenario
+  var S = null;           // current state
+  var progress = {};      // id -> true once all missions were completed
+  var qid = 0;            // unique radio-group names
+
+  function freshState(){
+    return {
+      files: [],                    // [{name, dirty, staged, conflict}]
+      commits: {},                  // n -> {n, msg, mine, merge, files}
+      next: 1,
+      local: { lanes: [], head: 'main' },
+      remote: { lanes: [] },
+      pr: null,                     // {num, from, to, count, status, text}
+      pages: null,                  // {built, content, building, same}
+      fileView: null,               // {name, where, html}
+      fileStateOverride: null,
+      mission: 0, locked: false, done: [],
+      f: {}                         // scenario-specific flags
+    };
+  }
 
   /* ------------------------------------------------------------------ */
   /* Small helpers                                                      */
   /* ------------------------------------------------------------------ */
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function sortN(a, b){ return a - b; }
+  function C(n){ return S.commits[n]; }
+  function label(c){ return c.merge ? 'M' : String(c.n); }
+  function lane(repo, name){
+    for (var i = 0; i < repo.lanes.length; i++) if (repo.lanes[i].name === name) return repo.lanes[i];
+    return null;
+  }
+  function addLane(repo, name, commits, from){
+    var l = { name: name, commits: commits.slice(), from: from || null };
+    repo.lanes.push(l);
+    return l;
+  }
+  function has(l, n){ return !!l && l.commits.indexOf(n) !== -1; }
+  function remoteHas(n){
+    for (var i = 0; i < S.remote.lanes.length; i++) if (has(S.remote.lanes[i], n)) return true;
+    return false;
+  }
+  function newCommit(opts){
+    var n = S.next++;
+    S.commits[n] = { n: n, msg: opts.msg || ('Small update ' + n), mine: opts.mine !== false,
+                     merge: !!opts.merge, files: opts.files || null };
+    return S.commits[n];
+  }
+  function seed(msgs){ // commits present in both repos at the start
+    var ns = msgs.map(function(m){ return newCommit({ msg: m }).n; });
+    addLane(S.local, 'main', ns);
+    addLane(S.remote, 'main', ns);
+    return ns;
+  }
+  function fileByName(name){
+    for (var i = 0; i < S.files.length; i++) if (S.files[i].name === name) return S.files[i];
+    return null;
+  }
+  function anyStaged(){ return S.files.some(function(f){ return f.staged; }); }
+  function anyDirty(){ return S.files.some(function(f){ return f.dirty && !f.staged; }); }
+  function stagedNames(){ return S.files.filter(function(f){ return f.staged; }).map(function(f){ return f.name; }); }
+
+  function describeNs(ns){
+    var cs = ns.map(C);
+    var plain = cs.filter(function(c){ return !c.merge; }).map(function(c){ return c.n; }).sort(sortN);
+    var merges = cs.filter(function(c){ return c.merge; }).length;
+    if (!plain.length){
+      return merges ? (merges > 1 ? 'the merge commits' : 'the merge commit') : 'no commits';
+    }
+    var runs = [], i = 0;
+    while (i < plain.length){
+      var j = i;
+      while (j + 1 < plain.length && plain[j + 1] === plain[j] + 1) j++;
+      runs.push(j > i ? plain[i] + '\u2013' + plain[j] : String(plain[i]));
+      i = j + 1;
+    }
+    var t = (plain.length === 1 ? 'commit ' : 'commits ') + runs.join(', ');
+    if (merges) t += ' plus ' + (merges > 1 ? 'merge commits' : 'a merge commit');
+    return t;
+  }
+  function unpushed(name){
+    var l = lane(S.local, name), r = lane(S.remote, name);
+    if (!l) return [];
+    return l.commits.filter(function(n){ return !has(r, n); });
+  }
+  function incoming(name){
+    var l = lane(S.local, name), r = lane(S.remote, name);
+    if (!l || !r) return [];
+    return r.commits.filter(function(n){ return !has(l, n); });
+  }
+  function nextMsg(){
+    return (cur.msgs && cur.msgs.length) ? cur.msgs.shift() : null;
+  }
+
   function say(kind, html){
     var icon = kind === 'ok' ? '&#10003;' : (kind === 'warn' ? '!' : '&rsaquo;');
-    el.feedback.innerHTML = '<span class="fico ' + kind + '" aria-hidden="true">' +
-      icon + '</span>' + html;
+    el.feedback.innerHTML = '<span class="fico ' + kind + '" aria-hidden="true">' + icon + '</span>' + html;
   }
-
-  function nums(list){ return list.map(function(c){ return c.n; }).sort(function(a,b){ return a-b; }); }
-
-  function describe(ns){
-    if (!ns.length) return 'no commits';
-    if (ns.length === 1) return 'commit ' + ns[0];
-    var contiguous = ns[ns.length - 1] - ns[0] === ns.length - 1;
-    if (contiguous) return 'commits ' + ns[0] + '–' + ns[ns.length - 1];
-    return 'commits ' + ns.join(', ');
-  }
-
-  function updateTview(){
-    var rn = nums(S.remote), ln = nums(S.local);
-    var localOnly = ln.filter(function(n){ return rn.indexOf(n) === -1; });
-    var remoteOnly = rn.filter(function(n){ return ln.indexOf(n) === -1; });
-    var t = 'GitHub shows ' + describe(rn) + '.';
-    if (remoteOnly.length){
-      t += ' Your local repository is missing ' + describe(remoteOnly) + '. Pull to get it.';
-    }
-    if (localOnly.length){
-      t += ' ' + (localOnly.length > 1 ? 'Commits ' + localOnly.join(', ') + ' exist' :
-        'Commit ' + localOnly[0] + ' exists') + ' only on your machine, invisible to your teammate.';
-    } else if (S.staged){
-      t += ' Your checked change is invisible to them until you commit and push.';
-    } else if (S.dirty){
-      t += ' Your saved edit is invisible to them.';
-    } else if (!remoteOnly.length){
-      t += ' You and GitHub match.';
-    }
-    el.tview.textContent = t;
-  }
-
-  function updateFileState(){
-    el.fileState.textContent = S.dirty ? 'modified, not staged or committed' :
-      (S.staged ? 'edit is checked, see station 2' : 'matches your last commit');
-  }
-
   function setBrief(html){ el.brief.innerHTML = html; }
-
   function lock(v){
     S.locked = v;
     el.actions.classList.toggle('islocked', v);
   }
-
   function guardLocked(){
     if (S.locked){
-      say('warn', 'One step at a time. Answer the question (or let the scene finish) first.');
+      say('warn', 'Answer the question first. If a scene is showing, press "Set the scene" and let it finish.');
       return true;
     }
     return false;
   }
+  function seq(steps){ // [[fn, delayAfterMs], ...]
+    var i = 0;
+    (function next(){
+      if (i >= steps.length) return;
+      var step = steps[i++];
+      step[0]();
+      if (i < steps.length) setTimeout(next, REDUCED ? 0 : step[1]);
+    })();
+  }
+  function later(fn, ms){ setTimeout(fn, REDUCED ? 0 : ms); }
 
-  function makeDot(commit){
+  /* ------------------------------------------------------------------ */
+  /* Rendering                                                          */
+  /* ------------------------------------------------------------------ */
+  function badge(text, cls){
+    var b = document.createElement('span');
+    b.className = 'fbadge' + (cls ? ' ' + cls : '');
+    b.textContent = text;
+    return b;
+  }
+  function pop(node){
+    if (REDUCED || !node) return;
+    node.classList.remove('pop'); void node.offsetWidth; node.classList.add('pop');
+  }
+  function fileStateText(){
+    if (S.fileStateOverride) return S.fileStateOverride;
+    if (S.files.some(function(f){ return f.conflict; })) return 'conflict markers in the file, fix before committing';
+    var staged = S.files.filter(function(f){ return f.staged; });
+    var dirty  = S.files.filter(function(f){ return f.dirty && !f.staged; });
+    if (staged.length && !dirty.length) return 'modified and checked, see station 2';
+    if (dirty.length) return 'modified, not checked or committed';
+    var onBranch = S.local.lanes.length > 1 ? ' on ' + S.local.head : '';
+    return 'matches your last commit' + onBranch;
+  }
+  function renderFiles(popName){
+    el.fileList.innerHTML = '';
+    S.files.forEach(function(f){
+      var chip = document.createElement('span');
+      chip.className = 'filechip';
+      chip.setAttribute('data-file', f.name);
+      chip.innerHTML = '<span class="ficon" aria-hidden="true">&#9636;</span>' + esc(f.name);
+      var b = null;
+      if (f.conflict) b = badge('! conflict', 'conf');
+      else if (f.dirty || f.staged) b = badge('M · modified');
+      if (b){ chip.appendChild(b); if (popName === f.name) pop(b); }
+      el.fileList.appendChild(chip);
+    });
+    el.fileState.textContent = fileStateText();
+  }
+  function renderStage(popIt){
+    el.stageList.innerHTML = '';
+    var staged = S.files.filter(function(f){ return f.staged; });
+    staged.forEach(function(f){
+      var c = document.createElement('span');
+      c.className = 'stagechip';
+      c.innerHTML = '<span class="stagecheck" aria-hidden="true">&#9745;</span>' + esc(f.name);
+      if (popIt) pop(c);
+      el.stageList.appendChild(c);
+    });
+    el.stageEmpty.hidden = staged.length > 0;
+  }
+  function makeDot(commit, animate){
     var d = document.createElement('span');
-    d.className = 'dot' + (commit.mine ? '' : ' tdot');
-    d.textContent = commit.n;
-    d.title = 'Commit ' + commit.n + ': ' + msgFor(commit.n) +
-      (commit.mine ? '' : ' (teammate)');
+    d.className = 'dot' + (commit.merge ? ' mdot' : (commit.mine ? '' : ' tdot'));
+    d.textContent = label(commit);
+    d.title = (commit.merge ? 'Merge commit: ' : 'Commit ' + commit.n + ': ') + commit.msg +
+              (commit.mine ? '' : ' (teammate)');
     if (!commit.mine){
       var t = document.createElement('span');
-      t.className = 'tt';
-      t.textContent = 'T';
-      t.setAttribute('aria-hidden', 'true');
+      t.className = 'tt'; t.textContent = 'T'; t.setAttribute('aria-hidden', 'true');
       d.appendChild(t);
       var sr = document.createElement('span');
-      sr.className = 'visually-hidden';
-      sr.textContent = ' (teammate’s commit)';
+      sr.className = 'visually-hidden'; sr.textContent = ' (teammate’s commit)';
       d.appendChild(sr);
     }
+    if (animate && !REDUCED) d.classList.add('pop');
     return d;
   }
-
-  function addDot(strip, commit, animate){
-    var d = makeDot(commit);
-    if (animate && !REDUCED) d.classList.add('pop');
-    strip.appendChild(d);
+  function renderLanes(container, repo, isLocal, popSet){
+    popSet = popSet || [];
+    container.innerHTML = '';
+    var main = lane(repo, 'main');
+    var single = repo.lanes.length === 1;
+    repo.lanes.forEach(function(l){
+      var box = document.createElement('div'); box.className = 'lane';
+      var head = document.createElement('p'); head.className = 'lanehead';
+      var nm = document.createElement('span'); nm.className = 'lname';
+      nm.textContent = single ? (isLocal ? 'main · commits' : 'main on GitHub · commits') : l.name;
+      head.appendChild(nm);
+      if (isLocal && !single && repo.head === l.name){
+        var hm = document.createElement('span'); hm.className = 'headmark'; hm.textContent = 'you are here';
+        head.appendChild(hm);
+      }
+      if (l.name !== 'main' && l.from){
+        var fr = document.createElement('span'); fr.className = 'lfrom';
+        fr.textContent = 'from commit ' + label(C(l.from));
+        head.appendChild(fr);
+      }
+      box.appendChild(head);
+      var strip = document.createElement('div');
+      strip.className = 'strip';
+      strip.setAttribute('data-lane', l.name);
+      strip.setAttribute('aria-label', (isLocal ? 'Local' : 'GitHub') + ' commits on ' + l.name);
+      var show = l.name === 'main' ? l.commits.slice() :
+                 l.commits.filter(function(n){ return !has(main, n); });
+      show.sort(sortN).forEach(function(n){
+        strip.appendChild(makeDot(C(n), popSet.indexOf(n) !== -1));
+      });
+      if (!show.length && l.name !== 'main'){
+        var note = document.createElement('p'); note.className = 'lanenote';
+        var allInMain = l.commits.every(function(n){ return has(main, n); });
+        note.textContent = (allInMain && main.commits.length > l.commits.length) ?
+          'merged into main' : 'no commits of its own yet, points at commit ' + label(C(l.from));
+        strip.appendChild(note);
+      }
+      box.appendChild(strip);
+      container.appendChild(box);
+    });
+  }
+  function renderLocal(popSet){ renderLanes(el.localLanes, S.local, true, popSet); }
+  function renderRemote(popSet){
+    renderLanes(el.remoteLanes, S.remote, false, popSet);
+    var anyT = Object.keys(S.commits).some(function(k){ return !S.commits[k].mine; });
+    el.remoteLegend.hidden = !anyT;
+  }
+  function stripOf(container, name){
+    return container.querySelector('.strip[data-lane="' + name + '"]');
+  }
+  function chipOf(name){
+    return el.fileList.querySelector('[data-file="' + name + '"]');
+  }
+  function renderPR(){
+    if (!S.pr){ el.prPanel.hidden = true; el.prPanel.innerHTML = ''; return; }
+    var p = S.pr;
+    el.prPanel.hidden = false;
+    el.prPanel.innerHTML =
+      '<div class="prbox"><span class="prtitle">Pull request #' + p.num + '</span>' +
+      '<span class="prmeta">' + esc(p.from) + ' &rarr; ' + esc(p.to) + ' &middot; ' + p.count +
+      ' commit' + (p.count === 1 ? '' : 's') + '</span>' +
+      '<span class="prstatus ' + p.status + '">' + esc(p.text) + '</span></div>';
+  }
+  function renderPagesPanel(flash){
+    if (!S.pages){ el.pagesPanel.hidden = true; return; }
+    el.pagesPanel.hidden = false;
+    var p = S.pages;
+    el.pagesBadge.classList.toggle('building', !!p.building);
+    var txt = p.building ? 'building… deployment in progress' :
+              ('built from commit ' + p.built + (p.same ? ' · page unchanged' : ''));
+    el.pagesBadge.textContent = txt;
+    el.pagesAlt.textContent = 'Thumbnail of the published Pages site: ' + txt + '.';
+    var html = '';
+    for (var i = 0; i < 3; i++){
+      var w = 45 + ((p.content * 37 + i * 23) % 50);
+      html += '<div class="miniline" style="width:' + w + '%"></div>';
+    }
+    el.pagesLines.innerHTML = html;
+    el.miniSite.classList.remove('flash');
+    if (flash && !REDUCED){ void el.miniSite.offsetWidth; el.miniSite.classList.add('flash'); }
+  }
+  function renderFilePanel(){
+    if (!S.fileView){ el.filePanel.hidden = true; el.filePanel.innerHTML = ''; return; }
+    el.filePanel.hidden = false;
+    el.filePanel.innerHTML = '<p class="fname">' + esc(S.fileView.name) + ' · ' + esc(S.fileView.where) +
+                             '</p><pre>' + S.fileView.html + '</pre>';
+  }
+  function defaultTview(){
+    var lm = lane(S.local, 'main'), rm = lane(S.remote, 'main');
+    var localOnly  = lm.commits.filter(function(n){ return !has(rm, n); });
+    var remoteOnly = rm.commits.filter(function(n){ return !has(lm, n); });
+    var t = 'GitHub shows ' + describeNs(rm.commits) + '.';
+    if (remoteOnly.length) t += ' Your local repository is missing ' + describeNs(remoteOnly) + '. Pull to get it.';
+    if (localOnly.length) t += ' Not on GitHub yet: ' + describeNs(localOnly) + '. Your teammate cannot see ' + (localOnly.length > 1 ? 'them' : 'it') + '.';
+    else if (anyStaged()) t += ' Your checked change is not on GitHub. Commit and push to share it.';
+    else if (anyDirty()) t += ' Your saved edit is not on GitHub.';
+    else if (!remoteOnly.length) t += ' Your local repository matches GitHub.';
+    if (S.pages) t += S.pages.building ? ' The site is rebuilding.' : ' The site was built from commit ' + S.pages.built + '.';
+    return t;
+  }
+  function branchTview(){
+    var lm = lane(S.local, 'main'), rm = lane(S.remote, 'main');
+    var t = 'GitHub’s main shows ' + describeNs(rm.commits) + '.';
+    var br = S.local.lanes.filter(function(l){ return l.name !== 'main'; })[0];
+    if (br){
+      var rb = lane(S.remote, br.name);
+      var uniq = br.commits.filter(function(n){ return !has(lm, n); });
+      if (!rb){
+        t += ' Your branch ' + br.name + ' is not on GitHub yet' +
+             (uniq.length ? ', so your teammate cannot see ' + describeNs(uniq) + '.' : '.');
+      } else {
+        var rbUniq = rb.commits.filter(function(n){ return !has(rm, n); });
+        t += ' ' + br.name + ' on GitHub: ' + (rbUniq.length ? describeNs(rbUniq) + ', not merged.' : 'no commits that main lacks.');
+        var unpub = br.commits.filter(function(n){ return !remoteHas(n); });
+        if (unpub.length) t += ' Not yet pushed: ' + describeNs(unpub) + '.';
+      }
+    } else if (anyStaged() || anyDirty()){
+      t += ' Your saved edit is not on GitHub.';
+    }
+    var behind = rm.commits.filter(function(n){ return !has(lm, n); });
+    if (behind.length) t += ' Your local main is missing ' + describeNs(behind) + '. Pull to get it.';
+    if (S.pr) t += ' Pull request #' + S.pr.num + ': ' + S.pr.text + '.';
+    return t;
+  }
+  function updateTview(){
+    el.tview.textContent = cur.tview ? cur.tview() : defaultTview();
+  }
+  function renderActions(){
+    el.actions.innerHTML = '';
+    var groups = {}, order = [];
+    cur.actions.forEach(function(a){
+      var g = a.group || '';
+      if (!groups[g]){ groups[g] = []; order.push(g); }
+      groups[g].push(a);
+    });
+    order.forEach(function(g){
+      var wrap = document.createElement('div'); wrap.className = 'agroup';
+      if (g){
+        var lab = document.createElement('span'); lab.className = 'aglabel'; lab.textContent = g;
+        wrap.appendChild(lab);
+      }
+      groups[g].forEach(function(a){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'abtn' + (a.ghost ? ' ghost' : '');
+        b.id = 'act-' + a.id;
+        b.innerHTML = '<span class="blabel"></span><span class="bsub"></span>';
+        b.addEventListener('click', function(){ if (guardLocked()) return; a.run(); refreshActions(); });
+        wrap.appendChild(b);
+      });
+      el.actions.appendChild(wrap);
+    });
+    refreshActions();
+  }
+  function refreshActions(){
+    cur.actions.forEach(function(a){
+      var b = $('act-' + a.id); if (!b) return;
+      b.querySelector('.blabel').innerHTML = typeof a.label === 'function' ? a.label() : a.label;
+      b.querySelector('.bsub').innerHTML = typeof a.sub === 'function' ? a.sub() : a.sub;
+    });
+  }
+  function renderMissions(){
+    el.checklist.innerHTML = '';
+    cur.missions.forEach(function(m, i){
+      var li = document.createElement('li');
+      li.className = 'checkitem' + (S.done[i] ? ' done' : '');
+      li.id = 'mi' + i;
+      li.innerHTML = '<span class="mnum" aria-hidden="true">' + (i + 1) + '</span>' +
+                     '<span class="box" aria-hidden="true">&#10003;</span><span>' + m + '</span>' +
+                     '<span class="visually-hidden mstate">, ' + (S.done[i] ? 'complete' : 'not yet complete') + '</span>';
+      el.checklist.appendChild(li);
+    });
+    updateCount();
+  }
+  function updateCount(){
+    var total = S.done.filter(Boolean).length;
+    el.count.textContent = total + ' / ' + cur.missions.length + ' complete';
+  }
+  function markDone(i){
+    if (S.done[i]) return;
+    S.done[i] = true;
+    var li = $('mi' + i);
+    if (li){ li.classList.add('done'); li.querySelector('.mstate').textContent = ', complete'; }
+    updateCount();
+    if (S.done.every(Boolean)){ progress[cur.id] = true; renderTabs(); }
+  }
+  function renderRecap(){
+    el.recapTitle.textContent = cur.recapTitle || 'Remember';
+    el.recapList.innerHTML = '';
+    cur.recap.forEach(function(r){
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="rk">' + r.k + '</span><p>' + r.t + '</p>';
+      el.recapList.appendChild(li);
+    });
+  }
+  function renderTabs(){
+    el.tabs.innerHTML = '';
+    ORDER.forEach(function(id, i){
+      var sc = SCEN[id];
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'tab'; b.id = 'tab-' + id;
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-controls', 'simpanel');
+      var sel = cur && cur.id === id;
+      b.setAttribute('aria-selected', sel ? 'true' : 'false');
+      b.tabIndex = sel ? 0 : -1;
+      b.innerHTML = '<span class="tnum">Tab ' + (i + 1) + '</span><span class="tlab">' + sc.title +
+                    '</span><span class="ttag">' + sc.tag + '</span>' +
+                    (progress[id] ? '<span class="tdone" aria-label="all missions complete">&#10003;</span>' : '');
+      b.addEventListener('click', function(){ if (!cur || cur.id !== id) load(id); });
+      b.addEventListener('keydown', function(e){
+        var k = e.key, j = i;
+        if (k === 'ArrowRight') j = (i + 1) % ORDER.length;
+        else if (k === 'ArrowLeft') j = (i - 1 + ORDER.length) % ORDER.length;
+        else if (k === 'Home') j = 0;
+        else if (k === 'End') j = ORDER.length - 1;
+        else return;
+        e.preventDefault();
+        load(ORDER[j]);
+        var nb = $('tab-' + ORDER[j]); if (nb) nb.focus();
+      });
+      el.tabs.appendChild(b);
+    });
+  }
+  function renderAll(){
+    renderFiles(); renderStage(); renderLocal(); renderRemote();
+    renderPR(); renderPagesPanel(false); renderFilePanel(); updateTview(); refreshActions();
   }
 
-  /* Traveling chip/dot animation between two stations. */
+  /* ------------------------------------------------------------------ */
+  /* Traveling chip/dot animation                                       */
+  /* ------------------------------------------------------------------ */
   function fly(fromEl, toEl, text, cls, done){
     if (REDUCED || !fromEl || !toEl){ if (done) done(); return; }
     var f = fromEl.getBoundingClientRect(), t = toEl.getBoundingClientRect();
@@ -623,7 +992,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     var ex = t.left + Math.min(t.width / 2, 40) - w / 2, ey = t.top + t.height / 2 - h / 2;
     node.style.left = sx + 'px';
     node.style.top = sy + 'px';
-    node.getBoundingClientRect(); // flush layout so the transition runs
+    node.getBoundingClientRect();
     node.style.transform = 'translate(' + (ex - sx) + 'px,' + (ey - sy) + 'px) scale(.92)';
     node.style.opacity = '0.3';
     var finished = false;
@@ -634,79 +1003,37 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       if (done) done();
     }
     node.addEventListener('transitionend', finish, { once: true });
-    setTimeout(finish, 700); // safety net if transitionend never fires
-  }
-
-  function renderPages(flash){
-    var built = Math.max.apply(null, nums(S.remote));
-    el.pagesBadge.textContent = 'built from commit ' + built;
-    el.pagesAlt.textContent = 'Thumbnail of the published Pages site, currently built from commit ' + built + '.';
-    var html = '';
-    for (var i = 0; i < 3; i++){
-      var wdt = 45 + ((built * 37 + i * 23) % 50);
-      html += '<div class="miniline" style="width:' + wdt + '%"></div>';
-    }
-    el.pagesLines.innerHTML = html;
-    if (flash && !REDUCED){
-      el.miniSite.classList.remove('flash');
-      void el.miniSite.offsetWidth;
-      el.miniSite.classList.add('flash');
-    }
-  }
-
-  function seq(steps){ // steps: array of [fn, delayAfterMs]
-    var i = 0;
-    (function next(){
-      if (i >= steps.length) return;
-      var step = steps[i++];
-      step[0]();
-      if (i < steps.length) setTimeout(next, REDUCED ? 0 : step[1]);
-    })();
+    setTimeout(finish, 700);
   }
 
   /* ------------------------------------------------------------------ */
-  /* Prompt rendering (predict-then-reveal + multiple choice)           */
+  /* Prompts (predict-then-reveal), scenes, notes                       */
   /* ------------------------------------------------------------------ */
   function renderPrompt(cfg){
     lock(true);
     qid++;
     var name = 'q' + qid;
-    var box = document.createElement('div');
-    box.className = 'prompt';
+    var box = document.createElement('div'); box.className = 'prompt';
     var fs = document.createElement('fieldset');
-    var lg = document.createElement('legend');
-    lg.textContent = cfg.question;
+    var lg = document.createElement('legend'); lg.textContent = cfg.question;
     fs.appendChild(lg);
-
-    var optEls = cfg.options.map(function(text, i){
-      var lab = document.createElement('label');
-      lab.className = 'opt';
-      var input = document.createElement('input');
-      input.type = 'radio';
-      input.name = name;
-      input.value = i;
-      var mark = document.createElement('span');
-      mark.className = 'mark';
-      mark.setAttribute('aria-hidden', 'true');
+    var optEls = cfg.options.map(function(opt, i){
+      var lab = document.createElement('label'); lab.className = 'opt';
+      var input = document.createElement('input'); input.type = 'radio'; input.name = name; input.value = i;
+      var mark = document.createElement('span'); mark.className = 'mark'; mark.setAttribute('aria-hidden', 'true');
       var span = document.createElement('span');
-      span.textContent = text;
+      if (typeof opt === 'string') span.textContent = opt;
+      else { var code = document.createElement('code'); code.className = 'optcode'; code.textContent = opt.code; span.appendChild(code); }
       lab.appendChild(input); lab.appendChild(mark); lab.appendChild(span);
       fs.appendChild(lab);
       return { lab: lab, input: input, mark: mark };
     });
-
-    var row = document.createElement('div');
-    row.className = 'checkrow';
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'sbtn';
-    btn.textContent = 'Check';
-    var hint = document.createElement('span');
-    hint.className = 'pickhint';
+    var row = document.createElement('div'); row.className = 'checkrow';
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sbtn'; btn.textContent = 'Check';
+    var hint = document.createElement('span'); hint.className = 'pickhint';
     row.appendChild(btn); row.appendChild(hint);
     fs.appendChild(row);
     box.appendChild(fs);
-
     btn.addEventListener('click', function(){
       var picked = -1;
       optEls.forEach(function(o, i){ if (o.input.checked) picked = i; });
@@ -720,394 +1047,936 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       });
       var v = document.createElement('p');
       v.className = 'verdict ' + (correct ? 'vok' : 'verr');
-      v.textContent = (correct ? '✓ Correct. ' : '✗ Not quite. ') + cfg.why;
+      v.textContent = (correct ? '✓ Correct. ' : '✗ Incorrect. ') + cfg.why;
       fs.appendChild(v);
       btn.remove();
       lock(false);
       if (cfg.after) cfg.after(correct);
       if (cfg.continueLabel && cfg.onContinue){
         var go = document.createElement('button');
-        go.type = 'button';
-        go.className = 'sbtn';
-        go.style.marginTop = '10px';
+        go.type = 'button'; go.className = 'sbtn'; go.style.marginTop = '10px';
         go.textContent = cfg.continueLabel;
         go.addEventListener('click', function(){ cfg.onContinue(); });
         fs.appendChild(go);
         go.focus();
       }
+      refreshActions();
     });
-
     el.zone.innerHTML = '';
     el.zone.appendChild(box);
   }
-
   function renderScene(title, desc, onGo){
-    var box = document.createElement('div');
-    box.className = 'prompt';
-    var h = document.createElement('p');
-    h.style.margin = '0';
-    h.innerHTML = '<strong>' + title + '</strong>';
-    var d = document.createElement('p');
-    d.className = 'scenedesc';
-    d.textContent = desc;
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'sbtn';
-    btn.textContent = 'Set the scene';
+    lock(true);
+    var box = document.createElement('div'); box.className = 'prompt';
+    var h = document.createElement('p'); h.style.margin = '0'; h.innerHTML = '<strong>' + title + '</strong>';
+    var d = document.createElement('p'); d.className = 'scenedesc'; d.textContent = desc;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sbtn'; btn.textContent = 'Set the scene';
     btn.addEventListener('click', function(){ btn.disabled = true; onGo(); });
     box.appendChild(h); box.appendChild(d); box.appendChild(btn);
     el.zone.innerHTML = '';
     el.zone.appendChild(box);
   }
-
+  function appendNote(html, finale){
+    var d = document.createElement('div');
+    d.className = 'notecard' + (finale ? ' finale' : '');
+    d.style.marginTop = '10px';
+    d.innerHTML = html;
+    el.zone.appendChild(d);
+  }
   function renderNote(html, finale){
     el.zone.innerHTML = '<div class="notecard' + (finale ? ' finale' : '') + '">' + html + '</div>';
   }
 
   /* ------------------------------------------------------------------ */
-  /* Mission 1 predictions                                              */
+  /* Repository operations shared by all scenarios                      */
   /* ------------------------------------------------------------------ */
-  var M1_STEP_BRIEF = {
-    2: '<strong>Mission 1 &middot; Step 2 of 4.</strong> Stage the change: check <code>field_guide.md</code> in the changes list.',
-    3: '<strong>Mission 1 &middot; Step 3 of 4.</strong> Commit: record the checked change, with a message, in your local history.',
-    4: '<strong>Mission 1 &middot; Step 4 of 4.</strong> Push: send your local commits to GitHub, where your teammate can see them.'
-  };
-
-  var PREDICTIONS = {
-    1: {
-      question: 'Predict: you saved field_guide.md in your editor. Where does the change live right now?',
-      options: [
-        'Only in the working directory, my files on disk',
-        "In my local repository's history",
-        'On GitHub, where my teammate can see it'
-      ],
-      correct: 0,
-      why: 'saving a file only changes your files on disk; Git has not recorded anything yet.',
-      after: function(){ setBrief(M1_STEP_BRIEF[2]); }
-    },
-    2: {
-      question: 'Predict: you checked (staged) the file. Where does the change live now?',
-      options: [
-        'It is already a commit in my local history',
-        'It is selected for the next commit, but no commit exists yet',
-        'It has been sent to GitHub'
-      ],
-      correct: 1,
-      why: 'staging only marks which changes the next commit will record; nothing is in history yet.',
-      after: function(){ setBrief(M1_STEP_BRIEF[3]); }
-    },
-    3: {
-      question: 'Predict: commit 2 now exists. Where does it live?',
-      options: [
-        'In my local repository only, on my machine',
-        'On GitHub too, because committing uploads it',
-        'Nowhere yet, I still need to stage it'
-      ],
-      correct: 0,
-      why: 'a commit records local history; nothing reaches GitHub until you push.',
-      after: function(){ setBrief(M1_STEP_BRIEF[4]); }
-    },
-    4: {
-      question: 'Predict: you pushed. What can your teammate see on GitHub now?',
-      options: [
-        'Commits 1 and 2, because push sent my local commits to the remote',
-        'Still only commit 1, push just backs things up on my machine',
-        'My unsaved editor changes too'
-      ],
-      correct: 0,
-      why: 'push transfers local commits to the remote repository on GitHub. The change is now shared.',
-      after: function(){
-        markDone(0);
-        setBrief('<strong>Mission 1 complete.</strong> Your edit made the full trip: disk &rarr; staged &rarr; local history &rarr; GitHub.');
-      },
-      continueLabel: 'Continue to mission 2',
-      onContinue: function(){ startMission(2); }
+  function opEdit(name){
+    var f = fileByName(name);
+    S.fileStateOverride = null;
+    f.dirty = true;
+    if (cur.autoStage) f.staged = true;
+    renderFiles(name);
+    renderStage(cur.autoStage);
+    updateTview();
+  }
+  function opStage(){
+    var names = S.files.filter(function(f){ return f.dirty && !f.staged; }).map(function(f){ return f.name; });
+    S.files.forEach(function(f){ if (f.dirty) f.staged = true; });
+    renderFiles();
+    fly(chipOf(names[0]), el.stageBody, names[0], 'flychip', function(){ renderStage(true); });
+    updateTview();
+  }
+  function opCommit(opts){
+    opts = opts || {};
+    var names = stagedNames();
+    S.files.forEach(function(f){ if (f.staged){ f.staged = false; f.dirty = false; f.conflict = false; } });
+    S.fileStateOverride = null;
+    var c = newCommit({ msg: opts.msg || nextMsg(), mine: true, merge: opts.merge, files: names });
+    var l = lane(S.local, S.local.head);
+    l.commits.push(c.n);
+    renderFiles(); renderStage();
+    fly(el.stageBody, stripOf(el.localLanes, l.name), label(c), 'flydot' + (c.merge ? ' mfly' : ''),
+        function(){ renderLocal([c.n]); });
+    updateTview();
+    return c;
+  }
+  function opPush(name, done){
+    var l = lane(S.local, name), r = lane(S.remote, name);
+    var isNew = !r;
+    if (!r) r = addLane(S.remote, name, [], l.from);
+    var up = unpushed(name);
+    if (!up.length){ renderRemote(); updateTview(); if (done) done(); return { up: up, isNew: isNew }; }
+    up.forEach(function(n){ r.commits.push(n); });
+    var target = stripOf(el.remoteLanes, name) || el.remoteLanes;
+    fly(stripOf(el.localLanes, name), target, label(C(up[0])), 'flydot' + (C(up[0]).merge ? ' mfly' : ''),
+        function(){ renderRemote(up); if (done) done(); });
+    updateTview();
+    return { up: up, isNew: isNew };
+  }
+  function opPull(name, opts){
+    opts = opts || {};
+    var l = lane(S.local, name);
+    var inc = incoming(name);
+    var diverged = unpushed(name).length > 0;
+    inc.forEach(function(n){ l.commits.push(n); });
+    var m = null;
+    if (diverged && opts.merge){
+      m = newCommit({ msg: opts.mergeMsg || 'Merge remote changes into ' + name, mine: true, merge: true });
+      l.commits.push(m.n);
     }
-  };
-
-  /* ------------------------------------------------------------------ */
-  /* Missions                                                           */
-  /* ------------------------------------------------------------------ */
-  function markDone(i){
-    if (S.done[i]) return;
-    S.done[i] = true;
-    var li = $('mi' + i);
-    li.classList.add('done');
-    li.querySelector('.mstate').textContent = ', complete';
-    var total = S.done.filter(Boolean).length;
-    el.count.textContent = total + ' / 4 complete';
+    var popSet = inc.concat(m ? [m.n] : []);
+    fly(stripOf(el.remoteLanes, name), stripOf(el.localLanes, name), label(C(inc[0])),
+        'flydot' + (C(inc[0]).mine ? '' : ' tfly'), function(){ renderLocal(popSet); });
+    updateTview();
+    return { inc: inc, merge: m };
+  }
+  function opRemoteCommit(name, opts){
+    var c = newCommit({ msg: opts.msg, mine: false });
+    lane(S.remote, name).commits.push(c.n);
+    renderRemote([c.n]);
+    updateTview();
+    return c;
+  }
+  function opNewBranch(name){
+    var from = lane(S.local, S.local.head);
+    var tip = from.commits[from.commits.length - 1];
+    addLane(S.local, name, from.commits, tip);
+    S.local.head = name;
+    S.fileStateOverride = null;
+    renderLocal(); renderFiles(); updateTview();
+  }
+  function opSwitch(name){
+    S.local.head = name;
+    renderLocal(); renderFiles(); updateTview();
+  }
+  function opMergeOnGitHub(from, to, msg){
+    var f = lane(S.remote, from), t = lane(S.remote, to);
+    var newOnes = f.commits.filter(function(n){ return !has(t, n); });
+    newOnes.forEach(function(n){ t.commits.push(n); });
+    var m = newCommit({ msg: msg || ('Merge pull request from ' + from), mine: true, merge: true });
+    t.commits.push(m.n);
+    renderRemote(newOnes.concat([m.n]));
+    updateTview();
+    return m;
   }
 
-  function startMission(n){
-    S.mission = n;
-    if (n === 1){
-      setBrief('<strong>Mission 1 &middot; Make your edit visible to a teammate.</strong> You just cloned this repository, so your local repository and GitHub both hold commit 1. Step 1 of 4: press <em>Edit file</em>.');
-      renderNote('After each step, predict where the change lives. Answer, read the reveal, then take the next step.');
-    } else if (n === 2){
-      setBrief('<strong>Mission 2 &middot; "GitHub shows nothing new."</strong> First, set the scene below.');
-      renderScene('Mission 2: the scene',
-        'You make and commit another change (commit 3). Then your teammate refreshes GitHub and says nothing new is there.',
-        runScene2);
-    } else if (n === 3){
-      setBrief('<strong>Mission 3 &middot; Your teammate pushed a commit.</strong> Set the scene, then make it appear on your machine.');
-      renderScene('Mission 3: the scene',
-        'Your teammate Maya commits on her machine and pushes. Watch what changes on GitHub, and what does not change on your machine.',
-        runScene3);
-    } else if (n === 4){
-      setBrief('<strong>Mission 4 &middot; Where does GitHub Pages publish from?</strong> Answer first; then prove it in the simulator.');
-      renderPrompt({
-        question: 'Your team’s site is published with GitHub Pages. Which copy of the repository does Pages build the site from?',
-        options: [
-          'The working directory on my laptop',
-          'My local repository’s commit history',
-          'The remote repository on GitHub, meaning whatever has been pushed'
-        ],
-        correct: 2,
-        why: 'GitHub Pages rebuilds from the pushed repository on GitHub; commits that stay local never reach the site.',
+  /* ------------------------------------------------------------------ */
+  /* Loading a scenario (tab)                                            */
+  /* ------------------------------------------------------------------ */
+  function load(id){
+    cur = SCEN[id];
+    S = freshState();
+    S.done = cur.missions.map(function(){ return false; });
+    cur.msgs = (cur.commitMessages || []).slice();
+    cur.setup();
+    el.scenTitle.textContent = cur.title;
+    el.scenTag.textContent = cur.tag;
+    el.scenIntro.innerHTML = cur.intro;
+    el.panel.setAttribute('aria-labelledby', 'tab-' + id);
+    el.zone.innerHTML = '';
+    el.feedback.innerHTML = '';
+    el.brief.innerHTML = '';
+    lock(false);
+    renderTabs(); renderActions(); renderMissions(); renderRecap(); renderAll();
+    if (location.hash !== '#' + id){
+      try { history.replaceState(null, '', '#' + id); } catch (e) { /* ignore */ }
+    }
+    cur.start();
+  }
+
+  /* Expose the engine to the scenario definitions. */
+  window.__gitSim = {
+    SCEN: SCEN, ORDER: ORDER, load: load,
+    state: function(){ return S; }, cur: function(){ return cur; }, el: el,
+    C: C, lane: lane, addLane: addLane, has: has, seed: seed, newCommit: newCommit, fileByName: fileByName,
+    anyStaged: anyStaged, anyDirty: anyDirty, stagedNames: stagedNames, describeNs: describeNs,
+    unpushed: unpushed, incoming: incoming, nextMsg: nextMsg, label: label,
+    say: say, setBrief: setBrief, lock: lock, seq: seq, later: later,
+    renderFiles: renderFiles, renderStage: renderStage, renderLocal: renderLocal, renderRemote: renderRemote,
+    renderPR: renderPR, renderPagesPanel: renderPagesPanel, renderFilePanel: renderFilePanel,
+    updateTview: updateTview, branchTview: branchTview, refreshActions: refreshActions, markDone: markDone,
+    fly: fly, stripOf: stripOf, renderPrompt: renderPrompt, renderScene: renderScene, renderNote: renderNote, appendNote: appendNote,
+    opEdit: opEdit, opStage: opStage, opCommit: opCommit, opPush: opPush, opPull: opPull,
+    opRemoteCommit: opRemoteCommit, opNewBranch: opNewBranch, opSwitch: opSwitch, opMergeOnGitHub: opMergeOnGitHub,
+    esc: esc
+  };
+
+  el.restart.addEventListener('click', function(){ if (cur) load(cur.id); });
+  window.addEventListener('hashchange', function(){
+    var id = location.hash.slice(1);
+    if (SCEN[id] && (!cur || cur.id !== id)) load(id);
+  });
+})();
+
+/* ==================================================================== */
+/* Scenarios (one per tab)                                              */
+/* ==================================================================== */
+(function(G){
+  'use strict';
+  Object.defineProperty(G, 'S', { get: function(){ return G.state(); } });
+  var FILE = 'field_guide.md';
+
+  /* ------------------------------------------------------------------ */
+  /* Tab 1 · Where your work lives                                      */
+  /* ------------------------------------------------------------------ */
+  (function(){
+    var STEP = {
+      2: '<strong>Mission 1 &middot; Step 2 of 4.</strong> Check the file: tick <code>field_guide.md</code> in the changes list.',
+      3: '<strong>Mission 1 &middot; Step 3 of 4.</strong> Commit: record the checked change, with a message, in your local history.',
+      4: '<strong>Mission 1 &middot; Step 4 of 4.</strong> Push: send your local commits to GitHub, where your teammate can see them.'
+    };
+    var PRED = {
+      1: {
+        question: 'Predict: you saved field_guide.md in your editor. Where does the change live right now?',
+        options: ['Only in the working directory, my files on disk', "In my local repository's history", 'On GitHub, where my teammate can see it'],
+        correct: 0,
+        why: 'saving a file only changes your files on disk; Git has not recorded anything yet.',
+        after: function(){ G.setBrief(STEP[2]); }
+      },
+      2: {
+        question: 'Predict: you checked (staged) the file. Where does the change live now?',
+        options: ['It is already a commit in my local history', 'It is selected for the next commit, but no commit exists yet', 'It has been sent to GitHub'],
+        correct: 1,
+        why: 'checking only marks which changes the next commit will record; nothing is in history yet.',
+        after: function(){ G.setBrief(STEP[3]); }
+      },
+      3: {
+        question: 'Predict: commit 2 now exists. Where does it live?',
+        options: ['In my local repository only, on my computer', 'On GitHub too, because committing uploads it', 'Nowhere yet, I still need to check it'],
+        correct: 0,
+        why: 'a commit records local history; nothing reaches GitHub until you push.',
+        after: function(){ G.setBrief(STEP[4]); }
+      },
+      4: {
+        question: 'Predict: you pushed. What can your teammate see on GitHub now?',
+        options: ['Commits 1 and 2, because push sent my local commits to the remote', 'Still only commit 1, push just backs things up on my computer', 'My unsaved editor changes too'],
+        correct: 0,
+        why: 'push transfers local commits to the remote repository on GitHub. The change is now shared.',
         after: function(){
-          S.m4ready = true;
-          setBrief('<strong>Mission 4 &middot; Prove it.</strong> Edit, stage, and commit, and watch the Pages panel <em>not</em> change. Then push, and watch it rebuild.');
+          G.markDone(0);
+          G.setBrief('<strong>Mission 1 complete.</strong> The edit is on GitHub.');
+        },
+        continueLabel: 'Continue to mission 2',
+        onContinue: function(){ startMission(2); }
+      }
+    };
+
+    function startMission(n){
+      var S = G.S;
+      S.mission = n;
+      if (n === 1){
+        G.setBrief('<strong>Mission 1 &middot; Get an edit onto GitHub.</strong> You have just cloned this repository, so your local repository and GitHub both hold commit 1. Step 1 of 4: press <em>Edit file</em>.');
+        G.renderNote('After each step, a question asks which copy has the change. Answer it, read the explanation, then take the next step.');
+      } else if (n === 2){
+        G.setBrief('<strong>Mission 2 &middot; Committed, but GitHub shows nothing new.</strong> Press "Set the scene" below.');
+        G.renderScene('Mission 2: the scene',
+          'You make and commit another change (commit 3). Then your teammate refreshes GitHub and says nothing new is there.',
+          runScene2);
+      } else if (n === 3){
+        G.setBrief('<strong>Mission 3 &middot; Your teammate pushed a commit.</strong> Press "Set the scene", then get the commit onto your computer.');
+        G.renderScene('Mission 3: the scene',
+          'Your teammate Maya commits on her computer and pushes. Watch what changes on GitHub and what does not change on your computer.',
+          runScene3);
+      }
+    }
+    function runScene2(){
+      G.lock(true);
+      G.seq([
+        [function(){ G.opEdit(FILE); G.say('info', 'Scene: you save another change to <code>field_guide.md</code>&hellip;'); }, 900],
+        [function(){ G.opStage(); G.say('info', 'Scene: &hellip;you check it in the changes list&hellip;'); }, 900],
+        [function(){
+          var c = G.opCommit();
+          G.say('info', 'Scene: &hellip;and press "Commit to main". Commit ' + c.n + ' (“' + c.msg + '”) is recorded locally. You do <em>not</em> push.');
+        }, 1100],
+        [function(){
+          G.renderPrompt({
+            question: 'You committed, but your teammate says GitHub shows nothing new. What is missing?',
+            options: ['Save the file again in the editor', 'Commit a second time, with a longer message', 'Push, because commits stay on my computer until I push them'],
+            correct: 2,
+            why: 'a commit records local history; a push transfers commits to the remote. GitHub cannot see unpushed commits.',
+            after: function(){
+              G.S.f.m2ready = true;
+              G.setBrief('<strong>Mission 2.</strong> Press <em>Push</em> (Desktop: "Push origin") so commit 3 reaches GitHub.');
+            }
+          });
+        }, 0]
+      ]);
+    }
+    function runScene3(){
+      G.lock(true);
+      var c = G.opRemoteCommit('main', { msg: "Add Maya's field notes" });
+      G.say('info', 'Maya pushed commit ' + c.n + ' (“' + c.msg + '”). It reached GitHub, but nothing on <em>your</em> computer changed.');
+      G.later(function(){
+        G.setBrief('<strong>Mission 3 &middot; Get commit ' + c.n + ' onto your computer.</strong> Press <em>Pull</em> (Desktop: "Fetch origin", then "Pull origin").');
+        G.renderNote('The teammate line below shows that GitHub has a commit you do not. Nothing arrives on your computer until you pull.');
+        G.lock(false);
+      }, 900);
+    }
+
+    G.SCEN.basics = {
+      id: 'basics', title: 'Save, commit, push, pull', tag: 'start here · ≈ 6 min',
+      intro: 'Edit one file, check it, commit it, and push it. After each step, say which copy has the change before the simulator tells you.',
+      autoStage: false,
+      commitMessages: ['Add favorite tool to the guide', 'Clarify the data sources section', 'Update the site headline'],
+      missions: ['Get an edit onto GitHub', 'Committed, but GitHub shows nothing new', 'Get a teammate’s commit onto your computer'],
+      recap: [
+        { k: 'save &ne; commit', t: 'Saving a file only changes your files on disk; a <strong>commit</strong> records checked changes, with a message, in your local history.' },
+        { k: 'commit &ne; push', t: 'A commit records local history; a <strong>push</strong> transfers commits to the remote. GitHub sees nothing until you push.' },
+        { k: 'pull', t: '<strong>Pull</strong> brings the remote’s new commits to your local repository. A teammate’s pushed work does not appear on your computer by itself.' }
+      ],
+      setup: function(){
+        G.S.files = [{ name: FILE }];
+        G.seed(['Initial commit']);
+      },
+      actions: [
+        { id: 'edit', label: 'Edit file', sub: 'save in your editor &middot; changes your files on disk', run: function(){
+          var S = G.S, f = S.files[0];
+          if (f.dirty && !f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Next: check it in the changes list.'); return; }
+          if (f.staged){ G.say('info', 'Your change is already checked. Next: Commit it.'); return; }
+          G.opEdit(FILE);
+          G.say('ok', 'You saved a change to <code>field_guide.md</code>. GitHub Desktop now lists it under Changes. Nothing is recorded in history yet.');
+          if (S.mission === 1 && !S.f.edit){ S.f.edit = true; G.renderPrompt(PRED[1]); }
+        } },
+        { id: 'stage', label: 'Check the file', sub: 'Desktop: tick the box beside the file under Changes &middot; git add, also called staging', run: function(){
+          var S = G.S, f = S.files[0];
+          if (f.staged){ G.say('info', 'The change is already checked for the next commit. Next: Commit.'); return; }
+          if (!f.dirty){ G.say('warn', 'Nothing to check: the changes list is empty. Edit the file first.'); return; }
+          G.opStage();
+          G.say('ok', 'The change is checked, meaning selected for the next commit (<code>git add</code>). Still not in history.');
+          if (S.mission === 1 && S.f.edit && !S.f.stage){ S.f.stage = true; G.renderPrompt(PRED[2]); }
+        } },
+        { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
+          var S = G.S;
+          if (!G.anyStaged()){ G.say('warn', 'Nothing is checked, so there is nothing to commit. A commit records the <em>checked</em> changes, and right now none are checked.'); return; }
+          var c = G.opCommit();
+          G.say('ok', 'Commit ' + c.n + ' (“' + c.msg + '”) is recorded in your local repository (Desktop: "Commit to main").');
+          if (S.mission === 1 && S.f.stage && !S.f.commit){ S.f.commit = true; G.renderPrompt(PRED[3]); }
+        } },
+        { id: 'push', label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
+          var S = G.S, up = G.unpushed('main');
+          if (!up.length){ G.say('warn', 'Every local commit is already on GitHub, so there is nothing to push. (Desktop would only offer "Fetch origin".)'); return; }
+          G.opPush('main');
+          G.say('ok', 'Pushed ' + G.describeNs(up) + ' to origin (Desktop: "Push origin"). GitHub now has your local history.');
+          if (S.mission === 1 && S.f.commit && !S.f.push){ S.f.push = true; G.renderPrompt(PRED[4]); }
+          else if (S.mission === 2 && S.f.m2ready){ G.markDone(1); startMission(3); }
+        } },
+        { id: 'pull', label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
+          var S = G.S, inc = G.incoming('main');
+          if (!inc.length){ G.say('warn', 'Nothing to pull right now: GitHub has no commits you are missing. Pull matters after a teammate pushes (that is mission 3).'); return; }
+          G.opPull('main');
+          S.fileStateOverride = 'updated by pull. Maya’s change is now in your files';
+          G.renderFiles();
+          G.say('ok', 'Pulled ' + G.describeNs(inc) + ' into your local repository, and your working directory files updated to match (Desktop: "Pull origin").');
+          if (S.mission === 3){
+            G.markDone(2); S.mission = 4;
+            G.setBrief('<strong>All three missions complete.</strong>');
+            G.renderNote('<strong>&#10003; Done.</strong> The recap below lists the three distinctions the quiz tests. Tab 2 is optional: what happens when you and a teammate both commit to main.', true);
+          }
+        } }
+      ],
+      start: function(){ startMission(1); }
+    };
+  })();
+
+  /* ------------------------------------------------------------------ */
+  /* Tab 2 · Pull before you push                                       */
+  /* ------------------------------------------------------------------ */
+  (function(){
+    function askPrediction(){
+      G.renderPrompt({
+        question: 'Predict: you press Push now. What happens?',
+        options: ['Commit 4 goes up and replaces Maya’s commit 5', 'GitHub refuses the push, because it holds a commit you do not have', 'GitHub merges the two histories for you'],
+        correct: 1,
+        why: 'GitHub does not let a push discard commits it already has. You have to pull commit 5 first.',
+        after: function(){
+          G.markDone(0); G.S.mission = 2;
+          G.setBrief('<strong>Mission 2.</strong> Press <em>Push</em> and read the message. Then <em>Pull</em>, then <em>Push</em> again.');
         }
       });
     }
-  }
 
-  /* Scripted internals (no mission hooks, no guards) ----------------- */
-  function sEdit(){
-    S.dirty = true;
-    el.fileBadge.hidden = false;
-    if (!REDUCED) el.fileBadge.classList.add('pop');
-    updateFileState();
-    say('info', 'Scene: you save another change to <code>field_guide.md</code>&hellip;');
-    updateTview();
-  }
-  function sStage(){
-    S.dirty = false; S.staged = true;
-    el.fileBadge.hidden = true;
-    fly(el.fileChip, el.stageBody, 'field_guide.md', 'flychip', function(){
-      el.stageChip.hidden = false;
-      el.stageEmpty.hidden = true;
-    });
-    updateFileState();
-    say('info', 'Scene: &hellip;you check it in the changes list&hellip;');
-  }
-  function sCommit(){
-    S.staged = false;
-    var c = { n: S.next++, mine: true };
-    S.local.push(c);
-    el.stageChip.hidden = true;
-    el.stageEmpty.hidden = false;
-    fly(el.stageBody, el.localStrip, String(c.n), 'flydot', function(){
-      addDot(el.localStrip, c, true);
-      updateTview();
-    });
-    updateFileState();
-    say('info', 'Scene: &hellip;and press "Commit to main". Commit ' + c.n +
-      ' (“' + msgFor(c.n) + '”) is recorded locally. You do <em>not</em> push.');
-  }
+    G.SCEN['pull-first'] = {
+      id: 'pull-first', title: 'A refused push', tag: 'for shared repos · ≈ 3 min',
+      intro: 'You and Maya both cloned the same repository and both committed to <code>main</code>. She has already pushed; you have not. See what happens to your push and how to fix it.',
+      autoStage: true,
+      commitMessages: ['Tidy the README'],
+      missions: ['Predict what happens when you push after Maya pushed', 'Pull, then push', 'Avoid the problem next time'],
+      recap: [
+        { k: 'push refused', t: 'GitHub refuses a push when it holds a commit you do not have. Nothing is broken. <strong>Pull first</strong>, then push.' },
+        { k: 'merge commit', t: 'When both histories have new commits, pulling creates a small <strong>merge commit</strong> that joins them. That is normal, not an error.' },
+        { k: 'when to pull', t: 'Pull before you start working and again just before you push. The less time between your pull and your push, the less likely a teammate has pushed in between.' }
+      ],
+      setup: function(){
+        var S = G.S;
+        S.files = [{ name: FILE }];
+        G.seed(['Initial commit', 'Add the eight places', 'Add access notes']);
+        var mine = G.newCommit({ msg: 'Add the survey timeline' });
+        var maya = G.newCommit({ msg: 'Fix the museum hours', mine: false });
+        G.lane(S.local, 'main').commits.push(mine.n);
+        G.lane(S.remote, 'main').commits.push(maya.n);
+      },
+      actions: [
+        { id: 'edit', label: 'Edit file', sub: 'save in your editor &middot; Desktop checks it for you', run: function(){
+          var f = G.S.files[0];
+          if (f.dirty || f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Commit it.'); return; }
+          G.opEdit(FILE);
+          G.say('ok', 'Saved. Desktop lists <code>field_guide.md</code> under Changes and checks it for you (the staging step from tab 1, done automatically).');
+        } },
+        { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
+          if (!G.anyStaged()){ G.say('warn', 'Nothing is checked, so there is nothing to commit. Edit the file first.'); return; }
+          var c = G.opCommit();
+          G.say('ok', 'Commit ' + c.n + ' recorded locally. Not on GitHub yet.');
+        } },
+        { id: 'push', label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
+          var S = G.S, up = G.unpushed('main'), inc = G.incoming('main');
+          if (!up.length){ G.say('warn', 'Every local commit is already on GitHub, so there is nothing to push.'); return; }
+          if (inc.length){
+            G.say('warn', '<strong>Push refused.</strong> Desktop: “Newer commits on remote. Desktop is unable to push commits to this branch because there are commits on the remote that are not present on your local branch. Fetch the new commits before pushing.” GitHub has ' + G.describeNs(inc) + ' and you do not. Press <em>Pull</em>.');
+            if (S.mission === 2 && !S.f.refused){
+              S.f.refused = true;
+              G.setBrief('<strong>Mission 2 &middot; Now Pull.</strong> Desktop’s button reads “Pull origin” with ↓1 ↑1: one commit to fetch, one to push.');
+            }
+            return;
+          }
+          G.opPush('main');
+          G.say('ok', 'Pushed ' + G.describeNs(up) + '. GitHub now has ' + (up.some(function(n){ return G.C(n).merge; }) ? 'your commit, Maya’s commit, and the merge commit.' : 'your commits.'));
+          if (S.mission === 2 && S.f.merged){
+            G.markDone(1); S.mission = 3;
+            G.setBrief('<strong>Mission 3 &middot; Next time.</strong>');
+            G.renderPrompt({
+              question: 'What avoids most refused pushes?',
+              options: ['Push after every save, so GitHub always matches my computer', 'Pull before I start working, and again just before I push', 'Make sure teammates never commit while I am working'],
+              correct: 1,
+              why: 'pulling first means your push starts from what GitHub already has. Branches (tab 3) reduce the problem too, but you still pull main.',
+              after: function(){
+                G.markDone(2); G.S.mission = 4;
+                G.setBrief('<strong>All three missions complete.</strong>');
+                G.appendNote('<strong>&#10003; Done.</strong> A refused push means GitHub has a commit you do not. Pull, check the result, push. Tab 3, branches and pull requests, is optional.', true);
+              }
+            });
+          }
+        } },
+        { id: 'pull', label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
+          var S = G.S, inc = G.incoming('main');
+          if (!inc.length){ G.say('warn', 'Nothing to pull: GitHub has no commits you are missing.'); return; }
+          var r = G.opPull('main', { merge: true, mergeMsg: 'Merge Maya’s commit into main' });
+          S.fileStateOverride = r.merge ? 'updated by pull. Maya’s change and yours are both in your files' : 'updated by pull';
+          G.renderFiles();
+          G.say('ok', 'Pulled ' + G.describeNs(inc) + '.' + (r.merge ?
+            ' Both histories had a new commit after commit 3, so Git joined them with a merge commit (M). Both commits are kept.' :
+            ' Your files updated to match.'));
+          if (S.mission === 2 && r.merge && !S.f.merged){
+            S.f.merged = true;
+            G.renderPrompt({
+              question: 'Where is Maya’s change now?',
+              options: ['Only on GitHub, until I push', 'In my local history and in my files on disk', 'In my files, but not in my history'],
+              correct: 1,
+              why: 'pull updates both: the commit is in your local repository and your working files match it. Your history now contains everything GitHub has, plus commit 4 and the merge.',
+              after: function(){ G.setBrief('<strong>Mission 2 &middot; Now Push.</strong> Your local repository has every commit GitHub has, so the push will be accepted.'); }
+            });
+          }
+        } }
+      ],
+      start: function(){
+        G.S.mission = 1;
+        G.setBrief('<strong>Mission 1.</strong> You committed commit 4 on your computer and have not pushed. Maya committed commit 5 on her computer and pushed it. Compare stations 3 and 4 and read the teammate line, then answer the question.');
+        G.say('info', 'Commit 4 is only on your computer. Commit 5 is only on GitHub. You have not pulled since Maya pushed.');
+        askPrediction();
+      }
+    };
+  })();
 
-  function runScene2(){
-    lock(true);
-    seq([
-      [sEdit, 900],
-      [sStage, 900],
-      [sCommit, 1100],
-      [function(){
-        updateTview();
-        renderPrompt({
-          question: 'You committed, but your teammate says GitHub shows nothing new. What is missing?',
-          options: [
-            'Save the file again in the editor',
-            'Commit a second time, with a longer message',
-            'Push, because commits stay on my machine until I push them'
-          ],
-          correct: 2,
-          why: 'a commit records local history; a push transfers commits to the remote. GitHub cannot see unpushed commits.',
+  /* ------------------------------------------------------------------ */
+  /* Tab 3 · Branch, pull request, merge                                */
+  /* ------------------------------------------------------------------ */
+  (function(){
+    var BR = 'add-note';
+    var GRP = 'On your computer (GitHub Desktop)';
+    var GH = 'On github.com';
+
+    G.SCEN.branches = {
+      id: 'branches', title: 'Branch, pull request, merge', tag: 'for Lab 3 part 3 · ≈ 5 min',
+      intro: 'A branch is a second line of history inside the same repository. Create one, commit on it, open a pull request, merge it, and check after each step which copies changed.',
+      autoStage: true,
+      commitMessages: ['Add a note on the Botanical Garden', 'Second note'],
+      missions: ['Create a branch and commit on it', 'Publish the branch and open a pull request', 'Merge on GitHub, then update your local main'],
+      recap: [
+        { k: 'branch = label', t: 'A new branch is a label pointing at the current commit, not a copy of the folder. Switching branches changes which version of the files is on your disk.' },
+        { k: 'pull request', t: 'A pull request is a request to review and merge a branch. Opening it moves no commits; <strong>merging</strong> does.' },
+        { k: 'merged &ne; pulled', t: 'Merging happens on GitHub. Your local main does not change until you switch to it and pull.' }
+      ],
+      tview: G.branchTview,
+      setup: function(){
+        G.S.files = [{ name: FILE }];
+        G.seed(['Initial commit', 'Add the eight places', 'Add access notes']);
+      },
+      actions: [
+        { id: 'newbranch', group: GRP, label: 'New branch', sub: 'Desktop: Current Branch &rarr; New Branch &middot; git switch -c add-note', run: function(){
+          var S = G.S;
+          if (G.lane(S.local, BR)){ G.say('info', 'You already have <code>add-note</code>. Desktop lists it under Current Branch.'); return; }
+          G.opNewBranch(BR);
+          G.say('ok', 'Branch <code>add-note</code> created from commit 3 and checked out (Desktop: Current Branch &rarr; New Branch). Station 3 now shows two branches pointing at the same commit.');
+          if (S.mission === 1 && !S.f.nb){
+            S.f.nb = true;
+            G.renderPrompt({
+              question: 'Predict: did any file on your disk change?',
+              options: ['Yes, Git copied the project into a new folder for the branch', 'No. The branch is a label pointing at commit 3; the files are the same', 'Yes, the file went back to commit 1'],
+              correct: 1,
+              why: 'a branch is a pointer, not a folder. Until you commit something on it, add-note and main point at the same commit and your files are identical.',
+              after: function(){ G.setBrief('<strong>Mission 1 &middot; Step 2.</strong> <em>Edit file</em>, then <em>Commit</em>. Check which branch the commit lands on.'); }
+            });
+          }
+        } },
+        { id: 'switch', group: GRP,
+          label: function(){ return 'Switch to ' + (G.S.local.head === 'main' ? BR : 'main'); },
+          sub: 'Desktop: Current Branch menu &middot; git switch', run: function(){
+          var S = G.S;
+          if (S.local.lanes.length < 2){ G.say('warn', 'Only <code>main</code> exists. Create a branch first.'); return; }
+          if (G.anyStaged() || G.anyDirty()){ G.say('warn', 'You have an uncommitted change. Commit it first. (Desktop would ask whether to bring the change along or leave it behind.)'); return; }
+          var to = S.local.head === 'main' ? BR : 'main';
+          G.opSwitch(to);
+          var br = G.lane(S.local, BR), lm = G.lane(S.local, 'main');
+          var noteOnBranchOnly = br.commits.some(function(n){ return !G.has(lm, n); });
+          if (to === 'main') S.fileStateOverride = noteOnBranchOnly ? 'files on disk now match main: your note is not in the file; it is on add-note' : 'files on disk match main';
+          else S.fileStateOverride = 'files on disk now match add-note' + (noteOnBranchOnly ? ': your note is back' : '');
+          G.renderFiles();
+          G.say('ok', 'Switched to <code>' + to + '</code> (Desktop: Current Branch). Switching changes the files on your disk to match that branch’s latest commit.');
+          if (S.mission === 3 && S.f.mg && to === 'main') G.setBrief('<strong>Mission 3 &middot; Now Pull.</strong> Desktop shows “Pull origin” for main.');
+        } },
+        { id: 'edit', group: GRP, label: 'Edit file', sub: 'save in your editor &middot; Desktop checks it for you', run: function(){
+          var S = G.S, f = S.files[0];
+          if (f.dirty || f.staged){ G.say('info', '<code>field_guide.md</code> already has an uncommitted change. Commit it.'); return; }
+          G.opEdit(FILE);
+          G.say('ok', 'Saved. Desktop lists <code>field_guide.md</code> under Changes, checked. You are on <code>' + S.local.head + '</code>, so the next commit lands there.');
+        } },
+        { id: 'commit', group: GRP, label: 'Commit',
+          sub: function(){ return 'Desktop: "Commit to ' + G.S.local.head + '" &middot; git commit'; }, run: function(){
+          var S = G.S;
+          if (!G.anyStaged()){ G.say('warn', 'Nothing is checked, so there is nothing to commit. Edit the file first.'); return; }
+          var head = S.local.head;
+          var c = G.opCommit();
+          G.say('ok', 'Commit ' + c.n + ' recorded on <code>' + head + '</code>.' + (head !== 'main' ? ' main has not changed, locally or on GitHub.' : ''));
+          if (S.mission === 1 && S.f.nb && head === BR && !S.f.c1){
+            S.f.c1 = true;
+            G.renderPrompt({
+              question: 'Predict: is commit ' + c.n + ' on main?',
+              options: ['Yes, every commit goes to main', 'No. It is on add-note only; main still ends at commit 3', 'Only after I push'],
+              correct: 1,
+              why: 'a commit is recorded on the branch you are on. main has not changed, locally or on GitHub.',
+              after: function(){
+                G.markDone(0); G.S.mission = 2;
+                G.setBrief('<strong>Mission 2.</strong> Press <em>Publish branch</em> (Desktop’s name for the first push of a new branch), then <em>Open pull request</em>.');
+              }
+            });
+          }
+        } },
+        { id: 'push', group: GRP,
+          label: function(){ var S = G.S; return (S.local.head !== 'main' && !G.lane(S.remote, S.local.head)) ? 'Publish branch' : 'Push'; },
+          sub: 'Desktop: "Publish branch" the first time, then "Push origin" &middot; git push', run: function(){
+          var S = G.S, name = S.local.head, up = G.unpushed(name);
+          if (!up.length && G.lane(S.remote, name)){ G.say('warn', 'Everything on <code>' + name + '</code> is already on GitHub. Nothing to push.'); return; }
+          var inc = G.incoming(name);
+          if (inc.length){ G.say('warn', '<strong>Push refused.</strong> GitHub’s <code>' + name + '</code> has ' + G.describeNs(inc) + ', which you do not have. Pull first (tab 2 covers this).'); return; }
+          var r = G.opPush(name);
+          G.say('ok', (r.isNew ? 'Published <code>' + name + '</code> to GitHub (Desktop: “Publish branch”). ' : 'Pushed ' + G.describeNs(r.up) + ' to <code>' + name + '</code> on GitHub. ') +
+                      (name !== 'main' ? 'GitHub’s <code>main</code> is unchanged; nothing has been merged.' : ''));
+          if (S.mission === 2 && name === BR && !S.pr) G.setBrief('<strong>Mission 2 &middot; Now Open pull request.</strong> Desktop: “Preview Pull Request”, then “Create Pull Request” in the browser.');
+        } },
+        { id: 'pull', group: GRP, label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
+          var S = G.S, name = S.local.head, inc = G.incoming(name);
+          if (!inc.length){
+            if (name !== 'main' && G.incoming('main').length) G.say('warn', 'You are on <code>add-note</code>, and GitHub’s add-note has nothing new. The branch that changed on GitHub is <code>main</code>. Switch to main first.');
+            else G.say('warn', 'Nothing to pull: GitHub has no commits on <code>' + name + '</code> that you are missing.');
+            return;
+          }
+          G.opPull(name, { merge: true });
+          S.fileStateOverride = name === 'main' ? 'updated by pull: main now includes your note' : 'updated by pull';
+          G.renderFiles();
+          G.say('ok', 'Pulled ' + G.describeNs(inc) + ' into your local <code>' + name + '</code>. Your files on disk now match.');
+          if (S.mission === 3 && S.f.mg && name === 'main'){
+            G.markDone(2); S.mission = 4;
+            G.setBrief('<strong>All three missions complete.</strong>');
+            G.renderNote('<strong>&#10003; Done.</strong> <code>add-note</code> can be deleted; its commit is on main. In the project repository, each task follows this sequence: branch, commit, pull request, review, merge, pull main. Tab 4, a merge conflict, is optional.', true);
+          }
+        } },
+        { id: 'openpr', group: GH, ghost: true, label: 'Open pull request', sub: 'Desktop: "Preview Pull Request" &rarr; browser', run: function(){
+          var S = G.S, rb = G.lane(S.remote, BR), rm = G.lane(S.remote, 'main');
+          if (!rb){ G.say('warn', 'GitHub does not have <code>add-note</code> yet. Publish the branch first.'); return; }
+          if (S.pr){ G.say('info', 'Pull request #1 already exists: ' + S.pr.text.toLowerCase() + '.'); return; }
+          var uniq = rb.commits.filter(function(n){ return !G.has(rm, n); });
+          if (!uniq.length){ G.say('warn', '<code>add-note</code> has no commits beyond main, so there is nothing to propose. Commit on the branch and push first.'); return; }
+          S.pr = { num: 1, from: BR, to: 'main', count: uniq.length, status: 'open', text: 'Open · waiting for review' };
+          G.renderPR(); G.updateTview();
+          G.say('ok', 'Pull request #1 opened on github.com: <code>add-note</code> into <code>main</code>, ' + uniq.length + ' commit' + (uniq.length === 1 ? '' : 's') + '. A teammate can now read Files changed and comment.');
+          if (S.mission === 2 && !S.f.pr){
+            S.f.pr = true;
+            var first = uniq[0];
+            G.renderPrompt({
+              question: 'Predict: what did opening the pull request change in the repository?',
+              options: ['Commit ' + first + ' is now on GitHub’s main', 'Nothing. A pull request asks for review; it does not move commits', 'My local main received commit ' + first],
+              correct: 1,
+              why: 'look at both main lanes: still commits 1–3. The pull request is a page on github.com, not a commit.',
+              after: function(){
+                G.markDone(1); G.S.mission = 3;
+                G.setBrief('<strong>Mission 3.</strong> Press <em>Merge pull request</em>, then check station 3.');
+              }
+            });
+          }
+        } },
+        { id: 'merge', group: GH, ghost: true, label: 'Merge pull request', sub: 'the green button on the pull request page', run: function(){
+          var S = G.S;
+          if (!S.pr){ G.say('warn', 'No pull request is open. Open one first.'); return; }
+          if (S.pr.status === 'merged'){ G.say('info', 'Pull request #1 is already merged.'); return; }
+          var rb = G.lane(S.remote, BR), rm = G.lane(S.remote, 'main');
+          var moved = rb.commits.filter(function(n){ return !G.has(rm, n); });
+          G.opMergeOnGitHub(BR, 'main', 'Merge pull request #1 from add-note');
+          S.pr.status = 'merged'; S.pr.text = 'Merged';
+          G.renderPR(); G.updateTview();
+          G.say('ok', 'Merged on github.com. GitHub’s <code>main</code> now contains ' + G.describeNs(moved) + ' plus a merge commit (M). Your local repository has not changed.');
+          if (S.mission === 3 && !S.f.mg){
+            S.f.mg = true;
+            G.renderPrompt({
+              question: 'Predict: what does your local main show now?',
+              options: ['Commits 1–4 and the merge commit, sent down by GitHub', 'Still commits 1–3. Merging happened on GitHub; local main is behind until I pull', 'Commit 4 only, because that is what I wrote'],
+              correct: 1,
+              why: 'nothing moves from GitHub to your computer without a pull. Desktop shows “Pull origin” once you are on main and fetch.',
+              after: function(){ G.setBrief('<strong>Mission 3.</strong> <em>Switch to main</em>, then <em>Pull</em>.'); }
+            });
+          }
+        } }
+      ],
+      start: function(){
+        G.S.mission = 1;
+        G.setBrief('<strong>Mission 1.</strong> You have just cloned; your local repository and GitHub both hold commits 1&ndash;3 on main. Step 1: press <em>New branch</em>.');
+        G.renderNote('Station 3 will show a second branch. After each step, check which branch changed and whether main changed.');
+      }
+    };
+  })();
+
+  /* ------------------------------------------------------------------ */
+  /* Tab 4 · Resolve a conflict                                         */
+  /* ------------------------------------------------------------------ */
+  (function(){
+    var BR = 'fix-rule', TP = 'team_plan.md';
+    var GRP = 'On your computer (GitHub Desktop, then VS Code)';
+    var YOURS = 'Review rule: every pull request needs one reviewer who reruns the notebook.';
+    var THEIRS = 'Review rule: merge only after the reviewer checks the Files changed tab.';
+    var RESOLVED = 'Review rule: every pull request needs one reviewer who checks Files changed and reruns the notebook.';
+    function plainView(line){ return G.esc('# Team plan') + '\n\n' + G.esc(line) + '\n'; }
+    function conflictView(){
+      return G.esc('# Team plan') + '\n\n' +
+        '<span class="marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; fix-rule <span class="lbl">(your version)</span></span>' +
+        '<span class="ours">' + G.esc(YOURS) + '</span>' +
+        '<span class="marker">=======</span>' +
+        '<span class="theirs">' + G.esc(THEIRS) + '</span>' +
+        '<span class="marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; main <span class="lbl">(Maya’s version, already on main)</span></span>';
+    }
+
+    G.SCEN.conflict = {
+      id: 'conflict', title: 'Resolve a conflict', tag: 'optional · ≈ 3 min',
+      intro: 'You branched <code>fix-rule</code> from commit 3 and rewrote the Review rule line (commit 4). Meanwhile Maya’s pull request rewrote the same line and was merged into <code>main</code> (commit 5). You pulled main. Your pull request now reports a conflict.',
+      autoStage: true,
+      missions: ['Explain why the pull request cannot merge', 'Resolve the conflict', 'Handle a notebook conflict'],
+      recap: [
+        { k: 'conflict', t: 'A conflict means both sides changed the same lines since the branches split. Git writes both versions into the file between <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.' },
+        { k: 'resolving', t: 'Read both versions, write the one line the team wants, remove every marker, then commit. Do not accept one side without reading the other.' },
+        { k: 'notebooks', t: 'A conflicting <code>.ipynb</code> is JSON full of outputs and metadata. Stop and coordinate with the other editor instead of resolving it line by line.' }
+      ],
+      tview: G.branchTview,
+      setup: function(){
+        var S = G.S;
+        S.files = [{ name: TP }];
+        var ns = G.seed(['Initial commit', 'Add team plan', 'Add data notes']);
+        var mine = G.newCommit({ msg: 'Require a reviewer who reruns the notebook' });
+        var maya = G.newCommit({ msg: 'Require a check of Files changed before merging', mine: false });
+        S.f.mayaN = maya.n;
+        G.lane(S.local, 'main').commits.push(maya.n);
+        G.lane(S.remote, 'main').commits.push(maya.n);
+        G.addLane(S.local, BR, ns.concat([mine.n]), ns[2]);
+        G.addLane(S.remote, BR, ns.concat([mine.n]), ns[2]);
+        S.local.head = BR;
+        S.pr = { num: 2, from: BR, to: 'main', count: 1, status: 'conflict', text: 'This branch has conflicts that must be resolved' };
+        S.fileView = { name: TP, where: 'on your disk, on fix-rule', html: plainView(YOURS) };
+      },
+      actions: [
+        { id: 'update', group: GRP, label: 'Update branch from main', sub: 'Desktop: Current Branch &rarr; Choose a branch to merge into fix-rule &rarr; main &middot; git merge main', run: function(){
+          var S = G.S;
+          if (S.f.conflicted){ G.say('info', S.f.resolved ? 'main is already merged in and the file is resolved. Commit the merge.' : 'main is already being merged in. Resolve the file first.'); return; }
+          S.f.conflicted = true;
+          var f = S.files[0]; f.conflict = true; f.dirty = true; f.staged = false;
+          G.fly(G.stripOf(G.el.localLanes, 'main'), G.stripOf(G.el.localLanes, BR), String(S.f.mayaN), 'flydot tfly', function(){
+            G.renderFiles();
+            S.fileView = { name: TP, where: 'on your disk, on fix-rule, merge in progress', html: conflictView() };
+            G.renderFilePanel();
+          });
+          G.say('warn', '<strong>Conflict in team_plan.md.</strong> Desktop: “Resolve conflicts before merging”. Git wrote both versions into the file with markers; read the file below. Nothing is committed yet.');
+          G.renderPrompt({
+            question: 'How should you resolve it?',
+            options: ['Keep my version; it is the most recent', 'Keep Maya’s version; it is already on main', 'Read both, write the one rule the team wants, and remove every marker'],
+            correct: 2,
+            why: 'the right result may keep one version, combine both, or replace both. Git cannot decide that; the people who wrote the two versions can.',
+            after: function(){ G.setBrief('<strong>Mission 2.</strong> Press <em>Open in editor and resolve</em>.'); }
+          });
+        } },
+        { id: 'resolve', group: GRP, label: 'Open in editor and resolve', sub: 'VS Code: edit the file, remove the markers, save', run: function(){
+          var S = G.S;
+          if (!S.f.conflicted){ G.say('warn', 'No conflict to resolve yet. Update the branch from main first.'); return; }
+          if (S.f.resolved){ G.say('info', 'Already resolved. Commit the merge.'); return; }
+          G.renderPrompt({
+            question: 'Pick the file contents to save:',
+            options: [
+              { code: '# Team plan\n\n' + RESOLVED },
+              { code: '# Team plan\n\n' + YOURS + '\n=======\n' + THEIRS },
+              { code: '# Team plan\n\n' + YOURS + '\n' + THEIRS }
+            ],
+            correct: 0,
+            why: 'the second option still contains a marker line, which Git would commit as ordinary text. The third keeps two contradictory rules. The first is one rule that covers both requirements.',
+            after: function(){
+              var S = G.S;
+              S.f.resolved = true;
+              var f = S.files[0]; f.conflict = false; f.dirty = true; f.staged = true;
+              S.fileView = { name: TP, where: 'on your disk, on fix-rule, saved', html: plainView(RESOLVED) };
+              G.renderFiles(); G.renderStage(true); G.renderFilePanel(); G.updateTview();
+              G.say('ok', 'Saved. Desktop reports “No conflicts remaining” and checks the file for the merge commit.');
+              G.setBrief('<strong>Mission 2.</strong> Press <em>Commit the merge</em>, then <em>Push</em>.');
+            }
+          });
+        } },
+        { id: 'commit', group: GRP, label: 'Commit the merge', sub: 'Desktop: “Continue merge” &middot; git commit', run: function(){
+          var S = G.S;
+          if (!S.f.resolved){ G.say('warn', S.f.conflicted ? 'The file still has conflict markers. Resolve it first.' : 'Nothing to commit yet. Update the branch from main first.'); return; }
+          if (S.f.merged){ G.say('info', 'The merge is already committed. Push it.'); return; }
+          S.f.merged = true;
+          G.lane(S.local, BR).commits.push(S.f.mayaN);
+          G.opCommit({ msg: 'Merge main into fix-rule', merge: true });
+          S.fileView.where = 'on your disk, on fix-rule, committed'; G.renderFilePanel();
+          G.say('ok', 'Merge commit (M) recorded on <code>fix-rule</code>. It has two parents: your commit 4 and main’s commit 5. The branch now contains both.');
+          G.setBrief('<strong>Mission 2 &middot; Now Push.</strong>');
+        } },
+        { id: 'push', group: GRP, label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
+          var S = G.S, up = G.unpushed(BR);
+          if (S.f.conflicted && !S.f.merged){ G.say('warn', 'Finish the merge first: resolve the file, then commit.'); return; }
+          if (!up.length){ G.say('warn', 'Nothing to push: GitHub’s fix-rule already has everything.'); return; }
+          G.opPush(BR);
+          var rb = G.lane(S.remote, BR), rm = G.lane(S.remote, 'main');
+          S.pr.count = rb.commits.filter(function(n){ return !G.has(rm, n); }).length;
+          S.pr.status = 'open'; S.pr.text = 'Able to merge · no conflicts';
+          G.renderPR(); G.updateTview();
+          G.say('ok', 'Pushed. Pull request #2 can be merged now. A teammate should still review the final rule before merging.');
+          if (S.mission === 2){
+            G.markDone(1); S.mission = 3;
+            G.setBrief('<strong>Mission 3 &middot; Notebooks.</strong>');
+            G.renderPrompt({
+              question: 'Suppose a notebook (.ipynb) conflicts instead of a Markdown file. What do you do?',
+              options: ['Pick “Use the modified file from main” in Desktop and move on', 'Keep my own version', 'Stop and coordinate with the other editor: decide which cells belong, rerun the notebook, then commit'],
+              correct: 2,
+              why: 'a notebook file is JSON that includes outputs and metadata. The conflict markers land inside that, and the diff is hard to read. Agreeing on the cells with the other editor is faster and safer.',
+              after: function(){
+                G.markDone(2); G.S.mission = 4;
+                G.setBrief('<strong>All three missions complete.</strong>');
+                G.appendNote('<strong>&#10003; Done.</strong> Monday’s optional exercise does the same in your own copy of the playground: read both versions, write the line you want, remove every marker, rerun the check.', true);
+              }
+            });
+          }
+        } }
+      ],
+      start: function(){
+        G.S.mission = 1;
+        G.setBrief('<strong>Mission 1.</strong> Station 4 shows pull request #2 with a red status. Answer the question first.');
+        G.renderPrompt({
+          question: 'GitHub says fix-rule has conflicts with main. What does that mean?',
+          options: ['My commit is broken and has to be redone', 'Both branches changed the same lines since they split at commit 3, so Git cannot choose a version', 'Maya’s change was merged first, so mine is rejected'],
+          correct: 1,
+          why: 'Maya’s commit 5, already on main, and your commit 4 both rewrote the Review rule line. Git does not choose between them.',
           after: function(){
-            S.m2ready = true;
-            setBrief('<strong>Mission 2 &middot; Now do it.</strong> Press <em>Push</em> (Desktop: "Push origin") so commit 3 reaches GitHub.');
+            G.markDone(0); G.S.mission = 2;
+            G.setBrief('<strong>Mission 2.</strong> Press <em>Update branch from main</em>. Expect a conflict.');
           }
         });
-      }, 0]
-    ]);
-  }
-
-  function runScene3(){
-    lock(true);
-    var c = { n: S.next++, mine: false };
-    S.remote.push(c);
-    addDot(el.remoteStrip, c, true);
-    el.remoteLegend.hidden = false;
-    renderPages(true);
-    updateTview();
-    say('info', 'Maya pushed commit ' + c.n + ' (“' + msgFor(c.n) +
-      '”). It reached GitHub, and Pages rebuilt, but nothing on <em>your</em> machine changed.');
-    setTimeout(function(){
-      S.pullArmed = true;
-      el.btnPull.setAttribute('aria-disabled', 'false');
-      setBrief('<strong>Mission 3 &middot; Bring commit ' + c.n +
-        ' to your machine.</strong> Press <em>Pull</em> (Desktop: "Fetch origin", then "Pull origin").');
-      renderNote('Notice the persistent line below: GitHub is ahead of your local repository. Nothing arrives on your machine until you pull.');
-      lock(false);
-    }, REDUCED ? 0 : 900);
-  }
+      }
+    };
+  })();
 
   /* ------------------------------------------------------------------ */
-  /* Player actions                                                     */
+  /* Tab 5 · Publish with GitHub Pages                                  */
   /* ------------------------------------------------------------------ */
-  function doEdit(){
-    if (guardLocked()) return;
-    if (S.dirty){
-      say('info', '<code>field_guide.md</code> already has an uncommitted change. Next: check it in the changes list (Stage).');
-      return;
-    }
-    if (S.staged){
-      say('info', 'Your change is already staged. Next: Commit it.');
-      return;
-    }
-    S.dirty = true;
-    el.fileBadge.hidden = false;
-    if (!REDUCED){ el.fileBadge.classList.remove('pop'); void el.fileBadge.offsetWidth; el.fileBadge.classList.add('pop'); }
-    updateFileState();
-    say('ok', 'You saved a change to <code>field_guide.md</code>. GitHub Desktop now lists it under Changes. Nothing is recorded in history yet.');
-    updateTview();
-    if (S.mission === 1 && !S.m1.edit){
-      S.m1.edit = true;
-      renderPrompt(PREDICTIONS[1]);
-    }
-  }
+  (function(){
+    var IDX = 'docs/index.md', RM = 'README.md';
 
-  function doStage(){
-    if (guardLocked()) return;
-    if (S.staged){
-      say('info', 'The change is already checked for the next commit. Next: Commit.');
-      return;
+    function editFile(name){
+      var f = G.fileByName(name);
+      if (f.dirty || f.staged){ G.say('info', '<code>' + name + '</code> already has an uncommitted change. Commit it.'); return; }
+      G.opEdit(name);
+      G.say('ok', 'Saved <code>' + name + '</code>. Desktop lists it under Changes, checked. The site has not changed; Pages does not read your computer.');
     }
-    if (!S.dirty){
-      say('warn', 'Nothing to stage: the changes list is empty. Edit the file first, then check it.');
-      return;
+    function touchesDocs(ns){
+      return ns.some(function(n){ var c = G.C(n); return c.files && c.files.some(function(f){ return f.indexOf('docs/') === 0; }); });
     }
-    S.dirty = false;
-    S.staged = true;
-    el.fileBadge.hidden = true;
-    fly(el.fileChip, el.stageBody, 'field_guide.md', 'flychip', function(){
-      el.stageChip.hidden = false;
-      el.stageEmpty.hidden = true;
-      if (!REDUCED){ el.stageChip.classList.remove('pop'); void el.stageChip.offsetWidth; el.stageChip.classList.add('pop'); }
-    });
-    updateFileState();
-    say('ok', 'The change is checked, meaning selected for the next commit (<code>git add</code>). Still not in history.');
-    updateTview();
-    if (S.mission === 1 && S.m1.edit && !S.m1.stage){
-      S.m1.stage = true;
-      renderPrompt(PREDICTIONS[2]);
+    function startBuild(n, docs, hold){
+      var S = G.S;
+      S.pages.building = true;
+      S.f.pending = { n: n, docs: docs };
+      G.renderPagesPanel(false); G.updateTview();
+      if (!hold) G.later(finishBuild, 1600);
     }
-  }
+    function finishBuild(){
+      var S = G.S, p = S.f.pending;
+      if (!p) return;
+      S.f.pending = null;
+      S.pages.building = false;
+      S.pages.built = p.n;
+      if (p.docs){ S.pages.content = p.n; S.pages.same = false; } else { S.pages.same = true; }
+      G.renderPagesPanel(true); G.updateTview();
+      if (S.f.onBuilt){ var cb = S.f.onBuilt; S.f.onBuilt = null; cb(); }
+    }
+    function runScene3(){
+      G.lock(true);
+      G.seq([
+        [function(){ G.opEdit(IDX); G.say('info', 'Scene: you fix a typo in <code>docs/index.md</code>&hellip;'); }, 900],
+        [function(){ var c = G.opCommit(); G.S.f.sceneN = c.n; G.say('info', 'Scene: &hellip;commit ' + c.n + ' recorded locally&hellip;'); }, 1100],
+        [function(){
+          var up = G.unpushed('main');
+          G.opPush('main');
+          startBuild(up[up.length - 1], true, true);
+          G.say('info', 'Scene: &hellip;pushed. The Pages badge says building. Your teammate refreshes the site right now and sees the old text.');
+        }, 1200],
+        [function(){
+          var n = G.S.f.sceneN;
+          G.renderPrompt({
+            question: 'Look at station 4. Commit ' + n + ' is in GitHub’s history, and the Pages badge says building. What explains the old site?',
+            options: ['The commit was never pushed', 'The build has not finished yet. Wait for the deployment, then refresh', 'Pages reads my computer, so my teammate has to pull first'],
+            correct: 1,
+            why: 'commit ' + n + ' is on GitHub, so it was pushed. The deployment status (Actions, or Settings → Pages) shows when the build is done. If commit ' + n + ' were missing from GitHub’s history, the answer would be “never pushed”. Check the commit list first, then the deployment.',
+            after: function(){
+              finishBuild();
+              G.markDone(2); G.S.mission = 4;
+              G.setBrief('<strong>All three missions complete.</strong>');
+              G.appendNote('<strong>&#10003; Done.</strong> For HW2: Settings &rarr; Pages, Deploy from a branch, <code>main</code>, <code>/docs</code>. When the site looks wrong, check in this order: the commit list on GitHub, the deployment status, then the site in a private window.', true);
+            }
+          });
+        }, 0]
+      ]);
+    }
 
-  function doCommit(){
-    if (guardLocked()) return;
-    if (!S.staged){
-      say('warn', 'Nothing is staged, so there is nothing to commit. A commit records the <em>checked</em> changes, and right now none are checked.');
-      return;
-    }
-    S.staged = false;
-    var c = { n: S.next++, mine: true };
-    S.local.push(c);
-    el.stageChip.hidden = true;
-    el.stageEmpty.hidden = false;
-    fly(el.stageBody, el.localStrip, String(c.n), 'flydot', function(){
-      addDot(el.localStrip, c, true);
-      updateTview();
-    });
-    updateFileState();
-    var extra = (S.mission === 4 && S.m4ready) ?
-      ' Look at the Pages panel: the published site has <em>not</em> changed.' : '';
-    say('ok', 'Commit ' + c.n + ' (“' + msgFor(c.n) +
-      '”) is recorded in your local repository (Desktop: "Commit to main").' + extra);
-    updateTview();
-    if (S.mission === 1 && S.m1.stage && !S.m1.commit){
-      S.m1.commit = true;
-      renderPrompt(PREDICTIONS[3]);
-    }
-  }
-
-  function doPush(){
-    if (guardLocked()) return;
-    var rn = nums(S.remote);
-    var unpushed = S.local.filter(function(c){ return rn.indexOf(c.n) === -1; });
-    if (!unpushed.length){
-      say('warn', 'Every local commit is already on GitHub, so there is nothing to push. (Desktop would only offer "Fetch origin".)');
-      return;
-    }
-    unpushed.forEach(function(c){ S.remote.push(c); });
-    fly(el.localStrip, el.remoteStrip, String(unpushed[0].n), 'flydot', function(){
-      unpushed.forEach(function(c){ addDot(el.remoteStrip, c, true); });
-      renderPages(true);
-      updateTview();
-    });
-    var list = describe(nums(unpushed));
-    var extra = (S.mission === 4 && S.m4ready) ?
-      ' GitHub Pages rebuilt the site from the pushed repository. Watch the panel.' : '';
-    say('ok', 'Pushed ' + list + ' to origin (Desktop: "Push origin"). GitHub now has your local history.' + extra);
-    updateTview();
-
-    if (S.mission === 1 && S.m1.commit && !S.m1.push){
-      S.m1.push = true;
-      renderPrompt(PREDICTIONS[4]);
-    } else if (S.mission === 2 && S.m2ready){
-      markDone(1);
-      startMission(3);
-    } else if (S.mission === 4 && S.m4ready){
-      markDone(3);
-      S.mission = 5;
-      setBrief('<strong>All four missions complete.</strong> Nicely done.');
-      renderNote('<strong>&#10003; Done.</strong> Read the recap card below once more; those four lines are the most common quiz mistakes. The simulator keeps working if you want to keep clicking.', true);
-    }
-  }
-
-  function doPull(){
-    if (guardLocked()) return;
-    var ln = nums(S.local);
-    var incoming = S.remote.filter(function(c){ return ln.indexOf(c.n) === -1; });
-    if (!S.pullArmed || !incoming.length){
-      say('warn', 'Nothing to pull right now: GitHub has no commits you are missing. Pull matters after a teammate pushes (that is mission 3).');
-      return;
-    }
-    incoming.forEach(function(c){ S.local.push(c); });
-    fly(el.remoteStrip, el.localStrip, String(incoming[0].n), 'flydot tfly', function(){
-      incoming.forEach(function(c){ addDot(el.localStrip, c, true); });
-      updateTview();
-    });
-    S.pullArmed = false;
-    el.btnPull.setAttribute('aria-disabled', 'true');
-    el.fileState.textContent = 'updated by pull. Maya’s change is now in your files';
-    say('ok', 'Pulled ' + describe(nums(incoming)) +
-      ' into your local repository, and your working directory files updated to match (Desktop: "Pull origin").');
-    updateTview();
-    if (S.mission === 3){
-      markDone(2);
-      startMission(4);
-    }
-  }
+    G.SCEN.pages = {
+      id: 'pages', title: 'Publish with GitHub Pages', tag: 'for HW2 · ≈ 3 min',
+      intro: 'GitHub Pages turns the <code>docs/</code> folder of your repository’s <code>main</code> branch, <em>on GitHub</em>, into a website. It reads the copy on GitHub, not the files on your computer.',
+      autoStage: true,
+      commitMessages: ['Write the introduction', 'Explain the sources in the README', 'Fix a typo in the introduction', 'Add the Botanical Garden hours'],
+      missions: ['Which copy Pages builds from', 'What the branch and folder setting leaves out', 'GitHub shows my file, but the site is old'],
+      recap: [
+        { k: 'Pages = remote', t: 'GitHub Pages rebuilds the site from the pushed repository on GitHub, not from the files on your computer. A commit that is not pushed does not reach the site.' },
+        { k: 'main + /docs', t: 'Only files inside <code>docs/</code> on <code>main</code> are published. <code>README.md</code> at the top level and commits on other branches stay out.' },
+        { k: 'old site?', t: 'First check GitHub’s commit list: is the commit there? Then check the deployment status. Pushed but still building is not the same as never pushed.' }
+      ],
+      setup: function(){
+        var S = G.S;
+        S.files = [{ name: IDX }, { name: RM }];
+        G.seed(['Add supplied Berkeley guide', 'Add the eight places', 'Add access notes']);
+        S.pages = { built: 3, content: 3, building: false, same: false };
+      },
+      actions: [
+        { id: 'editIndex', label: 'Edit docs/index.md', sub: 'the guide page &middot; inside the published folder', run: function(){ editFile(IDX); } },
+        { id: 'editReadme', label: 'Edit README.md', sub: 'repository notes &middot; outside docs/', run: function(){ editFile(RM); } },
+        { id: 'commit', label: 'Commit', sub: 'Desktop: "Commit to main" &middot; git commit', run: function(){
+          var S = G.S;
+          if (!G.anyStaged()){ G.say('warn', 'Nothing is checked, so there is nothing to commit. Edit a file first.'); return; }
+          var names = G.stagedNames();
+          var c = G.opCommit();
+          G.say('ok', 'Commit ' + c.n + ' recorded locally (' + names.join(', ') + '). Look at station 4: the site still says built from commit ' + S.pages.built + '.');
+        } },
+        { id: 'push', label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
+          var S = G.S, up = G.unpushed('main');
+          if (!up.length){ G.say('warn', 'Every local commit is already on GitHub, so there is nothing to push.'); return; }
+          if (S.f.pending){ G.say('warn', 'A build is still running. Wait for it to finish.'); return; }
+          var docs = touchesDocs(up), last = up[up.length - 1];
+          var gate = S.mission === 2 && !docs && !S.f.m2;
+          G.opPush('main');
+          startBuild(last, docs, gate);
+          G.say('ok', 'Pushed ' + G.describeNs(up) + '. The Pages badge in station 4 says building, then reports the new commit.');
+          if (S.mission === 1 && S.f.q1 && docs && !S.f.m1){
+            S.f.m1 = true;
+            S.f.onBuilt = function(){
+              G.markDone(0); G.S.mission = 2;
+              G.setBrief('<strong>Mission 2.</strong> <em>Edit README.md</em>, then <em>Commit</em> and <em>Push</em>.');
+              G.say('ok', 'Rebuilt from commit ' + last + '. The push reached GitHub first; Pages rebuilt the site a moment later.');
+            };
+          } else if (gate){
+            S.f.m2 = true;
+            G.renderPrompt({
+              question: 'Predict: when this build finishes, does the published guide change?',
+              options: ['Yes, every push to main changes the site', 'No. README.md is outside docs/, so it is not part of the site. Pages rebuilds, but the page looks the same', 'Only the README appears, replacing the guide'],
+              correct: 1,
+              why: 'the setting is main plus /docs. Files outside that folder are repository documentation, not website content.',
+              after: function(){ finishBuild(); },
+              continueLabel: 'Next question',
+              onContinue: function(){
+                G.renderPrompt({
+                  question: 'Maya pushes a fix to docs/index.md on a branch called fix-typo. Does the site update?',
+                  options: ['Yes, it is inside docs/', 'No. Pages publishes main only; the fix reaches the site after her branch is merged into main', 'Yes, but only on her computer'],
+                  correct: 1,
+                  why: 'both settings apply, branch and folder. Until the branch is merged, the fix is on fix-typo, not on main.',
+                  after: function(){
+                    G.markDone(1); G.S.mission = 3;
+                    G.setBrief('<strong>Mission 3.</strong> Press "Set the scene".');
+                  },
+                  continueLabel: 'Continue to mission 3',
+                  onContinue: function(){
+                    G.renderScene('Mission 3: the scene',
+                      'You fix a typo in docs/index.md, commit, and push. Right away your teammate opens the site and says it still shows the old text.',
+                      runScene3);
+                  }
+                });
+              }
+            });
+          }
+        } }
+      ],
+      start: function(){
+        G.S.mission = 1;
+        G.setBrief('<strong>Mission 1.</strong> Answer the question, then test it in the simulator.');
+        G.renderPrompt({
+          question: 'Your guide is published with GitHub Pages. Which copy of the repository does Pages build the site from?',
+          options: ['The working directory on my computer', 'My local repository’s commit history', 'The remote repository on GitHub, meaning whatever has been pushed'],
+          correct: 2,
+          why: 'GitHub Pages rebuilds from the pushed repository on GitHub. Commits that stay local never reach the site.',
+          after: function(){
+            G.S.f.q1 = true;
+            G.setBrief('<strong>Mission 1.</strong> <em>Edit docs/index.md</em>, then <em>Commit</em>. The site does not change. Then <em>Push</em> and watch it rebuild.');
+          }
+        });
+      }
+    };
+  })();
 
   /* ------------------------------------------------------------------ */
   /* Boot                                                               */
   /* ------------------------------------------------------------------ */
-  el.btnEdit.addEventListener('click', doEdit);
-  el.btnStage.addEventListener('click', doStage);
-  el.btnCommit.addEventListener('click', doCommit);
-  el.btnPush.addEventListener('click', doPush);
-  el.btnPull.addEventListener('click', doPull);
-
-  S.local.push({ n: 1, mine: true });
-  S.remote.push({ n: 1, mine: true });
-  addDot(el.localStrip, S.local[0], false);
-  addDot(el.remoteStrip, S.remote[0], false);
-  renderPages(false);
-  updateFileState();
-  updateTview();
-  startMission(1);
-})();
+  G.ORDER.push('basics', 'pull-first', 'branches', 'conflict', 'pages');
+  var start = location.hash.slice(1);
+  if (!G.SCEN[start]) start = 'basics';
+  G.load(start);
+})(window.__gitSim);
 </script>
 </body>
 </html>
