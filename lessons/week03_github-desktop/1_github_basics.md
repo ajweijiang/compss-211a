@@ -140,7 +140,7 @@ Maya still sees the old question locally. What should she check and do next?
 
 ### Pull fail, stashing, resolving a conflict
 
-Preview: [tab 2 of How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#pull-first) shows the committed version of this situation, a refused push fixed by pulling, and [tab 3](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#conflict) shows resolving the same conflict.
+Preview: [tab 2 of How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#pull-first) shows a refused push fixed by pulling, and [tab 3](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#conflict) shows resolving the same conflict.
 
 Imagine you are drafting your team project's next step while a teammate edits the
 same sentence. We will play both roles: your editor has your unfinished
@@ -256,7 +256,7 @@ help update your local copy.
 
 ## 4. Propose and review changes
 
-Optional preview: [tab 4 of How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#branches) walks through the same branch, pull request, merge, and pull sequence in about five minutes.
+Preview: [tab 4 of How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#branches).
 
 ### See what a branch does
 
