@@ -340,6 +340,12 @@
 
   .bullets{ margin:6px 0 0; padding-left:20px; max-width:66ch; }
   .bullets li{ margin:5px 0; }
+
+  /* ---------- next-step highlight and repositioned blocks ---------- */
+  .abtn.next{ box-shadow:0 0 0 3px var(--gold), 0 1px 2px rgba(18,35,61,.25); }
+  .abtn.ghost.next{ box-shadow:0 0 0 3px var(--gold); }
+  .tview{ margin:0 0 14px; }
+  .brief{ margin:0 0 12px; }
   /* ---------- flyer (animated traveling chip/dot) ---------- */
   .flyer{
     position:fixed; z-index:60; pointer-events:none; margin:0;
@@ -428,10 +434,6 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       <button type="button" class="sbtn restart" id="btnRestart">Restart this tab</button>
     </div>
     <p class="scenintro" id="scenIntro"></p>
-    <p class="hint" id="hint"></p>
-
-    <div class="brief" id="missionBrief"></div>
-
     <div class="stations" id="stations">
       <section class="station" aria-labelledby="st1h">
         <header><span class="stnum" aria-hidden="true">1</span><h3 id="st1h">Working directory</h3></header>
@@ -493,17 +495,20 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       </section>
     </div>
 
+    <p class="tview" id="teammateView" role="status" aria-live="polite">
+      <span class="tlabel">What does your teammate see right now?</span>
+      <span id="tviewText"></span>
+    </p>
+
     <div class="filepanel" id="filePanel" hidden></div>
+
+    <div class="brief" id="missionBrief"></div>
 
     <div class="actions" id="actions" role="group" aria-label="Simulator actions"></div>
 
     <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
     <div class="promptzone" id="promptZone"></div>
 
-    <p class="tview" id="teammateView" role="status" aria-live="polite">
-      <span class="tlabel">What does your teammate see right now?</span>
-      <span id="tviewText"></span>
-    </p>
   </section>
 
   <section class="card recap" aria-labelledby="recap-h">
@@ -526,7 +531,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   function $(id){ return document.getElementById(id); }
   var el = {
     tabs: $('tabs'), panel: $('simpanel'), scenTitle: $('sim-h'), scenTag: $('scenTag'),
-    scenIntro: $('scenIntro'), restart: $('btnRestart'), brief: $('missionBrief'), hint: $('hint'),
+    scenIntro: $('scenIntro'), restart: $('btnRestart'), brief: $('missionBrief'),
     fileList: $('fileList'), fileState: $('fileState'),
     stageBody: $('stageBody'), stageList: $('stageList'), stageEmpty: $('stageEmpty'),
     localLanes: $('localLanes'), remoteLanes: $('remoteLanes'), remoteLegend: $('remoteLegend'),
@@ -546,8 +551,6 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   var cur = null;         // current scenario
   var S = null;           // current state
   var progress = {};      // id -> true once all missions were completed
-  var HINT_BASE = 'Blue buttons are actions you take in GitHub Desktop on your computer; each also shows the matching git command.';
-  var HINT_GHOST = 'Outlined buttons are actions you take on github.com.';
   var qid = 0;            // unique radio-group names
 
   function freshState(){
@@ -645,10 +648,37 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     var icon = kind === 'ok' ? '&#10003;' : (kind === 'warn' ? '!' : '&rsaquo;');
     el.feedback.innerHTML = '<span class="fico ' + kind + '" aria-hidden="true">' + icon + '</span>' + html;
   }
-  function setBrief(html){ el.brief.innerHTML = html; }
+  function stripTags(h){ return String(h).replace(/<[^>]+>/g, ''); }
+  function actionLabel(a){ return stripTags(typeof a.label === 'function' ? a.label() : a.label).trim().toLowerCase(); }
+  function parseNext(html){ // action ids named in <em> inside the brief, in order
+    var ids = [], re = /<em>(.*?)<\/em>/g, m;
+    while ((m = re.exec(html))){
+      var txt = stripTags(m[1]).trim().toLowerCase();
+      for (var i = 0; i < cur.actions.length; i++){
+        if (actionLabel(cur.actions[i]) === txt){ ids.push(cur.actions[i].id); break; }
+      }
+    }
+    return ids;
+  }
+  function updateNext(){
+    var marked = el.actions.querySelectorAll('.abtn.next');
+    for (var i = 0; i < marked.length; i++) marked[i].classList.remove('next');
+    if (!S || S.locked || !S.nextList) return;
+    var id = S.nextList[S.nextPos];
+    if (!id) return;
+    var b = $('act-' + id);
+    if (b) b.classList.add('next');
+  }
+  function setBrief(html){
+    el.brief.innerHTML = html;
+    S.nextList = parseNext(html);
+    S.nextPos = 0;
+    updateNext();
+  }
   function lock(v){
     S.locked = v;
     el.actions.classList.toggle('islocked', v);
+    updateNext();
   }
   function guardLocked(){
     if (S.locked){
@@ -882,7 +912,15 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         b.className = 'abtn' + (a.ghost ? ' ghost' : '');
         b.id = 'act-' + a.id;
         b.innerHTML = '<span class="blabel"></span><span class="bsub"></span>';
-        b.addEventListener('click', function(){ if (guardLocked()) return; a.run(); refreshActions(); });
+        b.addEventListener('click', function(){
+          if (guardLocked()) return;
+          var briefBefore = el.brief.innerHTML;
+          var wasNext = S.nextList && S.nextList[S.nextPos] === a.id;
+          a.run();
+          if (wasNext && el.brief.innerHTML === briefBefore) S.nextPos++;
+          refreshActions();
+          updateNext();
+        });
         wrap.appendChild(b);
       });
       el.actions.appendChild(wrap);
@@ -1182,7 +1220,6 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     el.scenTitle.textContent = cur.title;
     el.scenTag.textContent = cur.tag;
     el.scenIntro.innerHTML = cur.intro;
-    if (el.hint) el.hint.textContent = HINT_BASE + (cur.actions.some(function(a){ return a.ghost; }) ? ' ' + HINT_GHOST : '');
     el.panel.setAttribute('aria-labelledby', 'tab-' + id);
     el.zone.innerHTML = '';
     el.feedback.innerHTML = '';
@@ -1232,9 +1269,9 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   /* ------------------------------------------------------------------ */
   (function(){
     var STEP = {
-      2: '<strong>Step 2 of 4.</strong> Check the file: tick <code>field_guide.md</code> in the changes list.',
-      3: '<strong>Step 3 of 4.</strong> Commit: record the checked change, with a message, in your local history.',
-      4: '<strong>Step 4 of 4.</strong> Push: send your local commits to GitHub, where your teammate can see them.'
+      2: '<strong>Step 2 of 4.</strong> Press <em>Check the file</em>: tick <code>field_guide.md</code> in the changes list.',
+      3: '<strong>Step 3 of 4.</strong> Press <em>Commit</em>: record the checked change, with a message, in your local history.',
+      4: '<strong>Step 4 of 4.</strong> Press <em>Push</em>: send your local commits to GitHub, where your teammate can see them.'
     };
     var PRED = {
       1: {
@@ -1445,7 +1482,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             G.say('warn', '<strong>Push refused.</strong> Desktop: “Newer commits on remote. Desktop is unable to push commits to this branch because there are commits on the remote that are not present on your local branch. Fetch the new commits before pushing.” GitHub has ' + G.describeNs(inc) + ' and you do not. Press <em>Pull</em>.');
             if (S.mission === 2 && !S.f.refused){
               S.f.refused = true;
-              G.setBrief('<strong>Now Pull.</strong> Desktop’s button reads “Pull origin” with ↓1 ↑1: one commit to fetch, one to push.');
+              G.setBrief('<strong>Now <em>Pull</em>.</strong> Desktop’s button reads “Pull origin” with ↓1 ↑1: one commit to fetch, one to push.');
             }
             return;
           }
@@ -1483,7 +1520,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               options: ['Only on GitHub, until I push', 'In my local history and in my files on disk', 'In my files, but not in my history'],
               correct: 1,
               why: 'pull updates both: the commit is in your local repository and your working files match it. Your history now contains everything GitHub has, plus your commit 5 and the merge.',
-              after: function(){ G.setBrief('<strong>Now Push.</strong> Your local repository has every commit GitHub has, so the push will be accepted.'); }
+              after: function(){ G.setBrief('<strong>Now <em>Push</em>.</strong> Your local repository has every commit GitHub has, so the push will be accepted.'); }
             });
           }
         } }
@@ -1552,7 +1589,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           else S.fileStateOverride = 'files on disk now match add-note' + (noteOnBranchOnly ? ': your note is back' : '');
           G.renderFiles();
           G.say('ok', 'Switched to <code>' + to + '</code> (Desktop: Current Branch). Switching changes the files on your disk to match that branch’s latest commit.');
-          if (S.mission === 3 && S.f.mg && to === 'main') G.setBrief('<strong>Now Pull.</strong> Desktop shows “Pull origin” for main.');
+          if (S.mission === 3 && S.f.mg && to === 'main') G.setBrief('<strong>Now <em>Pull</em>.</strong> Desktop shows “Pull origin” for main.');
         } },
         { id: 'edit', group: GRP, label: 'Edit file', sub: 'save in your editor &middot; Desktop checks it for you', run: function(){
           var S = G.S, f = S.files[0];
@@ -1591,7 +1628,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           var r = G.opPush(name);
           G.say('ok', (r.isNew ? 'Published <code>' + name + '</code> to GitHub (Desktop: “Publish branch”). ' : 'Pushed ' + G.describeNs(r.up) + ' to <code>' + name + '</code> on GitHub. ') +
                       (name !== 'main' ? 'GitHub’s <code>main</code> is unchanged; nothing has been merged.' : ''));
-          if (S.mission === 2 && name === BR && !S.pr) G.setBrief('<strong>Now Open pull request.</strong> Desktop: “Preview Pull Request”, then “Create Pull Request” in the browser.');
+          if (S.mission === 2 && name === BR && !S.pr) G.setBrief('<strong>Now <em>Open pull request</em>.</strong> Desktop: “Preview Pull Request”, then “Create Pull Request” in the browser.');
         } },
         { id: 'pull', group: GRP, label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
           var S = G.S, name = S.local.head, inc = G.incoming(name);
@@ -1762,7 +1799,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.opCommit({ msg: 'Merge main into fix-rule', merge: true });
           S.fileView.where = 'on your disk, on fix-rule, committed'; G.renderFilePanel();
           G.say('ok', 'Merge commit (M) recorded on <code>fix-rule</code>. It has two parents: your commit 4 and main’s commit 5. The branch now contains both.');
-          G.setBrief('<strong>Now Push.</strong>');
+          G.setBrief('<strong>Now <em>Push</em>.</strong>');
         } },
         { id: 'push', group: GRP, label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
           var S = G.S, up = G.unpushed(BR);
