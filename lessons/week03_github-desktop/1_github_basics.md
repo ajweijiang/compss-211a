@@ -3,14 +3,10 @@
 Have [GitHub Desktop](https://desktop.github.com/download/) installed and signed
 in, and VS Code ready.
 
-Open [this lesson on GitHub](https://github.com/macss-berkeley/compss-211a/blob/main/lessons/week03_github-desktop/1_github_basics.md)
-so you can follow the latest version. Later, we'll update the copy on your
-computer while keeping your own work.
-
 Keep the [Git and GitHub glossary](3_git_github_glossary.md) handy for unfamiliar
 terms.
 
-1. [Try the interactive](#1-how-git-thinks)
+1. [How git thinks](#1-how-git-thinks)
 2. [Keep a local history](#2-keep-a-local-history)
 3. [Put the same repository on GitHub](#3-put-the-same-repository-on-github)
 4. [Propose and review changes](#4-propose-and-review-changes)
@@ -18,17 +14,17 @@ terms.
 
 ## 1. How git thinks
 
-Open [How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#basics) and complete tab 1, about six minutes, before the exercises below. The other tabs are optional.
+**What is Git?** Git is a free, open-source distributed version control system designed to track changes in source code and manage project files over time.
+
+A **repository** is just a project folder whose files and history are tracked by Git.
+
+A **commit** is a named checkpoint, or snapshot, of your project's files at a specific point in time. Commits allow you to track your project's history and revert your code back to that exact state if something breaks later on.
 
 ## 2. Keep a local history
 
-A **repository** is a project folder whose files and history are tracked by Git.
+### Create a repository
 
-Commits give you named checkpoints, so you can see what changed.
-
-### Create the repository
-
-1. In Desktop, select **File → New Repository**. On the welcome screen, the
+1. In GitHub Desktop, select **File → New Repository**. On the welcome screen, the
    equivalent option is **Create a New Repository on your Local Drive**.
 2. Name it `week3-practice`. Choose a local location you can find again,
    outside any existing repository.
@@ -45,11 +41,11 @@ The repository exists on your computer. We have not published it to GitHub.
 
 1. Select **Repository → Open in Visual Studio Code**, or open the repository
    folder in your editor. In `README.md`, add something!
-2. Save the file. In Desktop, open **Changes** and select `README.md`.
+2. Save the file. In GitHub Desktop, open **Changes** and select `README.md`.
    The **diff** shows added lines in green and removed lines in red. Read the
    actual text: is this the change you intended?
 3. Leave the checkbox beside this file selected. Checked changes are selected
-   for the commit; the interactive calls this staging.
+   for the commit; Git calls this staging.
 4. Enter `Explain the purpose of this practice repository` in **Summary**,
    then select **Commit to main**.
 5. Open **History** and select your commit. Its message and diff record what
@@ -64,6 +60,8 @@ tells a future reader more than `changes`. One coherent change can involve sever
 files, but unrelated edits should not be bundled together.
 
 **Question:** Where are your two commits? Can someone see them on GitHub yet?
+
+Now do tab 1 of [How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#basics).
 
 ### A little Markdown
 
@@ -87,12 +85,12 @@ rendered version after publishing.
 
 1. In Desktop, select **Publish repository**. Use your own account and the name
    `week3-practice` (or a new name if you already used that one).
-2. For this practice repository, deselect **Keep this code private** so a
-   classmate can read and comment on it. Its contents are just our lesson notes.
+2. For this practice repository, deselect **Keep this code private**. This means 
+   it can be viewed by others.
 3. Select **Publish Repository**, then **Repository → View on GitHub**.
    Find your README and commit history in the browser.
 
-Desktop creates the remote repository and connects your existing local copy
+Github Desktop creates the remote repository and connects your existing local copy
 to it. You do not need to create a second repository in the browser or link
 the two manually. See [GitHub's publishing guide](https://docs.github.com/en/desktop/overview/creating-your-first-repository-using-github-desktop#part-4-publishing-your-repository-to-github).
 
@@ -120,15 +118,11 @@ account settings. [Example avatar menu](../../img/github-avatar-menu.png).
 Inside a repository, **Code** shows files, the **branch** selector switches
 which branch you view, and **Pull requests** lists proposed changes (more on that below). 
 Repos have their own **Settings** tab, which controls that repository, including 
-collaborators and Pages (for websites! More on that later as well).
+collaborators, deletion, and Github Pages (free website! More on that later as well).
 
 Account settings and repository settings are different places.
 
 ### Bring an online change back: Fetch and Pull
-
-Use your personal `week3-practice` repository and make the online change
-yourself, so you can see what fetch and pull each do. After the next exercise,
-we'll apply this to [updating your course files](#get-this-weeks-course-files).
 
 Make sure you have no uncommitted local edits and no commits waiting to be pushed.
 
@@ -144,13 +138,13 @@ Make sure you have no uncommitted local edits and no commits waiting to be pushe
 **Question:** Luis pushed a new change to the team's repository.
 Maya still sees the old question locally. What should she check and do next?
 
-### Make a pull fail, then stash and resolve a conflict
+### Pull fail, stashing, resolving a conflict
 
-Optional preview: [tab 2 of How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#pull-first) shows the committed version of this situation, a refused push fixed by pulling, and [tab 3](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#conflict) shows resolving the same conflict.
+Preview: [tab 2 of How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#pull-first) shows the committed version of this situation, a refused push fixed by pulling, and [tab 3](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#conflict) shows resolving the same conflict.
 
-Imagine you are drafting the project's next step while a teammate edits the
-same sentence. We will play both roles: your editor holds your unfinished
-draft, and an edit on GitHub stands in for your teammate's contribution.
+Imagine you are drafting your team project's next step while a teammate edits the
+same sentence. We will play both roles: your editor has your unfinished
+draft, and we'll make an edit on GitHub to simulate your teammate's contribution.
 
 Use your **personal `week3-practice` repository**, on `main`. Start with no
 uncommitted changes, no commits waiting to be pushed, and no existing stash.
@@ -175,14 +169,14 @@ Fetch and pull first so your local and GitHub copies agree.
 4. **Try to pull.** In Desktop, select **Fetch origin**, then **Pull origin**.
    It should stop because pulling would overwrite your saved local edit.
    Read the warning together: which file is affected, and what is Git
-   protecting? Your draft should still be in the local file.
+   protecting? 
 
    ![Desktop warning that local edits would be overwritten by pulling](../../img/stash-warning.png)
 
-5. **Set the draft aside.** Select **Stash Changes and Continue**. If Desktop
+5. **Set the draft aside.** Select **Stash Changes and Continue**. If GitHub Desktop
    still offers **Pull origin**, select it. Open the local file: it should now
    say `Next step: check the data license.` Your draft is in the stash.
-6. **Bring the draft back.** Stay on `main`. In Desktop's **Changes** tab,
+6. **Bring the draft back.** Stay on `main`. In GitHub Desktop's **Changes** tab,
    select **Stashed Changes → Restore**. This time the two versions conflict:
    they changed the same original line differently. Open `next-step.md` in
    VS Code and inspect both versions. The labels may vary, but the conflict
@@ -206,10 +200,10 @@ Fetch and pull first so your local and GitHub copies agree.
 
    Save. If VS Code opens a merge editor, put this sentence in its result
    and complete the resolution.
-8. **Record and share the result.** Return to Desktop and check that the
+8. **Record and share the result.** Return to GitHub Desktop and check that the
    conflict is resolved. Inspect the diff, include `next-step.md`, and commit
    with `Agree on the next step`. Push, then refresh the file on GitHub to
-   verify the agreed sentence. Desktop should show no uncommitted changes.
+   verify the agreed sentence. GitHub Desktop should show no uncommitted changes.
    If the exercise's draft still appears under **Stashed Changes**, discard
    that stash only after checking the committed and pushed result.
 
@@ -246,7 +240,7 @@ changes into your copy. Use this routine at the start of each week.
    below before pulling. If there are no incoming changes, there is nothing
    to pull.
 5. Open `lessons/week03_github-desktop/1_github_basics.md` in your local course
-   folder. Check that this section is there; Desktop's **History** also shows
+   folder. Check that this section is there; GitHub Desktop's **History** also shows
    the commits you received.
 
 **If you have local work:** inspect what you changed before deciding how to
@@ -286,7 +280,7 @@ request (PR)** proposes bringing that change into `main`. Usually this is done
 in team settings, where people propose changes to a codebase. 
 For now, let's practice on our own repo.
 
-1. In Desktop, select `add-question`, then **Publish branch**. Open
+1. In GitHub Desktop, select `add-question`, then **Publish branch**. Open
    **Repository → View on GitHub**.
 2. On GitHub, choose **Pull requests → New pull request**. Select **base:
    `main`** (where the change goes) and **compare: `add-question`** (where it
@@ -298,7 +292,7 @@ For now, let's practice on our own repo.
 4. Return to the PR's **Conversation** tab, select **Merge pull request**, and
    confirm. Open your repository's **Code** tab on `main`: `question.md` should
    now be there.
-5. Back in Desktop, switch to `main`, fetch, and pull. Open `question.md`
+5. Back in GitHub Desktop, switch to `main`, fetch, and pull. Open `question.md`
    locally. You can delete `add-question` after its work is merged.
 
 | Action | What happens to `main`? |
@@ -317,7 +311,7 @@ its changes.
 | Action | What it creates | Example |
 | --- | --- | --- |
 | [Branch](3_git_github_glossary.md#branch) | Another line of development within one repository | Create `add-question` alongside `main`. |
-| [Clone](3_git_github_glossary.md#clone) | A local copy of an existing repository, with its history | Download the team repository into Desktop to work on your computer. |
+| [Clone](3_git_github_glossary.md#clone) | A local copy of an existing repository, with its history | Download the team repository into GitHub Desktop to work on your computer. |
 | [Fork](3_git_github_glossary.md#fork) | A separate repository on GitHub, linked to the original | Create `tomvannuenen/Git-Playground` from `dlab-berkeley/Git-Playground`. |
 
 **Forking** lets you work on your own copy of someone else's project, often
@@ -357,7 +351,7 @@ definition, fix a typo or broken link, or add a short troubleshooting tip.
 If you are unsure what to change, add a concrete example to a glossary definition 
 that you found difficult to understand.
 
-Do this exercise entirely in your browser.
+You can do this exercise entirely in your browser.
 
 1. **Create your fork.** Open the
    [teaching repository](https://github.com/macss-berkeley/compss-211a) and select
@@ -376,7 +370,7 @@ Do this exercise entirely in your browser.
    and use **Preview** to check the formatting.
 4. **Commit on your branch.** Select **Commit changes**, write a message that
    describes your improvement, and commit directly to `clarify-instructions`.
-   A commit made in the browser is already on GitHub; there is no separate
+   A commit made in the browser is already on GitHub; there is no separate GitHub
    Desktop push in this exercise.
 5. **Propose it to the course.** Return to the
    [original teaching repository](https://github.com/macss-berkeley/compss-211a),
@@ -400,10 +394,3 @@ Do this exercise entirely in your browser.
    **Conversation**. If a revision is requested, return to the same file on
    `clarify-instructions` in your fork and commit the edit. The existing PR
    updates automatically. The instructor can then review it again.
-
-## 5. Use the workflow in your team project
-
-Continue with the [team project lesson](2_project_repo.md). You will create
-one shared repository, invite collaborators, and review and merge each
-other's PRs. Then record your team's tentative question and next steps in
-the README. The guide includes help if a conflict comes up.
