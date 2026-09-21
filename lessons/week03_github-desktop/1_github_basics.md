@@ -2,7 +2,7 @@
 
 [Concept slides: keeping track of a research project](https://docs.google.com/presentation/d/1WlhH2rzUs7l7Xk1qYEAEDQI9GKQG5Oq3hd-hcYNSoXc/edit).
 
-Monday's practice uses the [Week 3 practice template](https://github.com/macss-berkeley/week03-git-practice). It is an imaginary text-research project with one question, *Which campus news stories mention housing?*, a short project page, and no data or results. You will make your own copy, clarify the proposed text-matching rule, publish the page, and review one change with a neighbor. The steps are in the three practice sections below.
+Monday's practice starts with the short tutorial built into GitHub Desktop, then uses the [Week 3 practice template](https://github.com/macss-berkeley/week03-git-practice). The template is an imaginary text-research project with one question, *Which campus news stories mention housing?*, a short project page, and no data or results. You will make your own copy, clarify the proposed text-matching rule, publish the page, and review one change with a neighbor. The steps are in the practice sections below.
 
 Friday's [Lab 3](../../lab/lab03_hidden_berkeley_pages.ipynb) practises the same workflow with the supplied Hidden Berkeley page, and HW2 uses that page too. Before Friday, work through the seven-minute interactive [How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html), which shows where a change lives after each step. It also opens from your local copy of the course repository at `docs/interactives/week03-how-git-thinks.html`. HTML/CSS authoring is optional.
 
@@ -60,6 +60,19 @@ You can start in either place:
 - **GitHub Desktop:** select **Current Repository -> Add -> Create New Repository** and initialize it with a README. This creates the local repository. Select **Publish repository** to create the remote copy.
 
 Today's practice uses a third way. **Use this template** on a GitHub repository creates a new repository under your account, with the template's files as its first commit and none of the template's later history. You then clone it like any other remote repository.
+
+### Practice 0: the GitHub Desktop tutorial
+
+GitHub Desktop includes a short tutorial. It creates a private repository named `desktop-tutorial` under your account, clones it into your Documents/GitHub folder, and shows a panel that tells you the next step: create a branch, edit the README, commit, publish, and open a pull request. It takes about ten minutes.
+
+1. Check that Desktop is signed in to your GitHub account under **Preferences** (macOS) or **Options** (Windows), then **Accounts**.
+2. The **Create a Tutorial Repository...** button is on Desktop's start screen, which appears only while no repositories have been added. If you already added one, select it and choose **Repository -> Remove...** without moving it to the Trash. You can add it back later with **File -> Add Local Repository**.
+3. Select **Create a Tutorial Repository...**, choose your account, and follow the panel on the left. If it asks you to install a text editor, VS Code was not detected; select **Skip** and open the folder in VS Code yourself.
+4. Work through the branch, the edit on line 6 of the README, the commit, and **Publish**. Open the pull request if there is time; otherwise select **Skip**.
+
+If Desktop says you already have a repository named `desktop-tutorial`, you ran the tutorial before. Delete that repository on GitHub under **Settings -> Danger Zone** and try again, or watch a neighbor.
+
+The tutorial covers the branch workflow. It does not commit to `main`, pull, or publish a page. The practices below add those.
 
 ### Practice 1: make your copy and record one change
 
