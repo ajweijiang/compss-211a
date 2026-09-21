@@ -1702,7 +1702,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   /* ------------------------------------------------------------------ */
   (function(){
     var BR = 'fix-rule', TP = 'team_plan.md';
-    var GRP = 'On your computer (GitHub Desktop, then VS Code)';
+    var GRP = 'On your computer (VS Code, then GitHub Desktop)';
     var YOURS = 'Review rule: every pull request needs one reviewer who reruns the notebook.';
     var THEIRS = 'Review rule: merge only after the reviewer checks the Files changed tab.';
     var RESOLVED = 'Review rule: every pull request needs one reviewer who checks Files changed and reruns the notebook.';
@@ -1717,19 +1717,18 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     }
 
     G.SCEN.conflict = {
-      id: 'conflict', title: 'Resolve a conflict', tag: 'optional · ≈ 3 min',
-      intro: 'Your branch <code>fix-rule</code> changed one line of <code>team_plan.md</code>. Maya changed the same line on <code>main</code>. Your pull request now reports a conflict; resolve it.',
+      id: 'conflict', title: 'Resolve a conflict', tag: 'optional · ≈ 2 min',
+      intro: 'Your branch <code>fix-rule</code> and <code>main</code> changed the same line of <code>team_plan.md</code>. Git stopped the merge and wrote both versions into the file.',
       autoStage: true,
-      missions: ['Explain why the pull request cannot merge', 'Resolve the conflict', 'Handle a notebook conflict'],
+      missions: ['Resolve the conflict', 'Commit and push the merge'],
       recap: [
         { k: 'conflict', t: 'A conflict means both sides changed the same lines since the branches split. Git writes both versions into the file between <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.' },
         { k: 'resolving', t: 'Read both versions, write the one line the team wants, remove every marker, then commit. Do not accept one side without reading the other.' },
         { k: 'notebooks', t: 'A conflicting <code>.ipynb</code> is JSON full of outputs and metadata. Stop and coordinate with the other editor instead of resolving it line by line.' }
       ],
-      tview: G.branchTview,
       setup: function(){
         var S = G.S;
-        S.files = [{ name: TP }];
+        S.files = [{ name: TP, dirty: true, conflict: true }];
         var ns = G.seed(['Initial commit', 'Add team plan', 'Add data notes']);
         var mine = G.newCommit({ msg: 'Require a reviewer who reruns the notebook' });
         var maya = G.newCommit({ msg: 'Require a check of Files changed before merging', mine: false });
@@ -1740,32 +1739,12 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         G.addLane(S.remote, BR, ns.concat([mine.n]), ns[2]);
         S.local.head = BR;
         S.pr = { num: 2, from: BR, to: 'main', count: 1, status: 'conflict', text: 'This branch has conflicts that must be resolved' };
-        S.fileView = { name: TP, where: 'on your disk, on fix-rule', html: plainView(YOURS) };
+        S.fileView = { name: TP, where: 'on your disk, on fix-rule, merge in progress', html: conflictView() };
       },
       actions: [
-        { id: 'update', group: GRP, label: 'Update branch from main', sub: 'GitHub Desktop: Current Branch &rarr; Choose a branch to merge into fix-rule &rarr; main &middot; git merge main', run: function(){
-          var S = G.S;
-          if (S.f.conflicted){ G.say('info', S.f.resolved ? 'main is already merged in and the file is resolved. Commit the merge.' : 'main is already being merged in. Resolve the file first.'); return; }
-          S.f.conflicted = true;
-          var f = S.files[0]; f.conflict = true; f.dirty = true; f.staged = false;
-          G.fly(G.stripOf(G.el.localLanes, 'main'), G.stripOf(G.el.localLanes, BR), String(S.f.mayaN), 'flydot tfly', function(){
-            G.renderFiles();
-            S.fileView = { name: TP, where: 'on your disk, on fix-rule, merge in progress', html: conflictView() };
-            G.renderFilePanel();
-          });
-          G.say('warn', '<strong>Conflict in team_plan.md.</strong> GitHub Desktop: “Resolve conflicts before merging”. Git wrote both versions into the file with markers; read the file below. Nothing is committed yet.');
-          G.renderPrompt({
-            question: 'How should you resolve it?',
-            options: ['Keep my version; it is the most recent', 'Keep Maya’s version; it is already on main', 'Read both, write the one rule the team wants, and remove every marker'],
-            correct: 2,
-            why: 'the right result may keep one version, combine both, or replace both. Git cannot decide that; the people who wrote the two versions can.',
-            after: function(){ G.setBrief('Press <em>Open in editor and resolve</em>.'); }
-          });
-        } },
         { id: 'resolve', group: GRP, label: 'Open in editor and resolve', sub: 'VS Code: edit the file, remove the markers, save', run: function(){
           var S = G.S;
-          if (!S.f.conflicted){ G.say('warn', 'No conflict to resolve yet. Update the branch from main first.'); return; }
-          if (S.f.resolved){ G.say('info', 'Already resolved. Commit the merge.'); return; }
+          if (S.f.resolved){ G.say('info', 'Already resolved. Commit and push.'); return; }
           G.renderPrompt({
             question: 'Pick the file contents to save:',
             options: [
@@ -1780,62 +1759,47 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               S.f.resolved = true;
               var f = S.files[0]; f.conflict = false; f.dirty = true; f.staged = true;
               S.fileView = { name: TP, where: 'on your disk, on fix-rule, saved', html: plainView(RESOLVED) };
-              G.renderFiles(); G.renderStage(true); G.renderFilePanel(); G.updateTview();
+              G.renderFiles(); G.renderStage(true); G.renderFilePanel();
+              G.markDone(0);
               G.say('ok', 'Saved. GitHub Desktop reports “No conflicts remaining” and ticks the file for the merge commit.');
-              G.setBrief('Press <em>Commit the merge</em>, then <em>Push</em>.');
+              G.setBrief('Press <em>Commit and push</em>.');
             }
           });
         } },
-        { id: 'commit', group: GRP, label: 'Commit the merge', sub: 'GitHub Desktop: “Continue merge” &middot; git commit', run: function(){
+        { id: 'commitpush', group: GRP, label: 'Commit and push', sub: 'GitHub Desktop: “Continue merge”, then “Push origin” &middot; git commit, git push', run: function(){
           var S = G.S;
-          if (!S.f.resolved){ G.say('warn', S.f.conflicted ? 'The file still has conflict markers. Resolve it first.' : 'Nothing to commit yet. Update the branch from main first.'); return; }
-          if (S.f.merged){ G.say('info', 'The merge is already committed. Push it.'); return; }
+          if (!S.f.resolved){ G.say('warn', 'The file still has conflict markers. Resolve it first.'); return; }
+          if (S.f.merged){ G.say('info', 'Already committed and pushed. The pull request can be merged.'); return; }
           S.f.merged = true;
           G.lane(S.local, BR).commits.push(S.f.mayaN);
           G.opCommit({ msg: 'Merge main into fix-rule', merge: true });
           S.fileView.where = 'on your disk, on fix-rule, committed'; G.renderFilePanel();
-          G.say('ok', 'Merge commit (M) recorded on <code>fix-rule</code>. It has two parents: your commit 4 and main’s commit 5. The branch now contains both.');
-          G.setBrief('<strong>Now <em>Push</em>.</strong>');
-        } },
-        { id: 'push', group: GRP, label: 'Push', sub: 'GitHub Desktop: "Push origin" &middot; git push', run: function(){
-          var S = G.S, up = G.unpushed(BR);
-          if (S.f.conflicted && !S.f.merged){ G.say('warn', 'Finish the merge first: resolve the file, then commit.'); return; }
-          if (!up.length){ G.say('warn', 'Nothing to push: GitHub’s fix-rule already has everything.'); return; }
-          G.opPush(BR);
-          var rb = G.lane(S.remote, BR), rm = G.lane(S.remote, 'main');
-          S.pr.count = rb.commits.filter(function(n){ return !G.has(rm, n); }).length;
-          S.pr.status = 'open'; S.pr.text = 'Able to merge · no conflicts';
-          G.renderPR(); G.updateTview();
-          G.say('ok', 'Pushed. Pull request #2 can be merged now. A teammate should still review the final rule before merging.');
-          if (S.mission === 2){
+          G.say('ok', 'Merge commit (M) recorded on <code>fix-rule</code>. It has two parents: your commit 4 and main’s commit 5. Pushing&hellip;');
+          G.lock(true);
+          G.later(function(){
+            var S = G.S;
+            G.opPush(BR);
+            var rb = G.lane(S.remote, BR), rm = G.lane(S.remote, 'main');
+            S.pr.count = rb.commits.filter(function(n){ return !G.has(rm, n); }).length;
+            S.pr.status = 'open'; S.pr.text = 'Able to merge · no conflicts';
+            G.renderPR();
+            G.lock(false);
             G.markDone(1); S.mission = 3;
-            G.setBrief('<strong>Notebooks.</strong>');
-            G.renderPrompt({
-              question: 'Suppose a notebook (.ipynb) conflicts instead of a Markdown file. What do you do?',
-              options: ['Pick “Use the modified file from main” in GitHub Desktop and move on', 'Keep my own version', 'Stop and coordinate with the other editor: decide which cells belong, rerun the notebook, then commit'],
-              correct: 2,
-              why: 'a notebook file is JSON that includes outputs and metadata. The conflict markers land inside that, and the diff is hard to read. Agreeing on the cells with the other editor is faster and safer.',
-              after: function(){
-                G.markDone(2); G.S.mission = 4;
-                G.setBrief('<strong>Finished.</strong>');
-                G.appendNote('<strong>&#10003; Done.</strong> Whenever this happens: read both versions, write the line you want, remove every marker, rerun the check.', true);
-              }
-            });
-          }
+            G.say('ok', 'Pushed. Pull request #2 can be merged now. A teammate should still review the final line before merging.');
+            G.setBrief('<strong>Finished.</strong>');
+            G.renderNote('<strong>&#10003; Done.</strong> Whenever this happens: read both versions, write the line you want, remove every marker, rerun the check.', true);
+          }, 900);
         } }
       ],
       start: function(){
         G.S.mission = 1;
-        G.setBrief('Station 4 shows pull request #2 with a red status. Answer the question first.');
+        G.setBrief('Read the file above, then answer the question below.');
         G.renderPrompt({
-          question: 'GitHub says fix-rule has conflicts with main. What does that mean?',
-          options: ['My commit is broken and has to be redone', 'Both branches changed the same lines since they split at commit 3, so Git cannot choose a version', 'Maya’s change was merged first, so mine is rejected'],
-          correct: 1,
-          why: 'Maya’s commit 5, already on main, and your commit 4 both rewrote the Review rule line. Git does not choose between them.',
-          after: function(){
-            G.markDone(0); G.S.mission = 2;
-            G.setBrief('Press <em>Update branch from main</em>. Expect a conflict.');
-          }
+          question: 'How should you resolve it?',
+          options: ['Keep my version; it is the most recent', 'Keep Maya’s version; it is already on main', 'Read both, write the one rule the team wants, and remove every marker'],
+          correct: 2,
+          why: 'the right result may keep one version, combine both, or replace both. Git cannot decide that; the people who wrote the two versions can.',
+          after: function(){ G.S.mission = 2; G.setBrief('Press <em>Open in editor and resolve</em>.'); }
         });
       }
     };
