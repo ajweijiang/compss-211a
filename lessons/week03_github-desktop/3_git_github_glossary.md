@@ -36,7 +36,7 @@ those edits in this lesson.
 ### Version control
 
 Keeping a record of changes so you can compare versions, see who changed
-something, and recover earlier work. [Git](#git) is one version-control system.
+something, and recover earlier work! [Git](#git) is one version-control system.
 
 ### Repository, or repo
 
