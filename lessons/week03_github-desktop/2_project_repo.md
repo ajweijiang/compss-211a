@@ -12,10 +12,8 @@ You will:
 - review and merge a teammate's pull request.
 
 The repository begins with the files in the
-[final project template](https://github.com/macss-berkeley/final-project-template),
-which are also in this course repository under
-[`final-project-repo/`](../../final-project-repo/README.md). You do not need to
-understand every file before starting.
+[final project template](https://github.com/macss-berkeley/compss-211a-project-template).
+You do not need to understand every file before starting.
 
 ## In class today
 
@@ -28,7 +26,7 @@ different file so nobody edits the same lines.
 
 One teammate coordinates this step:
 
-1. Open the [final project template](https://github.com/macss-berkeley/final-project-template)
+1. Open the [final project template](https://github.com/macss-berkeley/compss-211a-project-template)
    and choose **Use this template -> Create a new repository**.
 2. Choose your own account as the owner. Name the repository with lowercase
    words separated by dashes, such as `team-2-brand-performance`. Make it
