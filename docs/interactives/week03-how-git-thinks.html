@@ -337,6 +337,9 @@
     .minibadge.building{ animation:pulse .9s ease-in-out infinite alternate; }
     @keyframes pulse{ from{ opacity:1; } to{ opacity:.4; } }
   }
+
+  .bullets{ margin:6px 0 0; padding-left:20px; max-width:66ch; }
+  .bullets li{ margin:5px 0; }
   /* ---------- flyer (animated traveling chip/dot) ---------- */
   .flyer{
     position:fixed; z-index:60; pointer-events:none; margin:0;
@@ -410,10 +413,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     <h1>How Git Thinks</h1>
     <div class="chips">
       <span class="chip chip-gold">Week 3 &middot; GitHub Desktop</span>
-      <span class="chip chip-outline">Tab 1 &asymp; 6 minutes &middot; start here</span>
-      <span class="chip chip-outline">4 optional tabs &middot; 3 to 5 minutes each</span>
     </div>
-    <p class="promise">Practise commit, push, and pull in a simulator. After each step, say which copy of the repository has your change, then check.</p>
     <hr class="goldrule">
   </header>
 
@@ -421,8 +421,14 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
 
   <section class="card" aria-labelledby="intro-h">
     <h2 id="intro-h">Before you start</h2>
-    <p class="lede">Git records snapshots of a project's files. Each snapshot, or <strong>commit</strong>, has a message and a place in the project's history. Git is the version-control software; GitHub hosts the <strong>remote repository</strong>. The two copies do not synchronize automatically.</p>
-    <p class="lede">After you save, commit, or push, it is easy to lose track of which copy has the change: the files on your disk, the staging area, your local repository, or GitHub. <strong>Tab 1</strong> takes one edit through all four, with a question after each step. Do it before Friday. Tabs 2 to 5 are optional and cover a refused push, branches and pull requests, a merge conflict, and GitHub Pages.</p>
+    <ul class="bullets">
+      <li>Git records snapshots of a project's files. Each snapshot is a <strong>commit</strong> with a message.</li>
+      <li>Git is the version-control software. GitHub hosts the <strong>remote repository</strong>.</li>
+      <li>Your local copy and the GitHub copy do not synchronize automatically.</li>
+      <li>A change can be in four places: the files on your disk, the staging area, your local repository, or GitHub.</li>
+      <li><strong>Tab 1</strong> takes one edit through all four, with a question after each step. Do it before Friday.</li>
+      <li>Tabs 2 to 5 are optional: a refused push, branches and pull requests, a merge conflict, GitHub Pages.</li>
+    </ul>
   </section>
 
   <div class="tabs" role="tablist" aria-label="Exercises" id="tabs"></div>
@@ -434,7 +440,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       <button type="button" class="sbtn restart" id="btnRestart">Restart this tab</button>
     </div>
     <p class="scenintro" id="scenIntro"></p>
-    <p class="hint">Blue buttons are actions you take in GitHub Desktop on your computer; each also shows the matching git command. Outlined buttons are actions you take on github.com. The checklist below tracks the missions.</p>
+    <p class="hint">Blue buttons are actions you take in GitHub Desktop on your computer; each also shows the matching git command. Outlined buttons are actions you take on github.com.</p>
 
     <div class="brief" id="missionBrief"></div>
 
@@ -510,14 +516,6 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       <span class="tlabel">What does your teammate see right now?</span>
       <span id="tviewText"></span>
     </p>
-  </section>
-
-  <section class="card" aria-labelledby="missions-h">
-    <div class="cardhead">
-      <h2 id="missions-h">Missions</h2>
-      <span class="count" id="missionCount">0 / 3 complete</span>
-    </div>
-    <ol class="checklist" id="checklist"></ol>
   </section>
 
   <section class="card recap" aria-labelledby="recap-h">
@@ -909,6 +907,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     });
   }
   function renderMissions(){
+    if (!el.checklist) return;
     el.checklist.innerHTML = '';
     cur.missions.forEach(function(m, i){
       var li = document.createElement('li');
@@ -922,6 +921,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
     updateCount();
   }
   function updateCount(){
+    if (!el.count) return;
     var total = S.done.filter(Boolean).length;
     el.count.textContent = total + ' / ' + cur.missions.length + ' complete';
   }
@@ -955,7 +955,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       b.tabIndex = sel ? 0 : -1;
       b.innerHTML = '<span class="tnum">Tab ' + (i + 1) + '</span><span class="tlab">' + sc.title +
                     '</span><span class="ttag">' + sc.tag + '</span>' +
-                    (progress[id] ? '<span class="tdone" aria-label="all missions complete">&#10003;</span>' : '');
+                    (progress[id] ? '<span class="tdone" aria-label="all steps complete">&#10003;</span>' : '');
       b.addEventListener('click', function(){ if (!cur || cur.id !== id) load(id); });
       b.addEventListener('keydown', function(e){
         var k = e.key, j = i;
@@ -1241,9 +1241,9 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   /* ------------------------------------------------------------------ */
   (function(){
     var STEP = {
-      2: '<strong>Mission 1 &middot; Step 2 of 4.</strong> Check the file: tick <code>field_guide.md</code> in the changes list.',
-      3: '<strong>Mission 1 &middot; Step 3 of 4.</strong> Commit: record the checked change, with a message, in your local history.',
-      4: '<strong>Mission 1 &middot; Step 4 of 4.</strong> Push: send your local commits to GitHub, where your teammate can see them.'
+      2: '<strong>Step 2 of 4.</strong> Check the file: tick <code>field_guide.md</code> in the changes list.',
+      3: '<strong>Step 3 of 4.</strong> Commit: record the checked change, with a message, in your local history.',
+      4: '<strong>Step 4 of 4.</strong> Push: send your local commits to GitHub, where your teammate can see them.'
     };
     var PRED = {
       1: {
@@ -1274,9 +1274,9 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         why: 'push transfers local commits to the remote repository on GitHub. The change is now shared.',
         after: function(){
           G.markDone(0);
-          G.setBrief('<strong>Mission 1 complete.</strong> The edit is on GitHub.');
+          G.setBrief('<strong>Done.</strong> The edit is on GitHub.');
         },
-        continueLabel: 'Continue to mission 2',
+        continueLabel: 'Continue',
         onContinue: function(){ startMission(2); }
       }
     };
@@ -1285,16 +1285,16 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       var S = G.S;
       S.mission = n;
       if (n === 1){
-        G.setBrief('<strong>Mission 1 &middot; Get an edit onto GitHub.</strong> You have just cloned this repository, so your local repository and GitHub both hold commit 1. Step 1 of 4: press <em>Edit file</em>.');
+        G.setBrief('<strong>Get an edit onto GitHub.</strong> You have just cloned this repository, so your local repository and GitHub both hold commit 1. Step 1 of 4: press <em>Edit file</em>.');
         G.renderNote('After each step, a question asks which copy has the change. Answer it, read the explanation, then take the next step.');
       } else if (n === 2){
-        G.setBrief('<strong>Mission 2 &middot; Committed, but GitHub shows nothing new.</strong> Press "Set the scene" below.');
-        G.renderScene('Mission 2: the scene',
+        G.setBrief('<strong>Committed, but GitHub shows nothing new.</strong> Press "Set the scene" below.');
+        G.renderScene('The scene',
           'You make and commit another change (commit 3). Then your teammate refreshes GitHub and says nothing new is there.',
           runScene2);
       } else if (n === 3){
-        G.setBrief('<strong>Mission 3 &middot; Your teammate pushed a commit.</strong> Press "Set the scene", then get the commit onto your computer.');
-        G.renderScene('Mission 3: the scene',
+        G.setBrief('<strong>Your teammate pushed a commit.</strong> Press "Set the scene", then get the commit onto your computer.');
+        G.renderScene('The scene',
           'Your teammate Maya commits on her computer and pushes. Watch what changes on GitHub and what does not change on your computer.',
           runScene3);
       }
@@ -1316,7 +1316,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             why: 'a commit records local history; a push transfers commits to the remote. GitHub cannot see unpushed commits.',
             after: function(){
               G.S.f.m2ready = true;
-              G.setBrief('<strong>Mission 2.</strong> Press <em>Push</em> (Desktop: "Push origin") so commit 3 reaches GitHub.');
+              G.setBrief('Press <em>Push</em> (Desktop: "Push origin") so commit 3 reaches GitHub.');
             }
           });
         }, 0]
@@ -1327,7 +1327,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       var c = G.opRemoteCommit('main', { msg: "Add Maya's field notes" });
       G.say('info', 'Maya pushed commit ' + c.n + ' (“' + c.msg + '”). It reached GitHub, but nothing on <em>your</em> computer changed.');
       G.later(function(){
-        G.setBrief('<strong>Mission 3 &middot; Get commit ' + c.n + ' onto your computer.</strong> Press <em>Pull</em> (Desktop: "Fetch origin", then "Pull origin").');
+        G.setBrief('<strong>Get commit ' + c.n + ' onto your computer.</strong> Press <em>Pull</em> (Desktop: "Fetch origin", then "Pull origin").');
         G.renderNote('The teammate line below shows that GitHub has a commit you do not. Nothing arrives on your computer until you pull.');
         G.lock(false);
       }, 900);
@@ -1382,14 +1382,14 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         } },
         { id: 'pull', label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
           var S = G.S, inc = G.incoming('main');
-          if (!inc.length){ G.say('warn', 'Nothing to pull right now: GitHub has no commits you are missing. Pull matters after a teammate pushes (that is mission 3).'); return; }
+          if (!inc.length){ G.say('warn', 'Nothing to pull right now: GitHub has no commits you are missing. Pull matters after a teammate pushes, which happens later in this tab.'); return; }
           G.opPull('main');
           S.fileStateOverride = 'updated by pull. Maya’s change is now in your files';
           G.renderFiles();
           G.say('ok', 'Pulled ' + G.describeNs(inc) + ' into your local repository, and your working directory files updated to match (Desktop: "Pull origin").');
           if (S.mission === 3){
             G.markDone(2); S.mission = 4;
-            G.setBrief('<strong>All three missions complete.</strong>');
+            G.setBrief('<strong>Finished.</strong>');
             G.renderNote('<strong>&#10003; Done.</strong> The recap below lists the three distinctions the quiz tests. Tab 2 is optional: what happens when you and a teammate both commit to main.', true);
           }
         } }
@@ -1410,7 +1410,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
         why: 'your commit is newer, but your history does not include Maya’s commit 4. GitHub does not let a push discard a commit it already has. Pull first.',
         after: function(){
           G.markDone(0); G.S.mission = 2;
-          G.setBrief('<strong>Mission 2.</strong> Press <em>Push</em> and read the message. Then <em>Pull</em>, then <em>Push</em> again.');
+          G.setBrief('Press <em>Push</em> and read the message. Then <em>Pull</em>, then <em>Push</em> again.');
         }
       });
     }
@@ -1454,7 +1454,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             G.say('warn', '<strong>Push refused.</strong> Desktop: “Newer commits on remote. Desktop is unable to push commits to this branch because there are commits on the remote that are not present on your local branch. Fetch the new commits before pushing.” GitHub has ' + G.describeNs(inc) + ' and you do not. Press <em>Pull</em>.');
             if (S.mission === 2 && !S.f.refused){
               S.f.refused = true;
-              G.setBrief('<strong>Mission 2 &middot; Now Pull.</strong> Desktop’s button reads “Pull origin” with ↓1 ↑1: one commit to fetch, one to push.');
+              G.setBrief('<strong>Now Pull.</strong> Desktop’s button reads “Pull origin” with ↓1 ↑1: one commit to fetch, one to push.');
             }
             return;
           }
@@ -1462,7 +1462,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.say('ok', 'Pushed ' + G.describeNs(up) + '. GitHub now has ' + (up.some(function(n){ return G.C(n).merge; }) ? 'your commit, Maya’s commit, and the merge commit.' : 'your commits.'));
           if (S.mission === 2 && S.f.merged){
             G.markDone(1); S.mission = 3;
-            G.setBrief('<strong>Mission 3 &middot; Next time.</strong>');
+            G.setBrief('<strong>Next time.</strong>');
             G.renderPrompt({
               question: 'What avoids most refused pushes?',
               options: ['Push after every save, so GitHub always matches my computer', 'Pull before I start working, and again just before I push', 'Make sure teammates never commit while I am working'],
@@ -1470,7 +1470,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               why: 'pulling first means your push starts from what GitHub already has. Branches (tab 3) reduce the problem too, but you still pull main.',
               after: function(){
                 G.markDone(2); G.S.mission = 4;
-                G.setBrief('<strong>All three missions complete.</strong>');
+                G.setBrief('<strong>Finished.</strong>');
                 G.appendNote('<strong>&#10003; Done.</strong> A refused push means GitHub has a commit you do not. Pull, check the result, push. Tab 3, branches and pull requests, is optional.', true);
               }
             });
@@ -1492,14 +1492,14 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               options: ['Only on GitHub, until I push', 'In my local history and in my files on disk', 'In my files, but not in my history'],
               correct: 1,
               why: 'pull updates both: the commit is in your local repository and your working files match it. Your history now contains everything GitHub has, plus your commit 5 and the merge.',
-              after: function(){ G.setBrief('<strong>Mission 2 &middot; Now Push.</strong> Your local repository has every commit GitHub has, so the push will be accepted.'); }
+              after: function(){ G.setBrief('<strong>Now Push.</strong> Your local repository has every commit GitHub has, so the push will be accepted.'); }
             });
           }
         } }
       ],
       start: function(){
         G.S.mission = 1;
-        G.setBrief('<strong>Mission 1.</strong> Maya committed commit 4 and pushed it to GitHub. You did not pull, so you never received it, and you made commit 5 on your computer. Both commits build on commit 3. Compare stations 3 and 4, then answer the question.');
+        G.setBrief('Maya committed commit 4 and pushed it to GitHub. You did not pull, so you never received it, and you made commit 5 on your computer. Both commits build on commit 3. Compare stations 3 and 4, then answer the question.');
         G.say('info', 'Commit 4 is only on GitHub. Commit 5 is only on your computer. Your history does not include Maya’s commit.');
         askPrediction();
       }
@@ -1543,7 +1543,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               options: ['Yes, Git copied the project into a new folder for the branch', 'No. The branch is a label pointing at commit 3; the files are the same', 'Yes, the file went back to commit 1'],
               correct: 1,
               why: 'a branch is a pointer (a name that marks one commit in the history), not a folder. Until you commit something on it, add-note and main point at the same commit and your files are identical.',
-              after: function(){ G.setBrief('<strong>Mission 1 &middot; Step 2.</strong> <em>Edit file</em>, then <em>Commit</em>. Check which branch the commit lands on.'); }
+              after: function(){ G.setBrief('<strong>Step 2.</strong> <em>Edit file</em>, then <em>Commit</em>. Check which branch the commit lands on.'); }
             });
           }
         } },
@@ -1561,7 +1561,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           else S.fileStateOverride = 'files on disk now match add-note' + (noteOnBranchOnly ? ': your note is back' : '');
           G.renderFiles();
           G.say('ok', 'Switched to <code>' + to + '</code> (Desktop: Current Branch). Switching changes the files on your disk to match that branch’s latest commit.');
-          if (S.mission === 3 && S.f.mg && to === 'main') G.setBrief('<strong>Mission 3 &middot; Now Pull.</strong> Desktop shows “Pull origin” for main.');
+          if (S.mission === 3 && S.f.mg && to === 'main') G.setBrief('<strong>Now Pull.</strong> Desktop shows “Pull origin” for main.');
         } },
         { id: 'edit', group: GRP, label: 'Edit file', sub: 'save in your editor &middot; Desktop checks it for you', run: function(){
           var S = G.S, f = S.files[0];
@@ -1585,7 +1585,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               why: 'a commit is recorded on the branch you are on. main has not changed, locally or on GitHub.',
               after: function(){
                 G.markDone(0); G.S.mission = 2;
-                G.setBrief('<strong>Mission 2.</strong> Press <em>Publish branch</em> (Desktop’s name for the first push of a new branch), then <em>Open pull request</em>.');
+                G.setBrief('Press <em>Publish branch</em> (Desktop’s name for the first push of a new branch), then <em>Open pull request</em>.');
               }
             });
           }
@@ -1600,7 +1600,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           var r = G.opPush(name);
           G.say('ok', (r.isNew ? 'Published <code>' + name + '</code> to GitHub (Desktop: “Publish branch”). ' : 'Pushed ' + G.describeNs(r.up) + ' to <code>' + name + '</code> on GitHub. ') +
                       (name !== 'main' ? 'GitHub’s <code>main</code> is unchanged; nothing has been merged.' : ''));
-          if (S.mission === 2 && name === BR && !S.pr) G.setBrief('<strong>Mission 2 &middot; Now Open pull request.</strong> Desktop: “Preview Pull Request”, then “Create Pull Request” in the browser.');
+          if (S.mission === 2 && name === BR && !S.pr) G.setBrief('<strong>Now Open pull request.</strong> Desktop: “Preview Pull Request”, then “Create Pull Request” in the browser.');
         } },
         { id: 'pull', group: GRP, label: 'Pull', sub: 'Desktop: "Fetch origin", then "Pull origin" &middot; git pull', run: function(){
           var S = G.S, name = S.local.head, inc = G.incoming(name);
@@ -1615,7 +1615,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.say('ok', 'Pulled ' + G.describeNs(inc) + ' into your local <code>' + name + '</code>. Your files on disk now match.');
           if (S.mission === 3 && S.f.mg && name === 'main'){
             G.markDone(2); S.mission = 4;
-            G.setBrief('<strong>All three missions complete.</strong>');
+            G.setBrief('<strong>Finished.</strong>');
             G.renderNote('<strong>&#10003; Done.</strong> <code>add-note</code> can be deleted; its commit is on main. In the project repository, each task follows this sequence: branch, commit, pull request, review, merge, pull main. Tab 4, a merge conflict, is optional.', true);
           }
         } },
@@ -1638,7 +1638,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               why: 'look at both main lanes: still commits 1–3. The pull request is a page on github.com, not a commit.',
               after: function(){
                 G.markDone(1); G.S.mission = 3;
-                G.setBrief('<strong>Mission 3.</strong> Press <em>Merge pull request</em>, then check station 3.');
+                G.setBrief('Press <em>Merge pull request</em>, then check station 3.');
               }
             });
           }
@@ -1660,14 +1660,14 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               options: ['Commits 1–4 and the merge commit, sent down by GitHub', 'Still commits 1–3. Merging happened on GitHub; local main is behind until I pull', 'Commit 4 only, because that is what I wrote'],
               correct: 1,
               why: 'nothing moves from GitHub to your computer without a pull. Desktop shows “Pull origin” once you are on main and fetch.',
-              after: function(){ G.setBrief('<strong>Mission 3.</strong> <em>Switch to main</em>, then <em>Pull</em>.'); }
+              after: function(){ G.setBrief('<em>Switch to main</em>, then <em>Pull</em>.'); }
             });
           }
         } }
       ],
       start: function(){
         G.S.mission = 1;
-        G.setBrief('<strong>Mission 1.</strong> You have just cloned; your local repository and GitHub both hold commits 1&ndash;3 on main. Step 1: press <em>New branch</em>.');
+        G.setBrief('You have just cloned; your local repository and GitHub both hold commits 1&ndash;3 on main. Step 1: press <em>New branch</em>.');
         G.renderNote('Station 3 will show a second branch. After each step, check which branch changed and whether main changed.');
       }
     };
@@ -1735,7 +1735,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             options: ['Keep my version; it is the most recent', 'Keep Maya’s version; it is already on main', 'Read both, write the one rule the team wants, and remove every marker'],
             correct: 2,
             why: 'the right result may keep one version, combine both, or replace both. Git cannot decide that; the people who wrote the two versions can.',
-            after: function(){ G.setBrief('<strong>Mission 2.</strong> Press <em>Open in editor and resolve</em>.'); }
+            after: function(){ G.setBrief('Press <em>Open in editor and resolve</em>.'); }
           });
         } },
         { id: 'resolve', group: GRP, label: 'Open in editor and resolve', sub: 'VS Code: edit the file, remove the markers, save', run: function(){
@@ -1758,7 +1758,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               S.fileView = { name: TP, where: 'on your disk, on fix-rule, saved', html: plainView(RESOLVED) };
               G.renderFiles(); G.renderStage(true); G.renderFilePanel(); G.updateTview();
               G.say('ok', 'Saved. Desktop reports “No conflicts remaining” and checks the file for the merge commit.');
-              G.setBrief('<strong>Mission 2.</strong> Press <em>Commit the merge</em>, then <em>Push</em>.');
+              G.setBrief('Press <em>Commit the merge</em>, then <em>Push</em>.');
             }
           });
         } },
@@ -1771,7 +1771,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.opCommit({ msg: 'Merge main into fix-rule', merge: true });
           S.fileView.where = 'on your disk, on fix-rule, committed'; G.renderFilePanel();
           G.say('ok', 'Merge commit (M) recorded on <code>fix-rule</code>. It has two parents: your commit 4 and main’s commit 5. The branch now contains both.');
-          G.setBrief('<strong>Mission 2 &middot; Now Push.</strong>');
+          G.setBrief('<strong>Now Push.</strong>');
         } },
         { id: 'push', group: GRP, label: 'Push', sub: 'Desktop: "Push origin" &middot; git push', run: function(){
           var S = G.S, up = G.unpushed(BR);
@@ -1785,7 +1785,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           G.say('ok', 'Pushed. Pull request #2 can be merged now. A teammate should still review the final rule before merging.');
           if (S.mission === 2){
             G.markDone(1); S.mission = 3;
-            G.setBrief('<strong>Mission 3 &middot; Notebooks.</strong>');
+            G.setBrief('<strong>Notebooks.</strong>');
             G.renderPrompt({
               question: 'Suppose a notebook (.ipynb) conflicts instead of a Markdown file. What do you do?',
               options: ['Pick “Use the modified file from main” in Desktop and move on', 'Keep my own version', 'Stop and coordinate with the other editor: decide which cells belong, rerun the notebook, then commit'],
@@ -1793,7 +1793,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               why: 'a notebook file is JSON that includes outputs and metadata. The conflict markers land inside that, and the diff is hard to read. Agreeing on the cells with the other editor is faster and safer.',
               after: function(){
                 G.markDone(2); G.S.mission = 4;
-                G.setBrief('<strong>All three missions complete.</strong>');
+                G.setBrief('<strong>Finished.</strong>');
                 G.appendNote('<strong>&#10003; Done.</strong> Monday’s optional exercise does the same in your own copy of the playground: read both versions, write the line you want, remove every marker, rerun the check.', true);
               }
             });
@@ -1802,7 +1802,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       ],
       start: function(){
         G.S.mission = 1;
-        G.setBrief('<strong>Mission 1.</strong> Station 4 shows pull request #2 with a red status. Answer the question first.');
+        G.setBrief('Station 4 shows pull request #2 with a red status. Answer the question first.');
         G.renderPrompt({
           question: 'GitHub says fix-rule has conflicts with main. What does that mean?',
           options: ['My commit is broken and has to be redone', 'Both branches changed the same lines since they split at commit 3, so Git cannot choose a version', 'Maya’s change was merged first, so mine is rejected'],
@@ -1810,7 +1810,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           why: 'Maya’s commit 5, already on main, and your commit 4 both rewrote the Review rule line. Git does not choose between them.',
           after: function(){
             G.markDone(0); G.S.mission = 2;
-            G.setBrief('<strong>Mission 2.</strong> Press <em>Update branch from main</em>. Expect a conflict.');
+            G.setBrief('Press <em>Update branch from main</em>. Expect a conflict.');
           }
         });
       }
@@ -1870,7 +1870,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             after: function(){
               finishBuild();
               G.markDone(2); G.S.mission = 4;
-              G.setBrief('<strong>All three missions complete.</strong>');
+              G.setBrief('<strong>Finished.</strong>');
               G.appendNote('<strong>&#10003; Done.</strong> For HW2: Settings &rarr; Pages, Deploy from a branch, <code>main</code>, <code>/docs</code>. When the site looks wrong, check in this order: the commit list on GitHub, the deployment status, then the site in a private window.', true);
             }
           });
@@ -1918,7 +1918,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
             S.f.m1 = true;
             S.f.onBuilt = function(){
               G.markDone(0); G.S.mission = 2;
-              G.setBrief('<strong>Mission 2.</strong> <em>Edit README.md</em>, then <em>Commit</em> and <em>Push</em>.');
+              G.setBrief('<em>Edit README.md</em>, then <em>Commit</em> and <em>Push</em>.');
               G.say('ok', 'Rebuilt from commit ' + last + '. The push reached GitHub first; Pages rebuilt the site a moment later.');
             };
           } else if (gate){
@@ -1938,11 +1938,11 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
                   why: 'both settings apply, branch and folder. Until the branch is merged, the fix is on fix-typo, not on main.',
                   after: function(){
                     G.markDone(1); G.S.mission = 3;
-                    G.setBrief('<strong>Mission 3.</strong> Press "Set the scene".');
+                    G.setBrief('Press "Set the scene".');
                   },
-                  continueLabel: 'Continue to mission 3',
+                  continueLabel: 'Continue',
                   onContinue: function(){
-                    G.renderScene('Mission 3: the scene',
+                    G.renderScene('The scene',
                       'You fix a typo in docs/index.md, commit, and push. Right away your teammate opens the site and says it still shows the old text.',
                       runScene3);
                   }
@@ -1954,7 +1954,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
       ],
       start: function(){
         G.S.mission = 1;
-        G.setBrief('<strong>Mission 1.</strong> Answer the question, then test it in the simulator.');
+        G.setBrief('Answer the question, then test it in the simulator.');
         G.renderPrompt({
           question: 'Your guide is published with GitHub Pages. Which copy of the repository does Pages build the site from?',
           options: ['The working directory on my computer', 'My local repository’s commit history', 'The remote repository on GitHub, meaning whatever has been pushed'],
@@ -1962,7 +1962,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
           why: 'GitHub Pages rebuilds from the pushed repository on GitHub. Commits that stay local never reach the site.',
           after: function(){
             G.S.f.q1 = true;
-            G.setBrief('<strong>Mission 1.</strong> <em>Edit docs/index.md</em>, then <em>Commit</em>. The site does not change. Then <em>Push</em> and watch it rebuild.');
+            G.setBrief('<em>Edit docs/index.md</em>, then <em>Commit</em>. The site does not change. Then <em>Push</em> and watch it rebuild.');
           }
         });
       }
