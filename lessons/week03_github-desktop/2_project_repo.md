@@ -71,7 +71,7 @@ Each person will write one planning note and review someone else's. Decide
 who reviews whose note before starting. In a pair, review each other's work.
 The **author** proposes the change; the **reviewer** reads it and gives feedback.
 
-Optional preview: [tab 3 of How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#branches) shows the branch, pull request, merge, and pull sequence in about five minutes.
+Optional preview: [tab 4 of How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#branches) shows the branch, pull request, merge, and pull sequence in about five minutes.
 
 ### Author: create a branch
 

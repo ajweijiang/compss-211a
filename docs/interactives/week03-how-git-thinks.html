@@ -1477,7 +1477,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
               question: 'What avoids most refused pushes?',
               options: ['Push after every save, so GitHub always matches my computer', 'Pull before I start working, and again just before I push', 'Make sure teammates never commit while I am working'],
               correct: 1,
-              why: 'pulling first means your push starts from what GitHub already has. Branches (tab 3) reduce the problem too, but you still pull main.',
+              why: 'pulling first means your push starts from what GitHub already has. Branches (tab 4) reduce the problem too, but you still pull main.',
               after: function(){
                 G.markDone(2); G.S.mission = 4;
                 G.setBrief('<strong>Finished.</strong>');
@@ -1937,7 +1937,7 @@ footer{background:var(--berkeley);color:rgba(255,255,255,.85);margin:44px calc(5
   /* ------------------------------------------------------------------ */
   /* Boot                                                               */
   /* ------------------------------------------------------------------ */
-  G.ORDER.push('basics', 'pull-first', 'branches', 'conflict', 'pages');
+  G.ORDER.push('basics', 'pull-first', 'conflict', 'branches', 'pages');
   var start = location.hash.slice(1);
   if (!G.SCEN[start]) start = 'basics';
   G.load(start);
