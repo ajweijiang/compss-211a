@@ -18,7 +18,7 @@ terms.
 
 ## 1. How git thinks
 
- [How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#basics).
+Open [How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html#basics) and complete tab 1, about six minutes, before the exercises below. The other tabs are optional.
 
 ## 2. Keep a local history
 
