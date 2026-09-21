@@ -2,7 +2,7 @@
 
 [Concept slides: keeping track of a research project](https://docs.google.com/presentation/d/1WlhH2rzUs7l7Xk1qYEAEDQI9GKQG5Oq3hd-hcYNSoXc/edit).
 
-Monday's practice starts with the short tutorial built into GitHub Desktop, then uses the [Week 3 practice template](https://github.com/macss-berkeley/week03-git-practice). The template is an imaginary text-research project with one question, *Which campus news stories mention housing?*, a short project page, and no data or results. You will make your own copy, clarify the proposed text-matching rule, publish the page, and review one change with a neighbor. The steps are in the practice sections below.
+Monday's practice starts with the short tutorial built into GitHub Desktop, then uses the [Week 3 practice template](https://github.com/macss-berkeley/week03-git-practice). The template is an imaginary text-research project with one question, *Which campus news stories mention housing?*, a short project page, 40 made-up news items, and no results. You will make your own copy, clarify the proposed text-matching rule, publish the page, and review one change with a neighbor. The steps are in the practice sections below.
 
 Friday's [Lab 3](../../lab/lab03_hidden_berkeley_pages.ipynb) practises the same workflow with the supplied Hidden Berkeley page, and HW2 uses that page too. Before Friday, work through the seven-minute interactive [How Git Thinks](https://macss-berkeley.github.io/compss-211a/interactives/week03-how-git-thinks.html), which shows where a change lives after each step. It also opens from your local copy of the course repository at `docs/interactives/week03-how-git-thinks.html`. HTML/CSS authoring is optional.
 
@@ -78,15 +78,16 @@ The tutorial covers the branch workflow. It does not commit to `main`, pull, or 
 
 1. Open the [practice template](https://github.com/macss-berkeley/week03-git-practice) on GitHub. Choose **Use this template -> Create a new repository**. Choose your own account as the owner, give the repository a name such as `campus-news-housing`, make it **public** so you can publish the page later, and keep the default branch only.
 2. In GitHub Desktop, select **File -> Clone Repository**, choose the **GitHub.com** tab, select your new repository, choose a local folder you can find again, and select **Clone**.
-3. Select **Open in Visual Studio Code**. Read `README.md` and `docs/index.md`.
-4. In `docs/index.md`, find the sentence under **Proposed approach**: `Search each story for the word housing.` Replace it with a rule that says what counts as a match. Consider capitalization, related words such as *house*, *dorm*, or *rent*, and what counts as a campus news story. Save the file.
+3. Select **Open in Visual Studio Code**. Read `README.md`, `docs/index.md`, and `data/stories.csv`, which holds 40 made-up campus news items.
+4. With `data/stories.csv` open, press Cmd+F (macOS) or Ctrl+F (Windows) and search for `housing`. Note the number of matches. Switch **Match Case** (the `Aa` button) on and off, then **Match Whole Word** (the `ab` button), and watch the number change. Read two matching rows, then find two rows that are about housing but do not contain the word.
+5. In `docs/index.md`, replace the sentence under **Proposed approach**, `Search each story for the word housing.`, with a rule that says what counts as a match: capitalization, whole words or parts of words, and related words such as *dorm*, *rent*, or *residence hall*. Save the file.
 
    Pause: the edit now exists in exactly one place. Where?
-5. Return to GitHub Desktop and read the diff. Red lines are removed; green lines are added. Check that only the sentence you intended has changed.
-6. Write a commit message that names the purpose, such as `Clarify the text-matching rule`, and select **Commit to main**.
+6. Return to GitHub Desktop and read the diff. Red lines are removed; green lines are added. Check that only the sentence you intended has changed.
+7. Write a commit message that names the purpose, such as `Clarify the text-matching rule`, and select **Commit to main**.
 
    Pause: can a neighbor see this commit on GitHub yet?
-7. Select **Push origin**. Open the repository on GitHub.com, open `docs/index.md`, and find your sentence. Open the commit list and find your message.
+8. Select **Push origin**. Open the repository on GitHub.com, open `docs/index.md`, and find your sentence. Open the commit list and find your message.
 
 Question: At which step did the change become part of local history? At which step did it reach GitHub?
 
@@ -115,7 +116,7 @@ Work in your own copy of the template. Because the repository is public, a neigh
 
 1. In GitHub Desktop, switch to `main`, select **Fetch origin**, and pull if Desktop reports remote changes.
 2. Select **Current Branch -> New Branch** and name it after the task, such as `explain-the-limits`.
-3. In `docs/index.md`, under **What we would check**, add one sentence about a limit of your matching rule: a kind of story it would count by mistake, or a kind it would miss.
+3. In `docs/index.md`, under **What we would check**, add one sentence about a limit of your matching rule, naming one story from `data/stories.csv` by its `story_id` that the rule counts by mistake or misses.
 4. Inspect the diff and commit on your branch.
 5. Select **Publish branch**, then **Preview Pull Request**. Confirm that the base branch is `main`, the compare branch is yours, and only `docs/index.md` changed. Select **Create Pull Request**, then write a title and one sentence saying what a reviewer should check.
 6. Swap repository URLs with a neighbor. Open their pull request, read the **Files changed** tab, and leave one comment: a question, or one specific improvement.
